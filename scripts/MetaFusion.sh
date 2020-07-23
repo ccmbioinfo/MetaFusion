@@ -44,7 +44,7 @@ while test $# -gt 0;do
         shift 2
         ;;
         --recurrent_bedpe)
-        --recurrent_bedpe="$2"
+        recurrent_bedpe="$2"
         shift 2
         ;;
         *)
@@ -116,7 +116,7 @@ cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 # Blacklist Filter
 if [ $blck_filter -eq 1 ]; then
   echo blacklist filter
-  blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
+  #blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
 #$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 sh blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
