@@ -1,0 +1,3 @@
+#tax_id	GeneID	Symbol	LocusTag	Synonyms	dbXrefs	chromosome	map_location	description	type_of_gene	Symbol_from_nomenclature_authority	Full_name_from_nomenclature_authority	Nomenclature_status	Other_designations	Modification_date	Feature_type
+9606	22837	COBLL1	-	COBLR1	MIM:610318|HGNC:HGNC:23571|Ensembl:ENSG00000082438	2	2q24.3	cordon-bleu WH2 repeat protein like 1	protein-coding	COBLL1	cordon-bleu WH2 repeat protein like 1	O	cordon-bleu protein-like 1|COBL-like 1	20200313	-
+9606	89872	AQP10	-	AQPA_HUMAN	MIM:606578|HGNC:HGNC:16029|Ensembl:ENSG00000143595	1	1q21.3	aquaporin 10	protein-coding	AQP10	aquaporin 10	O	aquaporin-10|AQP-10|aquaglyceroporin-10|small intestine aquaporin	20200313	-
