@@ -1,108 +1,17 @@
 #!/bin/bash
 #NOTES
-#$reann_test_dir/cff_iles/NOTES-merged.cff_RPRD2--LAMC2
-#source /home/mapostolides/miniconda3/etc/profile.d/conda.sh
 source /hpf/largeprojects/ccmbio/mapostolides/MODULES/miniconda3/etc/profile.d/conda.sh
 conda activate metafusion
 
 #CONSTANTS
 #gene_info_file=/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/pipeline/config_reference_files/Homo_sapiens.gene_info
-info_file_dir=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/rename_genes_test/info_file_subsets
-reann_test_dir=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/reann_cff_fusion_testing
 test_dir=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline
-#gene_bed_total=$reann_test_dir/ens_known_genes.renamed.bed
 gene_bed_total=/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/annotation/ens_known_genes.renamed.ENSG.bed
-bed_dir=$reann_test_dir/bed_files
-cff_dir=$reann_test_dir/cff_files
 benchmark_toolkit=/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT
 gene_info=/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/pipeline/config_reference_files/Homo_sapiens.gene_info
 genome_fasta=/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/pipeline/config_reference_files/human_g1k_v37_decoy.fasta
+recurrent_bedpe=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/stjude_validation/Analysis_manuscript/OUTDIR_APR-3-2020-sim45-52/recurrent_breakpoints_filtering/blacklist_breakpoints.bedpe
 
-run_pipeline (){
-  #rename=1
-  #annotate=1
-  #merge=1
-  #output_ANC_RT_SG=1
-  RT_call_filter=1
-  blck_filter=1
-  ANC_filter=1
-  benchmark=1
-  outdir=$1
-  mkdir -p $outdir
-  cff=$2
-  gene_bed=$3
-  truth_fusions=$4
-  num_tools=$5
-  gene_info=$6
-  genome_fasta=$7
-
-  fusiontools=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin
-  #Check CFF file format:
-  #Remove entries with nonconformming chromosome name
-  cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' > $outdir/$(basename $cff).reformat 
-  cff=$outdir/$(basename $cff).reformat
-  #NEED TO INSERT +/-/NA for strand, make NA if other
-
-  #Rename cff
-  if [ $rename -eq 1 ]; then
-    echo Rename cff
-    python $fusiontools/rename_cff_file_genes-GENAP.py $cff $gene_info > $outdir/$(basename $cff).renamed
-  fi
-  cff=$outdir/$(basename $cff).renamed
-
-  #Annotate cff
-  if [ $annotate -eq 1 ]; then
-    echo Annotate cff
-    python $fusiontools/reann_cff_fusion.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).reann 
-  fi
-  cff=$outdir/$(basename $cff).reann
-
-  #Merge
-  cluster=$outdir/$(basename $cff).cluster
-  if [ $merge -eq 1 ]; then
-    echo Merge cff
-    source /home/mapostolides/miniconda3/etc/profile.d/conda.sh
-    sh $fusiontools/RUN_cluster_genes_breakpoints.sh $cff $outdir > $cluster
-  fi
- 
-  #output ANC_RT_SG file
-  if [ $output_ANC_RT_SG -eq 1 ]; then
-    echo output ANC_RT_SG file
-    python $fusiontools/output_ANC_RT_SG.py $cluster > $cluster.ANC_RT_SG 
-  fi
-
-  #ReadThrough Callerfilter
-  if [ $RT_call_filter -eq 1 ]; then
-    echo ReadThrough, callerfilter
-    cat $cluster | grep ReadThrough > $outdir/$(basename $cluster).ReadThrough
-    $fusiontools/callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
-    #python $fusiontools/callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
-    #cat $cluster | grep -v ReadThrough | awk '$8 ~ /.,./' > $outdir/$(basename $cluster).RT_filter.callerfilter2
-  fi
-  cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools 
-
-  # Blacklist Filter
-  if [ $blck_filter -eq 1 ]; then
-    echo blacklist filter
-    blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
-  $blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
-  fi
-  cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
-
-
-  # Adjacent Noncoding filter 
-  if [ $ANC_filter -eq 1 ]; then
-    echo ANC adjacent noncoding filter
-    $fusiontools/filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter  
-  fi
-  cluster=$outdir/$(basename $cluster).ANC_filter
-
-  #Benchmark
-  if [ $benchmark -eq 1 ]; then
-     echo benchmark
-    /hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster-GENAP.sh $outdir $truth_fusions $cff $cluster true 
-  fi
-}
 benchmark_pertool (){
     cff=$1
     truth_fusions=$2
@@ -468,76 +377,7 @@ num_tools=2
 #                --truth_set $truth_fusions \
 #                --num_tools=2 \
 #                --genome_fasta $genome_fasta
-sh MetaFusion.sh --outdir $outdir --cff $cff  --gene_bed $gene_bed  --gene_info $gene_info --truth_set $truth_fusions  --num_tools=2  --genome_fasta $genome_fasta
+sh MetaFusion.sh --outdir $outdir --cff $cff  --gene_bed $gene_bed  --gene_info $gene_info --truth_set $truth_fusions  --num_tools=2  --genome_fasta $genome_fasta --recurrent_bedpe $recurrent_bedpe
 #benchmark_pertool $cff $truth_fusions $outdir
 fi
-
-exit 0
-# TEST FUSIONS BELOW THIS POINT
-outdir=$test_dir/outdir.TEST_FUSIONS.May-20-2020
-#BCL3--CTB-171A8.1
-#/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/reann_cff_fusion_testing/cff_files/BCL3--CTB-171A8.1.cff
-cff=$cff_dir/BCL3--CTB-171A8.1.cff
-gene_bed=$bed_dir/BCL3--CTB-171A8.1.bed
-info_file=$info_file_dir/Homo_sapiens.gene_info.BCL3
-#run_pipeline $outdir $cff $gene_bed
-
-
-echo ARRIBA
-cff=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/rename_genes_test/arriba.weird_brackets.cff
-#python $fusiontools/rename_cff_file_genes-GENAP.py $cff $gene_info_file
-run_pipeline $outdir $cff $gene_bed
-echo INTEGRATE
-cff=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/rename_genes_test/integrate_slash.delimeter.cff
-run_pipeline $outdir $cff $gene_bed
-#python $fusiontools/rename_cff_file_genes-GENAP.py $cff $gene_info_file
-
-# TEST FUSIONS
-#HES1--IL29
-cff=$reann_test_dir/HES1--IL29/HES1--IL29.cff
-gene_bed=$reann_test_dir/ens_known_genes_HES1_IL29.bed
-run_pipeline $outdir $cff $gene_bed
-#SAA1--ATP1A1
-cff=$reann_test_dir/SAA1--ATP1A1/SAA1--ATP1A1.cff
-gene_bed=$reann_test_dir/ens_known_genes_SAA1--ATP1A1.bed
-run_pipeline $outdir $cff $gene_bed
-#BCL3--CTB-171A8.1
-cff=$cff_dir/BCL3--CTB-171A8.1.cff
-gene_bed=$bed_dir/BCL3--CTB-171A8.1.bed
-run_pipeline $outdir $cff $gene_bed
-#ANKIB1--AKAP9
-cff=$reann_test_dir/cff_files/merged.cff_AKAP9--ANKIB1
-gene_bed=$reann_test_dir/ens_known_genes.AKAP9--ANKIB1.bed
-run_pipeline $outdir $cff $gene_bed
-#FOSB--AADACL2
-cff=$reann_test_dir/FOSB--AADACL2/FOSB--AADACL2.cff
-gene_bed=$bed_dir/ens_known_genes.MIR548H2.FOSB.AADACL2.bed
-run_pipeline $outdir $cff $gene_bed
-
-
-#SAA1--ATP1A1
-outdir=$reann_test_dir/SAA1--ATP1A1
-cff=$reann_test_dir/SAA1--ATP1A1/SAA1--ATP1A1.cff
-#run_pipeline $outdir $cff $gene_bed_total
-
-##
-cff=$reann_test_dir/cff_files/merged.cff_BCL3 
-
-#BCL3--CTB-171A8.1
-cff=$cff_dir/BCL3--CTB-171A8.1.cff
-gene_bed=$bed_dir/BCL3--CTB-171A8.1.bed
-gene_bed=$gene_bed_total
-#ANKIB1--AKAP9
-#gene_bed=$reann_test_dir/ens_known_genes.ANKIB1--AKAP9.bed
-#cff=$reann_test_dir/cff_files/merged.cff_AKAP9--ANKIB1
-#run_pipeline $outdir $cff $gene_bed
-
-#FOSB--AADACL2
-cff=$reann_test_dir/FOSB--AADACL2/FOSB--AADACL2.cff
-gene_bed=$bed_dir/ens_known_genes.MIR548H2.FOSB.AADACL2.bed
-#1 entry, failing due to breakpt being 1 bp off:
-#cff=$reann_test_dir/FOSB--AADACL2/FOSB--AADACL2.cff.test
-#run_pipeline $outdir $cff $gene_bed
-
-sh /hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline/testing.sh -a false -b false -f /hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/run_FusionAnnotator_cluster.sh -v false
 
