@@ -64,12 +64,15 @@ done
 #rename=1
 #annotate=1
 #merge=1
-#output_ANC_RT_SG=1
-#RT_call_filter=1
+output_ANC_RT_SG=1
+RT_call_filter=1
 blck_filter=1
-#ANC_filter=1
-#rank=1
+ANC_filter=1
+rank=1
 #benchmark=1
+
+#METAFUSION WORKFLOW
+mkdir $outdir
 
 #Check CFF file format:
 #Remove entries with nonconformming chromosome name
@@ -95,7 +98,6 @@ cff=$outdir/$(basename $cff).reann
 cluster=$outdir/$(basename $cff).cluster
 if [ $merge -eq 1 ]; then
   echo Merge cff
-  source /home/mapostolides/miniconda3/etc/profile.d/conda.sh
   sh RUN_cluster_genes_breakpoints.sh $cff $outdir > $cluster
 fi
 
@@ -126,7 +128,7 @@ cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filt
 # Adjacent Noncoding filter 
 if [ $ANC_filter -eq 1 ]; then
   echo ANC adjacent noncoding filter
-  filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter  
+  python filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter  
 fi
 cluster=$outdir/$(basename $cluster).ANC_filter
 
