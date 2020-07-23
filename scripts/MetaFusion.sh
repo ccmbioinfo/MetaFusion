@@ -43,6 +43,10 @@ while test $# -gt 0;do
         truth_set="$2"
         shift 2
         ;;
+        --recurrent_bedpe)
+        --recurrent_bedpe="$2"
+        shift 2
+        ;;
         *)
         OTHER_ARGUMENTS+=("$1")
         shift # Remove generic argument from processing
@@ -57,16 +61,16 @@ done
 #echo genome_fasta $genome_fasta 
 #echo truth_set $truth_set
 #
-rename=1
-annotate=1
-merge=1
-output_ANC_RT_SG=1
-RT_call_filter=1
+#rename=1
+#annotate=1
+#merge=1
+#output_ANC_RT_SG=1
+#RT_call_filter=1
 blck_filter=1
-ANC_filter=1
-benchmark=1
+#ANC_filter=1
+#rank=1
+#benchmark=1
 
-fusiontools=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin
 #Check CFF file format:
 #Remove entries with nonconformming chromosome name
 cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' > $outdir/$(basename $cff).reformat 
@@ -76,14 +80,14 @@ cff=$outdir/$(basename $cff).reformat
 #Rename cff
 if [ $rename -eq 1 ]; then
   echo Rename cff
-  python $fusiontools/rename_cff_file_genes-GENAP.py $cff $gene_info > $outdir/$(basename $cff).renamed
+  python rename_cff_file_genes-GENAP.py $cff $gene_info > $outdir/$(basename $cff).renamed
 fi
 cff=$outdir/$(basename $cff).renamed
 
 #Annotate cff
 if [ $annotate -eq 1 ]; then
   echo Annotate cff
-  python $fusiontools/reann_cff_fusion.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).reann 
+  python reann_cff_fusion.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).reann 
 fi
 cff=$outdir/$(basename $cff).reann
 
@@ -92,20 +96,20 @@ cluster=$outdir/$(basename $cff).cluster
 if [ $merge -eq 1 ]; then
   echo Merge cff
   source /home/mapostolides/miniconda3/etc/profile.d/conda.sh
-  sh $fusiontools/RUN_cluster_genes_breakpoints.sh $cff $outdir > $cluster
+  sh RUN_cluster_genes_breakpoints.sh $cff $outdir > $cluster
 fi
 
 #output ANC_RT_SG file
 if [ $output_ANC_RT_SG -eq 1 ]; then
   echo output ANC_RT_SG file
-  python $fusiontools/output_ANC_RT_SG.py $cluster > $cluster.ANC_RT_SG 
+  python output_ANC_RT_SG.py $cluster > $cluster.ANC_RT_SG 
 fi
 
 #ReadThrough Callerfilter
 if [ $RT_call_filter -eq 1 ]; then
   echo ReadThrough, callerfilter
   cat $cluster | grep ReadThrough > $outdir/$(basename $cluster).ReadThrough
-  $fusiontools/callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
+  python callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 fi
 cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools 
 
@@ -113,7 +117,8 @@ cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 if [ $blck_filter -eq 1 ]; then
   echo blacklist filter
   blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
-$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+#$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+sh blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
 cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 
@@ -121,9 +126,16 @@ cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filt
 # Adjacent Noncoding filter 
 if [ $ANC_filter -eq 1 ]; then
   echo ANC adjacent noncoding filter
-  $fusiontools/filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter  
+  filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter  
 fi
 cluster=$outdir/$(basename $cluster).ANC_filter
+
+#Rank and generate final.cluster
+if [ $benchmark -eq 1 ]; then
+   echo Rank and generate final.cluster 
+  python rank_cluster_file.py $cluster > $outdir/final.cluster
+fi
+cluster=$outdir/final.cluster
 
 #Benchmark
 if [ $benchmark -eq 1 ]; then
