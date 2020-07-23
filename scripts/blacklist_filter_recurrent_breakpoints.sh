@@ -7,7 +7,7 @@ cluster=$2
 outdir=$3
 recurrent_bedpe=$4
 #BLACKLIST FILTER
-recurrent_bedpe=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/stjude_validation/Analysis_manuscript/OUTDIR_APR-3-2020-sim45-52/recurrent_breakpoints_filtering/blacklist_breakpoints.bedpe
+#recurrent_bedpe=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/stjude_validation/Analysis_manuscript/OUTDIR_APR-3-2020-sim45-52/recurrent_breakpoints_filtering/blacklist_breakpoints.bedpe
 cff_bedpe=$(basename $cff).bedpe
 cat $cff | awk '{FS = OFS = "\t"}{print $1,$2,$2+1,$4,$5,$5+1,$31}' | sed 's/chr//g' > $outdir/$cff_bedpe 
 pairToPair -a $recurrent_bedpe -b $outdir/$cff_bedpe -slop 5 > $outdir/recurrent_filtered_fusions.bedpe
