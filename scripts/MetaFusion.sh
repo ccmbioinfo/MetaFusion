@@ -47,6 +47,10 @@ while test $# -gt 0;do
         recurrent_bedpe="$2"
         shift 2
         ;;
+        --scripts)
+        fusiontools="$2"
+        shift 2
+        ;;
         *)
         OTHER_ARGUMENTS+=("$1")
         shift # Remove generic argument from processing
@@ -64,12 +68,12 @@ done
 #rename=1
 #annotate=1
 #merge=1
-output_ANC_RT_SG=1
-RT_call_filter=1
-blck_filter=1
-ANC_filter=1
-rank=1
-#benchmark=1
+#output_ANC_RT_SG=1
+#RT_call_filter=1
+#blck_filter=1
+#ANC_filter=1
+#rank=1
+benchmark=1
 
 #METAFUSION WORKFLOW
 mkdir $outdir
@@ -98,7 +102,7 @@ cff=$outdir/$(basename $cff).reann
 cluster=$outdir/$(basename $cff).cluster
 if [ $merge -eq 1 ]; then
   echo Merge cff
-  sh RUN_cluster_genes_breakpoints.sh $cff $outdir > $cluster
+  sh RUN_cluster_genes_breakpoints.sh $cff $outdir $fusiontools > $cluster
 fi
 
 #output ANC_RT_SG file
@@ -142,7 +146,11 @@ cluster=$outdir/final.cluster
 #Benchmark
 if [ $benchmark -eq 1 ]; then
    echo benchmark
-  /hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster true 
+  #/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster true 
+  benchmark_scripts=$fusiontools/FusionBenchmarking
+  #fusionAnnotator=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
+  fusionAnnotator=$fusiontools/FusionAnnotator
+  sh benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator 
 fi
 
 

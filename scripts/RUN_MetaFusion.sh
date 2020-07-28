@@ -3,6 +3,8 @@
 source /hpf/largeprojects/ccmbio/mapostolides/MODULES/miniconda3/etc/profile.d/conda.sh
 conda activate metafusion
 
+fusiontools=/hpf/largeprojects/ccmbio/mapostolides/MODULES/MetaFusion/scripts
+
 #CONSTANTS
 #gene_info_file=/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/pipeline/config_reference_files/Homo_sapiens.gene_info
 test_dir=/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline
@@ -36,7 +38,7 @@ run_fusionannotator () {
   /hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/run_FusionAnnotator_cluster.sh $outdir $cluster
 }
 
-date=July-23-2020
+date=July-27-2020
 
 #DATASETS
 trusight=0
@@ -377,7 +379,16 @@ num_tools=2
 #                --truth_set $truth_fusions \
 #                --num_tools=2 \
 #                --genome_fasta $genome_fasta
-sh MetaFusion.sh --outdir $outdir --cff $cff  --gene_bed $gene_bed  --gene_info $gene_info --truth_set $truth_fusions  --num_tools=2  --genome_fasta $genome_fasta --recurrent_bedpe $recurrent_bedpe
+#sh MetaFusion.sh --outdir $outdir --cff $cff  --gene_bed $gene_bed  --gene_info $gene_info --truth_set $truth_fusions  --num_tools=2  --genome_fasta $genome_fasta --recurrent_bedpe $recurrent_bedpe
+sh MetaFusion.sh --outdir $outdir \
+                 --cff $cff  \
+                 --gene_bed $gene_bed \
+                 --gene_info $gene_info \
+                 --truth_set $truth_fusions \
+                 --num_tools=2  \
+                 --genome_fasta $genome_fasta \
+                 --recurrent_bedpe $recurrent_bedpe \
+                 --scripts $fusiontools
 #benchmark_pertool $cff $truth_fusions $outdir
 fi
 
