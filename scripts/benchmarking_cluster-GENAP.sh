@@ -28,8 +28,8 @@ while read -r line;do samples=$(echo $line | awk '{print $15}' | sed 's/,/ /g');
 #/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionBenchmarking/resources/genes.aliases
 echo Mapping gene partners to Gencode v19 genes 
    #${FUSION_BENCHMARK}/resources/genes.coords.gz \
-#$perl_bin ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
-perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
+#perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
+$perl_bin ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
    $outfile \
    ${FUSION_BENCHMARK}/resources/genes.coords.HGNC_renamed_added.gz \
    ${FUSION_BENCHMARK}/resources/genes.aliases \
@@ -39,8 +39,8 @@ outfile=$outdir/$(basename $outfile).gencode_mapped
 
 echo RUN FusionAnnotator
 # "--full" parameter adds more detailed info to annotation
-#$perl_bin ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
-perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
+$perl_bin ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
+#perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
 outfile=$outdir/$(basename $outfile).wAnnot
 exit 0
 #SELECT FOR FUSIONS IN CANCER

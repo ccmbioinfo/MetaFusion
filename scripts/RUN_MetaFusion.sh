@@ -38,7 +38,7 @@ run_fusionannotator () {
   /hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/run_FusionAnnotator_cluster.sh $outdir $cluster
 }
 
-date=July-27-2020
+date=July-29-2020
 
 #DATASETS
 trusight=0
@@ -47,12 +47,12 @@ melanoma_cells=0
 dipg=0
 dipg_T=0
 st_jude=0
-brca_4=0
+brca_4=1
 uhrr=0
 beers_neg=0
 sim_50=0
 sim101=0
-sim45_sim52=1
+sim45_sim52=0
 sim50_test=0
 
 # ROB trusight
@@ -243,12 +243,21 @@ gene_bed=$gene_bed_total
 truth_fusions=/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/renamed_truth_sets/BT474.KPL4.MCF7.SKBR3.truth_set.dat
 cff=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/haas_2019_validation/output.BT474.KPL4.MCF7.SKBR3-April-9-2020/fusions/cff/merged.cff
 
+sh MetaFusion.sh --outdir $outdir \
+                 --cff $cff  \
+                 --gene_bed $gene_bed \
+                 --gene_info $gene_info \
+                 --truth_set $truth_fusions \
+                 --num_tools=2  \
+                 --genome_fasta $genome_fasta \
+                 --recurrent_bedpe $recurrent_bedpe \
+                 --scripts $fusiontools
 #caller #s 2-7
-nums=$(echo 2 3 4 5 6 7)
-for num in ${nums[@]};do 
-  cff=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/haas_2019_validation/output.BT474.KPL4.MCF7.SKBR3-April-9-2020/fusions/cff/merged.cff 
-  run_pipeline $outdir $cff $gene_bed $truth_fusions $num
-done
+#nums=$(echo 2 3 4 5 6 7)
+#for num in ${nums[@]};do 
+#  cff=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/haas_2019_validation/output.BT474.KPL4.MCF7.SKBR3-April-9-2020/fusions/cff/merged.cff 
+#  run_pipeline $outdir $cff $gene_bed $truth_fusions $num
+#done
 #run_pipeline $outdir $cff $gene_bed $truth_fusions 2
 #run_pipeline $outdir $cff $gene_bed $truth_fusions 3
 #run_pipeline $outdir $cff $gene_bed $truth_fusions 4

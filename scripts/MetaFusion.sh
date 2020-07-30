@@ -64,15 +64,15 @@ done
 #echo gene_info $gene_info 
 #echo genome_fasta $genome_fasta 
 #echo truth_set $truth_set
-#
-#rename=1
-#annotate=1
-#merge=1
-#output_ANC_RT_SG=1
-#RT_call_filter=1
-#blck_filter=1
-#ANC_filter=1
-#rank=1
+
+rename=1
+annotate=1
+merge=1
+output_ANC_RT_SG=1
+RT_call_filter=1
+blck_filter=1
+ANC_filter=1
+rank=1
 benchmark=1
 
 #METAFUSION WORKFLOW
@@ -80,9 +80,13 @@ mkdir $outdir
 
 #Check CFF file format:
 #Remove entries with nonconformming chromosome name
-cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' > $outdir/$(basename $cff).reformat 
+#Remove "." from strand field and replace with "NA"
+cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'BEGIN{FS=OFS="\t"} $3 !~ /^[-+]$/{$3="NA"} 1' | awk 'BEGIN{FS=OFS="\t"} $6 !~ /^[-+]$/{$6="NA"} 1'   > $outdir/$(basename $cff).reformat 
+#cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'FS=OFS="\t"{if ($3==".") {$3="NA"}; print}'|  awk 'FS=OFS="\t"{if ($6==".") {$6="NA"}; print}'  > $outdir/$(basename $cff).reformat 
+#cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' | awk 'FS=OFS="\t"{ if ($3 !="+" || $3 != "-" ); $3="NA"; print }' | awk 'FS=OFS="\t"{ if ($6 !="+" || $6 != "-" ); $6="NA"; print }' > $outdir/$(basename $cff).reformat 
 cff=$outdir/$(basename $cff).reformat
 #NEED TO INSERT +/-/NA for strand, make NA if other
+
 
 #Rename cff
 if [ $rename -eq 1 ]; then

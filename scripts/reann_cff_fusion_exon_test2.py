@@ -36,73 +36,80 @@ else:
     cff_file = args.cff_file
     ensbed = args.ensbed
     ref_fa=args.ref_fa
-#Load bed format gene annotation, current support knowngene.bed's format, map given genomic loactions to genens, return matched gene list
-
-
-gene_ann = pygeneann.GeneAnnotation(ensbed)
 #print(pygeneann.GeneAnnotation.__genes)
 #print(dir(gene_ann))
-chr="chr5"
+#chr="chr5"
 #print([gene_bed.gene_name for gene_bed in gene_ann._GeneAnnotation__genes[chr]])
 #print(gene_ann._GeneAnnotation__gene_starts[chr])
+
+
+def choose_closest_exon(exon_list, pos, strand, ori):
+    #chooses the closest exon from a list of adjacent exons either upstream (head) or downstream (tail) of the fusion breakpoint
+    smallest_dist=float('inf')
+    closest_exon=""
+    for exon in exon_list:
+      # get dist, exon.start will always be larger value than pos2
+      if (strand=="+" and ori=="tail") or (strand=="-" and ori=="head"):
+        dist=exon.start - pos 
+      if (strand=="+" and ori=="head") or (strand=="-" and ori=="tail"):
+        dist=pos - exon.start
+      # check dist and re-assign exon
+      if dist <= smallest_dist: closest_exon=exon
+      exon_igv=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
+      if debug:
+        print(dist)
+        print(exon_igv)
+    if debug: print("Closest exon: " + str(closest_exon.chr) + ":" + str(closest_exon.start) + "-" + str(closest_exon.end))
+    return closest_exon
+        
+gene_ann = pygeneann.GeneAnnotation(ensbed)
+
 for line in open(cff_file, "r"):
-                
     fusion = pygeneann.CffFusion(line)
-    # ann_gene_order is an instance method of CffFusion class.  
-    #fusion.ann_gene_order(gene_ann)
-    #adjacent_exons = gene_ann.get_adjacent_exons(fusion.chr1, fusion.pos1)
-    #adjacent_exons = gene_ann.get_closest_exon(fusion.chr1, fusion.pos1)
-    adjacent_exons1 = gene_ann.get_closest_exon(fusion.chr1, fusion.pos1)
-    #print(adjacent_exons1)
-    #exit(0)
-    fusion.pos2=134062675
-    adjacent_exons2 = gene_ann.get_closest_exon(fusion.chr2, fusion.pos2)
-    print("HEAD GENE: ", fusion.t_gene1)
-    print("BREAKPOINT: ", fusion.chr1, fusion.pos1, fusion.strand1) 
+    adjacent_exons1 = gene_ann.get_closest_exon_lists(fusion.chr1, fusion.pos1)
+    adjacent_exons2 = gene_ann.get_closest_exon_lists(fusion.chr2, fusion.pos2)
+    #exons downstream of breakpoint on + strand
+    if debug:
+      print("HEAD GENE: ", fusion.t_gene1)
+      print("BREAKPOINT: ", fusion.chr1, fusion.pos1, fusion.strand1) 
     #PREV HEAD 
-    if fusion.strand1 == '+' or debug:
+    if fusion.strand1 == '+':
       try: 
-        exon=adjacent_exons1[0][0]
+        exon=choose_closest_exon(adjacent_exons1[0], fusion.pos1, fusion.strand1, "head")
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      #print(exon)
       fusion.splice_site1=exon
-      #print("PREV EXON:", exon.gene_name, exon.idx, exon.chr, exon.start, exon.end, exon.strand)
     #NEXT HEAD
-    elif fusion.strand1 == '-' or debug:
+    elif fusion.strand1 == '-':
       try:
-        exon=adjacent_exons1[1][0]
+        exon=choose_closest_exon(adjacent_exons1[1], fusion.pos1, fusion.strand1, "head")
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      #print(exon)
       fusion.splice_site1=exon
-      #print("NEXT EXON:",exon.gene_name,exon.idx,exon.chr, exon.start, exon.end, exon.strand )
     else: raise Exception('Strand must be either + or -')
 
-    print("TAIL GENE: ", fusion.t_gene2)
-    print("BREAKPOINT: ", fusion.chr2, fusion.pos2, fusion.strand2) 
+    if debug: 
+      print("TAIL GENE: ", fusion.t_gene2)
+      print("BREAKPOINT: ", fusion.chr2, fusion.pos2, fusion.strand2) 
+
     #PREV TAIL 
     if fusion.strand2 == '-' or debug:
       try:
-        exon=adjacent_exons2[0][0]
+        exon=choose_closest_exon(adjacent_exons2[0], fusion.pos2, fusion.strand2, "tail")
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      #print(exon)
       fusion.splice_site2=exon
-      #print("PREV EXON:",exon.gene_name,exon.idx, exon.chr, exon.start, exon.end, exon.strand)
     #NEXT TAIL
-    elif fusion.strand2 == '+' or debug:
+    elif fusion.strand2 == '+':
       try:
-        exon=adjacent_exons2[1][0]
+        exon=choose_closest_exon(adjacent_exons2[1], fusion.pos2, fusion.strand2, "tail")
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      #print(exon)
       fusion.splice_site2=exon
-      #print("NEXT EXON:",exon.gene_name, exon.idx, exon.chr, exon.start, exon.end, exon.strand )
     else: raise Exception('Strand must be either + or -')
     print fusion.tostring() 
 

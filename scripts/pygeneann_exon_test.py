@@ -1827,7 +1827,7 @@ class GeneAnnotation():
             idx -= 1
         return previous_exons, next_exons   
 
-    def get_closest_exon(self, chr, pos):
+    def get_closest_exon_lists(self, chr, pos):
         # returns exon if breakpoint (pos) falls within it, otherwise returns 2 exons that flank breakpoint. previous and next exons are based on coordinates, not strand. i.e. if a adjacent exon's coordinate < bp, it is a previous exon, otherwise next exon
         previous_exons = []
         next_exons = [] 
@@ -1835,7 +1835,7 @@ class GeneAnnotation():
             raise Exception(" 'chr' prefix needed for chromosomes")
             return previous_exons, next_exons
         idx = bisect.bisect(self.__gene_starts[chr], pos)
-        print("idx", idx)
+        #print("idx", idx)
         while 0 < idx <= len(self.__gene_starts[chr]):
             bpann = self.__genes[chr][idx-1]
             #search within a limited region (default 1000000)
