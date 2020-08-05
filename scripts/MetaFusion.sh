@@ -14,10 +14,10 @@
 #merge=1
 #output_ANC_RT_SG=1
 #RT_call_filter=1
-blck_filter=1
+#blck_filter=1
 #ANC_filter=1
 #rank=1
-#benchmark=1
+benchmark=1
 
 
 # Loop through arguments and process them
@@ -106,7 +106,7 @@ cff=$outdir/$(basename $cff).reann
 cluster=$outdir/$(basename $cff).cluster
 if [ $merge -eq 1 ]; then
   echo Merge cff
-  sh RUN_cluster_genes_breakpoints.sh $cff $outdir $fusiontools > $cluster
+  bash RUN_cluster_genes_breakpoints.sh $cff $outdir $fusiontools > $cluster
 fi
 
 #output ANC_RT_SG file
@@ -128,7 +128,7 @@ if [ $blck_filter -eq 1 ]; then
   echo blacklist filter
   #blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
 #$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
-sh blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+bash blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
 cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 
@@ -141,7 +141,7 @@ fi
 cluster=$outdir/$(basename $cluster).ANC_filter
 
 #Rank and generate final.cluster
-if [ $benchmark -eq 1 ]; then
+if [ $rank -eq 1 ]; then
    echo Rank and generate final.cluster 
   python rank_cluster_file.py $cluster > $outdir/final.cluster
 fi
@@ -154,7 +154,7 @@ if [ $benchmark -eq 1 ]; then
   benchmark_scripts=$fusiontools/FusionBenchmarking
   #fusionAnnotator=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
   fusionAnnotator=$fusiontools/FusionAnnotator
-  sh benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator 
+  bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator 
 fi
 
 

@@ -10,6 +10,7 @@ cluster=$4
 FUSION_BENCHMARK=$5
 FUSION_ANNOTATOR=$6
 #normal_filter=$5
+FA=1
 
 #MODULE PATHS
 #FUSION_ANNOTATOR=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
@@ -36,12 +37,14 @@ perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
    > $outdir/$(basename $outfile).gencode_mapped
 outfile=$outdir/$(basename $outfile).gencode_mapped
 
-exit 0
+
+#BEGIN FusionAnnotator
+if [ $FA -eq 1 ]; then
 
 echo RUN FusionAnnotator
 # "--full" parameter adds more detailed info to annotation
-$perl_bin ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
-#perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
+#$perl_bin ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
+perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
 outfile=$outdir/$(basename $outfile).wAnnot
 #SELECT FOR FUSIONS IN CANCER
 #TRY ONLY THOSE CONFIRMED CANCER FUSIONS AND EXCLUDE "Individual genes of cancer relevance, which may show up in fusions" DATABASES
@@ -63,6 +66,9 @@ cancer_cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
 
 # grep normal fusions, not a filter
 cat $outfile | grep 'ConjoinG\|Babiceanu_Normal\|Greger_Normal\|HGNC_GENEFAM\|DGD_PARALOGS\|BodyMap\|GTEx' > $outdir/$(basename $outfile).NORMALS
+
+#END FusionAnnotator
+fi
 
 
 echo Scoring of fusion predictions

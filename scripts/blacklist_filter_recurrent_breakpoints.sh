@@ -14,8 +14,7 @@ pairToPair -a $recurrent_bedpe -b $outdir/$cff_bedpe -slop 5 > $outdir/recurrent
 
 # Make sorted blacklist file
 ids=$(cat $outdir/recurrent_filtered_fusions.bedpe | awk '{print $NF}' | sort | uniq)
-echo ${ids[@]}
-echo $outdir/$(basename $cluster).BLACKLIST
+cat $outdir/recurrent_filtered_fusions.bedpe | awk '{print $NF}' | sort | uniq > $outdir/FIDS
 for FID in ${ids[@]};do cat $cluster | grep $FID ;done | sort | uniq  >  $outdir/$(basename $cluster).BLACKLIST
 
 # Sort cluster, required for "comm" command
