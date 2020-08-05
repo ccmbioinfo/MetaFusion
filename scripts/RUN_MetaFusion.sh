@@ -1,7 +1,7 @@
 #!/bin/bash
 #NOTES
-source /hpf/largeprojects/ccmbio/mapostolides/MODULES/miniconda3/etc/profile.d/conda.sh
-conda activate metafusion
+#source /hpf/largeprojects/ccmbio/mapostolides/MODULES/miniconda3/etc/profile.d/conda.sh
+#conda activate metafusion
 
 fusiontools=/hpf/largeprojects/ccmbio/mapostolides/MODULES/MetaFusion/scripts
 

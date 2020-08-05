@@ -16,7 +16,7 @@ FUSION_ANNOTATOR=$6
 perl_bin=/home/mapostolides/perl5/perlbrew/perls/perl-5.28.0/bin/perl
 genome_lib_dir=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir
 
-script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
+#script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
 
 #PUT CLUSTER INTO PROPER FORMAT
 outfile=$outdir/cluster.preds.collected
@@ -28,21 +28,21 @@ while read -r line;do samples=$(echo $line | awk '{print $15}' | sed 's/,/ /g');
 #/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionBenchmarking/resources/genes.aliases
 echo Mapping gene partners to Gencode v19 genes 
    #${FUSION_BENCHMARK}/resources/genes.coords.gz \
-#perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
-$perl_bin ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
+#$perl_bin ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
+perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
    $outfile \
    ${FUSION_BENCHMARK}/resources/genes.coords.HGNC_renamed_added.gz \
    ${FUSION_BENCHMARK}/resources/genes.aliases \
    > $outdir/$(basename $outfile).gencode_mapped
 outfile=$outdir/$(basename $outfile).gencode_mapped
 
+exit 0
 
 echo RUN FusionAnnotator
 # "--full" parameter adds more detailed info to annotation
 $perl_bin ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
 #perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
 outfile=$outdir/$(basename $outfile).wAnnot
-exit 0
 #SELECT FOR FUSIONS IN CANCER
 #TRY ONLY THOSE CONFIRMED CANCER FUSIONS AND EXCLUDE "Individual genes of cancer relevance, which may show up in fusions" DATABASES
 #Oncogene, ArcherDX_panel, FoundationOne_panel, OncocartaV1_panel, OncomapV4_panel

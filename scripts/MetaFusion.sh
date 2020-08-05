@@ -8,8 +8,17 @@
 #gene_info=$6
 #genome_fasta=$7
 
-#ARGS
-OTHER_ARGUMENTS=()
+#STEPS
+#rename=1
+#annotate=1
+#merge=1
+#output_ANC_RT_SG=1
+#RT_call_filter=1
+blck_filter=1
+#ANC_filter=1
+#rank=1
+#benchmark=1
+
 
 # Loop through arguments and process them
 #for arg in "$@"
@@ -52,7 +61,7 @@ while test $# -gt 0;do
         shift 2
         ;;
         *)
-        OTHER_ARGUMENTS+=("$1")
+        #OTHER_ARGUMENTS+=("$1")
         shift # Remove generic argument from processing
         ;;
     esac
@@ -64,16 +73,6 @@ done
 #echo gene_info $gene_info 
 #echo genome_fasta $genome_fasta 
 #echo truth_set $truth_set
-
-rename=1
-annotate=1
-merge=1
-output_ANC_RT_SG=1
-RT_call_filter=1
-blck_filter=1
-ANC_filter=1
-rank=1
-benchmark=1
 
 #METAFUSION WORKFLOW
 mkdir $outdir
@@ -98,7 +97,8 @@ cff=$outdir/$(basename $cff).renamed
 #Annotate cff
 if [ $annotate -eq 1 ]; then
   echo Annotate cff
-  python reann_cff_fusion.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).reann 
+  echo $cff $gene_bed $genome_fasta
+  python reann_cff_fusion.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).reann
 fi
 cff=$outdir/$(basename $cff).reann
 
