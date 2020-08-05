@@ -1,0 +1,312 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Carp;
+use FindBin;
+use lib ("$FindBin::Bin/PerlLib");
+use Getopt::Long qw(:config posix_default no_ignore_case bundling pass_through);
+use TiedHash;
+use File::Basename;
+use JSON::XS;
+
+my $max_neighbor_dist = 100000;
+
+my $usage = <<__EOUSAGE__;
+
+
+############################################################################
+#
+#  --genome_lib_dir <string>      directory containing genome lib (see http://STAR-Fusion.github.io)
+#                                  (if env var CTAT_GENOME_LIB is set, not required)
+#  and
+#
+#  --annotate <string>             fusion predictions to annotate.
+#     * annotate options:
+#     --max_neighbor_dist <int>    maximum distance allowed between two fusion partners
+#                                  for a 'neigbhor' annotation to be included.
+#                                  default: $max_neighbor_dist
+#  *  optional:
+#
+#  --fusion_name_col|C <int>         default: 0
+#
+#  --full                            include full annotation (can be a long json string)
+#
+############################################################################
+
+
+__EOUSAGE__
+
+    ;
+
+
+my $help_flag;
+
+my $genome_lib_dir;
+my $target_fusions_file;
+my $FUSION_NAME_COLUMN = 0;
+
+my $FULL_ANNOT_MODE = 0;
+
+&GetOptions ( 'h' => \$help_flag,
+              
+              'genome_lib_dir=s' => \$genome_lib_dir,
+              'annotate=s' => \$target_fusions_file,
+              
+              'max_neighbor_dist=i' => \$max_neighbor_dist,
+              
+              'fusion_name_col|C=i' => \$FUSION_NAME_COLUMN,
+
+              'full' => \$FULL_ANNOT_MODE,
+              
+    );
+
+if ($help_flag) { die $usage; }
+
+unless ($genome_lib_dir) {
+    $genome_lib_dir = $ENV{CTAT_GENOME_LIB};
+}
+
+
+unless ($genome_lib_dir) { die $usage; }
+
+main: {
+    
+    &annotate_fusions($genome_lib_dir, $target_fusions_file, $max_neighbor_dist);
+    
+    exit(0);
+}
+
+
+####
+sub annotate_fusions {
+    my ($genome_lib_dir, $target_fusions_file, $max_neighbor_dist) = @_;
+
+    my $fusion_lib_idx = "$genome_lib_dir/fusion_annot_lib.idx";
+
+    unless (-s $fusion_lib_idx) {
+        die "Error, cannot locate required database file: $fusion_lib_idx  -  be sure to use the latest versions of CTAT genome libs and prep functionality: http://star-fusion.github.io ";
+    }
+    
+    my $idx = new TiedHash( { use => $fusion_lib_idx } );
+
+    ## ensure it works!!
+    {
+        my $simple_annotation_text = $idx->get_value("BCR--ABL1$;SIMPLE");
+        unless ($simple_annotation_text) {
+            confess("\n\t*** Error, FusionAnnot lib doesnt appear to be working. Rebuilding fusion annot lib will be required");
+        }
+    }
+    
+    
+    # include blast pair info
+    my $blast_pairs_idx = "$genome_lib_dir/blast_pairs.idx";
+    unless (-s $blast_pairs_idx) {
+        die "Error, cannot locate required blast pairs index file at: $blast_pairs_idx";
+    }
+    my $blast_idx = new TiedHash( { use => $blast_pairs_idx } );
+    
+    
+    my $is_first = 1;
+    my $fh;
+    if ($target_fusions_file) {
+        open ($fh, $target_fusions_file) or die "Error, cannot open file $target_fusions_file";
+    }
+    else {
+        $fh = *STDIN;
+    }
+    while (<$fh>) {
+        my $line = $_;
+        chomp;
+        if (/^\#/ && $is_first) { 
+            # add header field column for annotations
+            print "$_\tannots\n";
+            $is_first = 0;
+            next; 
+        }
+        unless (/\w/) { next; }
+        my @x = split(/\t/);
+        my $fusion = $x[$FUSION_NAME_COLUMN];
+        if ($fusion =~ /\|/) {
+            $fusion =~ s/^.*\|//;
+        }
+        my ($geneA, $geneB) = split(/--/, $fusion);
+        unless ($geneA && $geneB) {
+            print STDERR "ERROR: cannot parse $fusion as in the geneA--geneB format, skipping...$line" unless ($is_first);
+            print $line;
+            next;
+        }
+        
+        if (my $annotation = &get_annotations($idx, $geneA, $geneB, $max_neighbor_dist, $blast_idx)) {
+            push (@x, $annotation);
+        }
+        else {
+            push (@x, '.');
+        }
+        
+        print join("\t", @x) . "\n";
+        $is_first = 0;
+    }
+
+    return;
+}
+    
+
+####
+sub get_annotations {
+    my ($idx, $geneA, $geneB, $max_neighbor_dist, $blast_idx) = @_;
+    
+
+    my @simple_annots;
+    my %complex_annots;
+
+    
+    ## check for individual gene annotations (eg. oncogene)
+    my @genesA = split(/,/, $geneA);
+    my @genesB = split(/,/, $geneB);
+    
+
+    my @annotations;
+    
+    # add general gene info:
+    foreach my $gene (@genesA, @genesB) {
+        if (my $geneAnnot = $idx->get_value("$gene")) {
+            if (my $gene_annot = $idx->get_value("$gene$;COMPLEX")) {
+                $complex_annots{$gene} = decode_json($gene_annot);
+            }
+            elsif (my $gene_type = $idx->get_value("$gene$;GENE_TYPE")) {
+                # better than nothing.
+                $complex_annots{$gene} = $gene_type;
+            }
+        }
+    }
+    
+    # get annot pair info:
+    foreach my $geneA (@genesA) {
+        foreach my $geneB (@genesB) {
+            
+            
+            if ($geneA eq $geneB) {
+                push (@simple_annots, "SELFIE");
+            }
+
+            my $fusion_name = "$geneA--$geneB";
+            
+            if (my $simple_annotation_text = $idx->get_value("$fusion_name$;SIMPLE")) {
+                push (@simple_annots, $simple_annotation_text);
+            }
+            if (my $complex_annotation_text = $idx->get_value("$fusion_name$;COMPLEX")) {
+                $complex_annots{$fusion_name} = decode_json($complex_annotation_text);
+            }
+
+            if (my @dist_annots = &get_distance_annotation($idx, $geneA, $geneB, $max_neighbor_dist)) {
+                push (@simple_annots, @dist_annots);
+                $complex_annots{$fusion_name}->{LOCALITY} = [@dist_annots];
+            }
+            
+            if (my $blast_annot = $blast_idx->get_value("$geneA--$geneB")) {
+                push (@annotations, "BLASTPAIR:$blast_annot");
+                $complex_annots{$fusion_name}->{BLASTPAIR} = $blast_annot;
+            }
+
+       }
+    }
+
+
+    if ($FULL_ANNOT_MODE) {
+        my $json = encode_json(\%complex_annots);
+        return($json);
+    }
+    else {
+        
+        my $simple_annots_text = "";
+        if (@simple_annots && $simple_annots[0] =~ /^\[.*\]$/) {
+            # json array
+            eval {
+                my $arrayref = decode_json($simple_annots[0]);
+                shift @simple_annots;
+                if (@simple_annots) {
+                    push (@$arrayref, @simple_annots);
+                }
+                $simple_annots_text = encode_json($arrayref);
+            };
+        }
+        unless ($simple_annots_text) {
+            $simple_annots_text = encode_json([@simple_annots]);
+        }
+        
+        return($simple_annots_text);
+    }
+    
+}
+
+####
+sub get_distance_annotation {
+    my ($idx, $geneA, $geneB, $max_neighbor_dist) = @_;
+    
+    my $chr_info_A = $idx->get_value("$geneA$;COORDS"); # hacky way of specifying the coordinate info.
+    my $chr_info_B = $idx->get_value("$geneB$;COORDS");
+    
+    unless ($chr_info_A && $chr_info_B) {
+        # cant compare them
+        return();
+    }
+    
+    #print STDERR "A: $chr_info_A\tB: $chr_info_B\n";
+    
+
+    my ($chrA, $coords_A, $orientA) = split(/:/, $chr_info_A);
+    $coords_A =~ s/\,.*$//;
+    my ($lendA, $rendA) = split(/-/, $coords_A);
+    
+    my ($chrB, $coords_B, $orientB) = split(/:/, $chr_info_B);
+    $coords_B =~ s/\,.*$//;
+    my ($lendB, $rendB) = split(/-/, $coords_B);
+    
+    my $dist = -1;
+    if ($lendA < $rendB && $rendA > $lendB) {
+        # overlap
+        $dist = 0;
+    }
+
+    my @annotations;
+
+    if ($chrA eq $chrB) {
+    
+
+        my @coords = sort {$a<=>$b} ($lendA, $rendA, $lendB, $rendB);
+        $dist = $coords[2] - $coords[1];
+
+        my $num_MB = sprintf("%.2fMb", $dist/1e6);
+        
+        push (@annotations, "INTRACHROMOSOMAL[$chrA:$num_MB]");
+        
+        if ($dist > 0 && $dist <= $max_neighbor_dist) {
+            
+            if ($lendA < $rendB && $rendA > $lendB) {
+                push (@annotations, "NEIGHBORS_OVERLAP:$orientA:$orientB:[$dist]");
+            }
+            elsif ($orientA ne $orientB) { 
+                push(@annotations, "LOCAL_INVERSION:$orientA:$orientB:[$dist]");
+            }
+            elsif ($orientA eq '+' && $lendB < $rendA) { 
+                push (@annotations, "LOCAL_REARRANGEMENT:$orientA:[$dist]");
+            }
+            elsif ($orientA eq '-' && $rendB > $lendA) { 
+                push (@annotations, "LOCAL_REARRANGEMENT:$orientA:[$dist]"); 
+            }
+            else {
+                # no other weirdness, just neighbors, probably readthru transcription
+                
+                push (@annotations, "NEIGHBORS\[$dist]");
+            }
+        }
+    }
+    else {
+        push (@annotations, "INTERCHROMOSOMAL[$chrA--$chrB]");
+    }
+    
+    
+    return(@annotations);
+}
+
