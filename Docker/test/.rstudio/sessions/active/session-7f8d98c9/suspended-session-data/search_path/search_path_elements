@@ -1,0 +1,11 @@
+.GlobalEnv
+tools:rstudio
+package:BiocManager
+package:stats
+package:graphics
+package:grDevices
+package:utils
+package:datasets
+package:methods
+Autoloads
+package:base

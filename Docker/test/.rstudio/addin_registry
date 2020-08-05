@@ -1,0 +1,38 @@
+{
+    "bookdown::mathquill" : {
+        "binding" : "mathquill",
+        "description" : "Input math expressions via the MathQuill library.",
+        "interactive" : true,
+        "name" : "Input LaTeX Math",
+        "ordinal" : 2,
+        "package" : "bookdown",
+        "title" : ""
+    },
+    "bookdown::serve_book" : {
+        "binding" : "serve_book",
+        "description" : "Run bookdown::serve_book() to live preview a book.",
+        "interactive" : true,
+        "name" : "Preview Book",
+        "ordinal" : 1,
+        "package" : "bookdown",
+        "title" : ""
+    },
+    "clipr::clipr_output" : {
+        "binding" : "clipr_output",
+        "description" : "Copies the console output of a selected expression to the system clipboard",
+        "interactive" : false,
+        "name" : "Output to clipboard",
+        "ordinal" : 4,
+        "package" : "clipr",
+        "title" : ""
+    },
+    "clipr::clipr_result" : {
+        "binding" : "clipr_result",
+        "description" : "Copies the results of a selected expression to the system clipboard",
+        "interactive" : false,
+        "name" : "Value to clipboard",
+        "ordinal" : 3,
+        "package" : "clipr",
+        "title" : ""
+    }
+}
