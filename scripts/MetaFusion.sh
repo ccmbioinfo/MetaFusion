@@ -9,14 +9,14 @@
 #genome_fasta=$7
 
 #STEPS
-#rename=1
-#annotate=1
-#merge=1
-#output_ANC_RT_SG=1
-#RT_call_filter=1
-#blck_filter=1
-#ANC_filter=1
-#rank=1
+rename=1
+annotate=1
+merge=1
+output_ANC_RT_SG=1
+RT_call_filter=1
+blck_filter=1
+ANC_filter=1
+rank=1
 benchmark=1
 
 
@@ -96,11 +96,22 @@ cff=$outdir/$(basename $cff).renamed
 
 #Annotate cff
 if [ $annotate -eq 1 ]; then
-  echo Annotate cff
-  echo $cff $gene_bed $genome_fasta
-  python reann_cff_fusion.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).reann
+  if [ $genome_fasta ]; then 
+    echo Annotate cff, extract sequence surrounding breakpoint
+    python reann_cff_fusion.py --cff $cff --gene_bed $gene_bed --ref_fa $genome_fasta > $outdir/$(basename $cff).reann
+  else 
+    echo Annotate cff, no extraction of sequence surrounding breakpoint
+    python reann_cff_fusion.py --cff $cff --gene_bed $gene_bed > $outdir/$(basename $cff).reann.NOSEQ
+  fi
 fi
-cff=$outdir/$(basename $cff).reann
+# Assign .cff based on SEQ or NOSEQ
+if [ $genome_fasta ]; then 
+  cff=$outdir/$(basename $cff).reann
+  echo cff $cff
+else
+  cff=$outdir/$(basename $cff).reann.NOSEQ
+  echo cff $cff
+fi
 
 #Merge
 cluster=$outdir/$(basename $cff).cluster

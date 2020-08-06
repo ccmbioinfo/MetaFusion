@@ -10,7 +10,7 @@ cluster=$4
 FUSION_BENCHMARK=$5
 FUSION_ANNOTATOR=$6
 #normal_filter=$5
-FA=1
+FA=0
 
 #MODULE PATHS
 #FUSION_ANNOTATOR=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
