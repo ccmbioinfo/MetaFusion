@@ -7,15 +7,23 @@ mkdir -p $outdir
 truth_fusions=$2
 cff=$3
 cluster=$4
-FUSION_BENCHMARK=$5
-FUSION_ANNOTATOR=$6
+fusiontools=$5
+FusionAnnotator=$6
+FUSION_BENCHMARK=$fusiontools/FusionBenchmarking
+FUSION_ANNOTATOR=$fusiontools/FusionAnnotator
 #normal_filter=$5
-FA=0
+#RUN FusionAnnotator if path to "FUSION_ANNOTATOR" is specified
+if [ $FusionAnnotator ]; then
+    FA=1
+else
+	FA=0
+fi
 
 #MODULE PATHS
 #FUSION_ANNOTATOR=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
 perl_bin=/home/mapostolides/perl5/perlbrew/perls/perl-5.28.0/bin/perl
-genome_lib_dir=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir
+#genome_lib_dir=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir
+genome_lib_dir=$(dirname $fusiontools)/reference_files/ctat_genome_lib_build_dir
 
 #script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
 
@@ -109,5 +117,4 @@ echo -e TP\\tFP\\tFN > $outdir/$(basename $cluster).TP_FP_counts
 TP=$(cat $outfile | awk '$1=="TP"' | wc | awk '{print $1}')
 FP=$(cat $outdir/$(basename $cluster).FP | wc | awk '{print $1}')
 FN=$(cat $outfile | awk '$1=="FN"' | wc | awk '{print $1}')
-#echo -e $TP\\t$FP\\t$FN >> $outdir/$(basename $outfile).TP_FP_counts
 echo -e $TP\\t$FP\\t$FN >> $outdir/$(basename $cluster).TP_FP_counts

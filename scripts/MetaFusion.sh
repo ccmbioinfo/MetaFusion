@@ -60,6 +60,10 @@ while test $# -gt 0;do
         fusiontools="$2"
         shift 2
         ;;
+        --fusion_annotator)
+        FA=1
+        shift
+        ;;
         *)
         #OTHER_ARGUMENTS+=("$1")
         shift # Remove generic argument from processing
@@ -164,8 +168,13 @@ if [ $benchmark -eq 1 ]; then
   #/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster true 
   benchmark_scripts=$fusiontools/FusionBenchmarking
   #fusionAnnotator=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
-  fusionAnnotator=$fusiontools/FusionAnnotator
-  bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator 
+  fusionAnnotator_dir=$fusiontools/FusionAnnotator
+  if [ $FA -eq 1 ]; then
+    #bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator_dir
+    bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $fusiontools FusionAnnotator
+  else
+    bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $fusiontools 
+  fi
 fi
 
 
