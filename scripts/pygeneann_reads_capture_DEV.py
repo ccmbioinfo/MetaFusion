@@ -48,9 +48,9 @@ class CategoryFusions():
             # add 4 new columns for purposes of validation of chromosomal positions with reference to validated fusions
             self.chr1 = tmp[15]
             #setting breakpoint lists 
-            self.breakpoint_1 = [int(num) for num in tmp[16].split(',')]
+            self.breakpoint_1 = [int(num) for num in tmp[16].split('|')]
             self.chr2 = tmp[17]
-            self.breakpoint_2 = [int(num) for num in tmp[18].split(',')]
+            self.breakpoint_2 = [int(num) for num in tmp[18].split('|')]
             self.tools_breakpoints_dict_1 = dict( zip([tool for tool in self.tools], [breakpoint for breakpoint in self.breakpoint_1 ]) )
             self.tools_breakpoints_dict_2 = dict( zip([tool for tool in self.tools], [breakpoint for breakpoint in self.breakpoint_2 ]) )
         # attributes to accrue list of gene names in bed feature file that intersect with breakpoints 
