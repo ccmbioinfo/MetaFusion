@@ -291,62 +291,6 @@ for fusion in fusion_results:
      
 out_file.close()
 
-##RENAME GENES USING LIMMA SCRIPT TO CONFORM TO CONSENSUS NAMES AS MUCH AS POSSIBLE
-##THIS IS IMPORTANT FOR DOWNSTREAM FUSIONINSPECTOR STEP
-##/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/validation_pipeline/Pipeline-scripts/rename_cff_file_genes.py
-#
-## file containing candidate fusions in .cff format
-#cff_file = open(cff_path)
-#
-## generate left and right gene lists from original .cff file
-#table = pd.read_table(cff_file, header=None)
-#left_genes = [item[0] for item in table.iloc[0:, 13:14].values.tolist()]
-##left_genes = list(table.iloc[0:, 13:14])#.tolist()
-#right_genes = [item[0] for item in table.iloc[0:, 15:16].values.tolist()]
-##right_genes = table.iloc[0:, 15:16]
-#cff_file.close()
-#
-## convert left and right genes from original .cff file to "limma" R package gene names
-## run R script here
-#
-#
-## Run external R script, store output using pipe
-#sys.stderr.write("RUNNING R limma SCRIPT" + "\n")
-#p = subprocess.Popen('/hpf/tools/centos6/R/3.5.1/bin/Rscript /hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/validation_pipeline/Pipeline-scripts/convert_genes_limma.R ' + cff_path, stdout=subprocess.PIPE,  shell=True)
-#(output, err) = p.communicate()
-#sys.stderr.write("R SUBPROCESS COMPLETE" + "\n")
-#
-##sys.stderr.write(output)
-## format R output
-#output = str(output).split("\"")
-#
-#left_genes_renamed, right_genes_renamed = output[1].split(), output[3].split()
-##sys.stderr.write("LEFT GENES" + str(left_genes) + "\n")
-##sys.stderr.write("LEFT GENES RENAMED"+str(left_genes_renamed) + "\n")
-#
-## replace NA values with original values to prevent lost information 
-#for i in range(0,len(left_genes_renamed)):
-#    if left_genes_renamed[i] == 'NA':
-#        left_genes_renamed[i] = left_genes[i]
-#    if right_genes_renamed[i] == 'NA':
-#        right_genes_renamed[i] = right_genes[i]
-#
-##sys.stderr.write("LEFT GENES RENAMED REPLACED NA"+str(left_genes_renamed) + "\n")
-#
-##open new file for writing
-#renamed_gene_file = open(cff_path + ".renamed", 'w+')
-#i=0
-##open original .cff file for reading
-#for line in open(cff_path):
-#    line=line.split()
-#    line[13], line[15] = left_genes_renamed[i], right_genes_renamed[i]
-#    line = "\t".join(str(x) for x in line)
-#    # print line for output to modified .cff file
-#    print(line)
-#    renamed_gene_file.write(line+"\n")
-#    i+=1
-#renamed_gene_file.close()
-
 
 
 
