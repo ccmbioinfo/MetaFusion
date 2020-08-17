@@ -1,0 +1,483 @@
+STAR version=STAR_2.5.4b
+STAR compilation time,server,dir=Fri Feb 9 10:47:42 EST 2018 florence.cshl.edu:/sonas-hs/gingeras/nlsas_norepl/user/dobin/STAR/STAR.sandbox/source
+##### DEFAULT parameters:
+versionSTAR                       20201
+versionGenome                     20101   20200   
+parametersFiles                   -   
+sysShell                          -
+runMode                           alignReads
+runThreadN                        1
+runDirPerm                        User_RWX
+runRNGseed                        777
+genomeDir                         ./GenomeDir/
+genomeLoad                        NoSharedMemory
+genomeFastaFiles                  -   
+genomeChainFiles                  -   
+genomeSAindexNbases               14
+genomeChrBinNbits                 18
+genomeSAsparseD                   1
+genomeSuffixLengthMax             18446744073709551615
+genomeFileSizes                   0   
+genomeConsensusFile               -
+readFilesType                     Fastx   
+readFilesIn                       Read1   Read2   
+readFilesPrefix                   -
+readFilesCommand                  -   
+readMatesLengthsIn                NotEqual
+readMapNumber                     18446744073709551615
+readNameSeparator                 /   
+inputBAMfile                      -
+bamRemoveDuplicatesType           -
+bamRemoveDuplicatesMate2basesN    0
+limitGenomeGenerateRAM            31000000000
+limitIObufferSize                 150000000
+limitOutSAMoneReadBytes           100000
+limitOutSJcollapsed               1000000
+limitOutSJoneRead                 1000
+limitBAMsortRAM                   0
+limitSjdbInsertNsj                1000000
+outFileNamePrefix                 ./
+outTmpDir                         -
+outTmpKeep                        None
+outReadsUnmapped                  None
+outQSconversionAdd                0
+outMultimapperOrder               Old_2.4
+outSAMtype                        SAM   
+outSAMmode                        Full
+outSAMstrandField                 None
+outSAMattributes                  Standard   
+outSAMunmapped                    None   
+outSAMorder                       Paired
+outSAMprimaryFlag                 OneBestScore
+outSAMreadID                      Standard
+outSAMmapqUnique                  255
+outSAMflagOR                      0
+outSAMflagAND                     65535
+outSAMattrRGline                  -   
+outSAMheaderHD                    -   
+outSAMheaderPG                    -   
+outSAMheaderCommentFile           -
+outBAMcompression                 1
+outBAMsortingThreadN              0
+outSAMfilter                      None   
+outSAMmultNmax                    18446744073709551615
+outSAMattrIHstart                 1
+outSJfilterReads                  All
+outSJfilterCountUniqueMin         3   1   1   1   
+outSJfilterCountTotalMin          3   1   1   1   
+outSJfilterOverhangMin            30   12   12   12   
+outSJfilterDistToOtherSJmin       10   0   5   10   
+outSJfilterIntronMaxVsReadN       50000   100000   200000   
+outWigType                        None   
+outWigStrand                      Stranded   
+outWigReferencesPrefix            -
+outWigNorm                        RPM   
+outFilterType                     Normal
+outFilterMultimapNmax             10
+outFilterMultimapScoreRange       1
+outFilterScoreMin                 0
+outFilterScoreMinOverLread        0.66
+outFilterMatchNmin                0
+outFilterMatchNminOverLread       0.66
+outFilterMismatchNmax             10
+outFilterMismatchNoverLmax        0.3
+outFilterMismatchNoverReadLmax    1
+outFilterIntronMotifs             None
+outFilterIntronStrands            RemoveInconsistentStrands
+clip5pNbases                      0   
+clip3pNbases                      0   
+clip3pAfterAdapterNbases          0   
+clip3pAdapterSeq                  -   
+clip3pAdapterMMp                  0.1   
+winBinNbits                       16
+winAnchorDistNbins                9
+winFlankNbins                     4
+winAnchorMultimapNmax             50
+winReadCoverageRelativeMin        0.5
+winReadCoverageBasesMin           0
+scoreGap                          0
+scoreGapNoncan                    -8
+scoreGapGCAG                      -4
+scoreGapATAC                      -8
+scoreStitchSJshift                1
+scoreGenomicLengthLog2scale       -0.25
+scoreDelBase                      -2
+scoreDelOpen                      -2
+scoreInsOpen                      -2
+scoreInsBase                      -2
+seedSearchLmax                    0
+seedSearchStartLmax               50
+seedSearchStartLmaxOverLread      1
+seedPerReadNmax                   1000
+seedPerWindowNmax                 50
+seedNoneLociPerWindow             10
+seedMultimapNmax                  10000
+seedSplitMin                      12
+alignIntronMin                    21
+alignIntronMax                    0
+alignMatesGapMax                  0
+alignTranscriptsPerReadNmax       10000
+alignSJoverhangMin                5
+alignSJDBoverhangMin              3
+alignSJstitchMismatchNmax         0   -1   0   0   
+alignSplicedMateMapLmin           0
+alignSplicedMateMapLminOverLmate    0.66
+alignWindowsPerReadNmax           10000
+alignTranscriptsPerWindowNmax     100
+alignEndsType                     Local
+alignSoftClipAtReferenceEnds      Yes
+alignEndsProtrude                 0   ConcordantPair   
+chimSegmentMin                    0
+chimScoreMin                      0
+chimScoreDropMax                  20
+chimScoreSeparation               10
+chimScoreJunctionNonGTAG          -1
+chimMainSegmentMultNmax           10
+chimJunctionOverhangMin           20
+chimOutType                       SeparateSAMold   
+chimFilter                        banGenomicN   
+chimSegmentReadGapMax             0
+sjdbFileChrStartEnd               -   
+sjdbGTFfile                       -
+sjdbGTFchrPrefix                  -
+sjdbGTFfeatureExon                exon
+sjdbGTFtagExonParentTranscript    transcript_id
+sjdbGTFtagExonParentGene          gene_id
+sjdbOverhang                      100
+sjdbScore                         2
+sjdbInsertSave                    Basic
+quantMode                         -   
+quantTranscriptomeBAMcompression    1
+quantTranscriptomeBan             IndelSoftclipSingleend
+twopass1readsN                    18446744073709551615
+twopassMode                       None
+##### Command Line:
+STAR --runThreadN 8 --genomeDir /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx --genomeLoad NoSharedMemory --readFilesIn /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz --readFilesCommand zcat --outStd BAM_Unsorted --outSAMtype BAM Unsorted --outSAMunmapped Within --outBAMcompression 0 --outFilterMultimapNmax 1 --outFilterMismatchNmax 3 --chimSegmentMin 10 --chimOutType WithinBAM SoftClip --chimJunctionOverhangMin 10 --chimScoreMin 1 --chimScoreDropMax 30 --chimScoreJunctionNonGTAG 0 --chimScoreSeparation 1 --alignSJstitchMismatchNmax 5 -1 5 5 --chimSegmentReadGapMax 3
+##### Initial USER parameters from Command Line:
+outStd                            BAM_Unsorted
+###### All USER parameters from Command Line:
+runThreadN                    8     ~RE-DEFINED
+genomeDir                     /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx     ~RE-DEFINED
+genomeLoad                    NoSharedMemory     ~RE-DEFINED
+readFilesIn                   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz        ~RE-DEFINED
+readFilesCommand              zcat        ~RE-DEFINED
+outStd                        BAM_Unsorted     ~RE-DEFINED
+outSAMtype                    BAM   Unsorted        ~RE-DEFINED
+outSAMunmapped                Within        ~RE-DEFINED
+outBAMcompression             0     ~RE-DEFINED
+outFilterMultimapNmax         1     ~RE-DEFINED
+outFilterMismatchNmax         3     ~RE-DEFINED
+chimSegmentMin                10     ~RE-DEFINED
+chimOutType                   WithinBAM   SoftClip        ~RE-DEFINED
+chimJunctionOverhangMin       10     ~RE-DEFINED
+chimScoreMin                  1     ~RE-DEFINED
+chimScoreDropMax              30     ~RE-DEFINED
+chimScoreJunctionNonGTAG      0     ~RE-DEFINED
+chimScoreSeparation           1     ~RE-DEFINED
+alignSJstitchMismatchNmax     5   -1   5   5        ~RE-DEFINED
+chimSegmentReadGapMax         3     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runThreadN                        8
+genomeDir                         /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx
+genomeLoad                        NoSharedMemory
+readFilesIn                       /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz   
+readFilesCommand                  zcat   
+outStd                            BAM_Unsorted
+outSAMtype                        BAM   Unsorted   
+outSAMunmapped                    Within   
+outBAMcompression                 0
+outFilterMultimapNmax             1
+outFilterMismatchNmax             3
+alignSJstitchMismatchNmax         5   -1   5   5   
+chimSegmentMin                    10
+chimScoreMin                      1
+chimScoreDropMax                  30
+chimScoreSeparation               1
+chimScoreJunctionNonGTAG          0
+chimJunctionOverhangMin           10
+chimOutType                       WithinBAM   SoftClip   
+chimSegmentReadGapMax             3
+
+-------------------------------
+##### Final effective command line:
+STAR   --runThreadN 8   --genomeDir /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx   --genomeLoad NoSharedMemory   --readFilesIn /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz      --readFilesCommand zcat      --outStd BAM_Unsorted   --outSAMtype BAM   Unsorted      --outSAMunmapped Within      --outBAMcompression 0   --outFilterMultimapNmax 1   --outFilterMismatchNmax 3   --alignSJstitchMismatchNmax 5   -1   5   5      --chimSegmentMin 10   --chimScoreMin 1   --chimScoreDropMax 30   --chimScoreSeparation 1   --chimScoreJunctionNonGTAG 0   --chimJunctionOverhangMin 10   --chimOutType WithinBAM   SoftClip      --chimSegmentReadGapMax 3
+
+##### Final parameters after user input--------------------------------:
+versionSTAR                       20201
+versionGenome                     20101   20200   
+parametersFiles                   -   
+sysShell                          -
+runMode                           alignReads
+runThreadN                        8
+runDirPerm                        User_RWX
+runRNGseed                        777
+genomeDir                         /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx
+genomeLoad                        NoSharedMemory
+genomeFastaFiles                  -   
+genomeChainFiles                  -   
+genomeSAindexNbases               14
+genomeChrBinNbits                 18
+genomeSAsparseD                   1
+genomeSuffixLengthMax             18446744073709551615
+genomeFileSizes                   0   
+genomeConsensusFile               -
+readFilesType                     Fastx   
+readFilesIn                       /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz   
+readFilesPrefix                   -
+readFilesCommand                  zcat   
+readMatesLengthsIn                NotEqual
+readMapNumber                     18446744073709551615
+readNameSeparator                 /   
+inputBAMfile                      -
+bamRemoveDuplicatesType           -
+bamRemoveDuplicatesMate2basesN    0
+limitGenomeGenerateRAM            31000000000
+limitIObufferSize                 150000000
+limitOutSAMoneReadBytes           100000
+limitOutSJcollapsed               1000000
+limitOutSJoneRead                 1000
+limitBAMsortRAM                   0
+limitSjdbInsertNsj                1000000
+outFileNamePrefix                 ./
+outTmpDir                         -
+outTmpKeep                        None
+outStd                            BAM_Unsorted
+outReadsUnmapped                  None
+outQSconversionAdd                0
+outMultimapperOrder               Old_2.4
+outSAMtype                        BAM   Unsorted   
+outSAMmode                        Full
+outSAMstrandField                 None
+outSAMattributes                  Standard   
+outSAMunmapped                    Within   
+outSAMorder                       Paired
+outSAMprimaryFlag                 OneBestScore
+outSAMreadID                      Standard
+outSAMmapqUnique                  255
+outSAMflagOR                      0
+outSAMflagAND                     65535
+outSAMattrRGline                  -   
+outSAMheaderHD                    -   
+outSAMheaderPG                    -   
+outSAMheaderCommentFile           -
+outBAMcompression                 0
+outBAMsortingThreadN              0
+outSAMfilter                      None   
+outSAMmultNmax                    18446744073709551615
+outSAMattrIHstart                 1
+outSJfilterReads                  All
+outSJfilterCountUniqueMin         3   1   1   1   
+outSJfilterCountTotalMin          3   1   1   1   
+outSJfilterOverhangMin            30   12   12   12   
+outSJfilterDistToOtherSJmin       10   0   5   10   
+outSJfilterIntronMaxVsReadN       50000   100000   200000   
+outWigType                        None   
+outWigStrand                      Stranded   
+outWigReferencesPrefix            -
+outWigNorm                        RPM   
+outFilterType                     Normal
+outFilterMultimapNmax             1
+outFilterMultimapScoreRange       1
+outFilterScoreMin                 0
+outFilterScoreMinOverLread        0.66
+outFilterMatchNmin                0
+outFilterMatchNminOverLread       0.66
+outFilterMismatchNmax             3
+outFilterMismatchNoverLmax        0.3
+outFilterMismatchNoverReadLmax    1
+outFilterIntronMotifs             None
+outFilterIntronStrands            RemoveInconsistentStrands
+clip5pNbases                      0   
+clip3pNbases                      0   
+clip3pAfterAdapterNbases          0   
+clip3pAdapterSeq                  -   
+clip3pAdapterMMp                  0.1   
+winBinNbits                       16
+winAnchorDistNbins                9
+winFlankNbins                     4
+winAnchorMultimapNmax             50
+winReadCoverageRelativeMin        0.5
+winReadCoverageBasesMin           0
+scoreGap                          0
+scoreGapNoncan                    -8
+scoreGapGCAG                      -4
+scoreGapATAC                      -8
+scoreStitchSJshift                1
+scoreGenomicLengthLog2scale       -0.25
+scoreDelBase                      -2
+scoreDelOpen                      -2
+scoreInsOpen                      -2
+scoreInsBase                      -2
+seedSearchLmax                    0
+seedSearchStartLmax               50
+seedSearchStartLmaxOverLread      1
+seedPerReadNmax                   1000
+seedPerWindowNmax                 50
+seedNoneLociPerWindow             10
+seedMultimapNmax                  10000
+seedSplitMin                      12
+alignIntronMin                    21
+alignIntronMax                    0
+alignMatesGapMax                  0
+alignTranscriptsPerReadNmax       10000
+alignSJoverhangMin                5
+alignSJDBoverhangMin              3
+alignSJstitchMismatchNmax         5   -1   5   5   
+alignSplicedMateMapLmin           0
+alignSplicedMateMapLminOverLmate    0.66
+alignWindowsPerReadNmax           10000
+alignTranscriptsPerWindowNmax     100
+alignEndsType                     Local
+alignSoftClipAtReferenceEnds      Yes
+alignEndsProtrude                 0   ConcordantPair   
+chimSegmentMin                    10
+chimScoreMin                      1
+chimScoreDropMax                  30
+chimScoreSeparation               1
+chimScoreJunctionNonGTAG          0
+chimMainSegmentMultNmax           10
+chimJunctionOverhangMin           10
+chimOutType                       WithinBAM   SoftClip   
+chimFilter                        banGenomicN   
+chimSegmentReadGapMax             3
+sjdbFileChrStartEnd               -   
+sjdbGTFfile                       -
+sjdbGTFchrPrefix                  -
+sjdbGTFfeatureExon                exon
+sjdbGTFtagExonParentTranscript    transcript_id
+sjdbGTFtagExonParentGene          gene_id
+sjdbOverhang                      100
+sjdbScore                         2
+sjdbInsertSave                    Basic
+quantMode                         -   
+quantTranscriptomeBAMcompression    1
+quantTranscriptomeBan             IndelSoftclipSingleend
+twopass1readsN                    18446744073709551615
+twopassMode                       None
+----------------------------------------
+
+
+   Input read files for mate 1, from input string /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz
+-rw-r--r-- 1 mapostolides ccm 359667387 Oct  4  2018 /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz
+
+   readsCommandsFile:
+exec > "./_STARtmp/tmp.fifo.read1"
+echo FILE 0
+zcat      "/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz"
+
+
+   Input read files for mate 2, from input string /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz
+-rw-r--r-- 1 mapostolides ccm 359673459 Oct  4  2018 /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz
+
+   readsCommandsFile:
+exec > "./_STARtmp/tmp.fifo.read2"
+echo FILE 0
+zcat      "/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz"
+
+WARNING --chimOutType=WithinBAM, therefore STAR will output NM attribute
+Finished loading and checking parameters
+Reading genome generation parameters:
+versionGenome                 20201        ~RE-DEFINED
+genomeFastaFiles              /home/bhaas/CTAT_GENOMICS/ctat_genome_builds/GRCh37_gencode_v19_CTAT_lib_Feb092018/ctat_genome_lib_build_dir/ref_genome.fa        ~RE-DEFINED
+genomeSAindexNbases           14     ~RE-DEFINED
+genomeChrBinNbits             16     ~RE-DEFINED
+genomeSAsparseD               1     ~RE-DEFINED
+sjdbOverhang                  150     ~RE-DEFINED
+sjdbFileChrStartEnd           -        ~RE-DEFINED
+sjdbGTFfile                   /home/bhaas/CTAT_GENOMICS/ctat_genome_builds/GRCh37_gencode_v19_CTAT_lib_Feb092018/ref_annot.gtf     ~RE-DEFINED
+sjdbGTFchrPrefix              -     ~RE-DEFINED
+sjdbGTFfeatureExon            exon     ~RE-DEFINED
+sjdbGTFtagExonParentTranscripttranscript_id     ~RE-DEFINED
+sjdbGTFtagExonParentGene      gene_id     ~RE-DEFINED
+sjdbInsertSave                Basic     ~RE-DEFINED
+Genome version is compatible with current STAR version
+Number of real (reference) chromosomes= 25
+1	chr1	249250621	0
+2	chr2	243199373	249298944
+3	chr3	198022430	492503040
+4	chr4	191154276	690552832
+5	chr5	180915260	881721344
+6	chr6	171115067	1062666240
+7	chr7	159138663	1233846272
+8	chr8	146364022	1393033216
+9	chr9	141213431	1539440640
+10	chr10	135534747	1680670720
+11	chr11	135006516	1816264704
+12	chr12	133851895	1951334400
+13	chr13	115169878	2085224448
+14	chr14	107349540	2200436736
+15	chr15	102531392	2307850240
+16	chr16	90354753	2410414080
+17	chr17	81195210	2500788224
+18	chr18	78077248	2581987328
+19	chr19	59128983	2660106240
+20	chr20	63025520	2719285248
+21	chr21	48129895	2782330880
+22	chr22	51304566	2830499840
+23	chrX	155270560	2881814528
+24	chrY	59373566	3037134848
+25	chrM	16569	3096510464
+--sjdbOverhang = 150 taken from the generated genome
+Started loading the genome: Sat Apr 18 18:40:22 2020
+
+Checking Genome sizefile size: 3200298493 bytes; state: good=1 eof=0 fail=0 bad=0
+Checking SA sizefile size: 24458950464 bytes; state: good=1 eof=0 fail=0 bad=0
+/SAindex: size given as a parameter = 1
+Read from SAindex: genomeSAindexNbases=14  nSAi=357913940
+nGenome=3200298493;  nSAbyte=24458950464
+GstrandBit=32   SA number of indices=5929442536
+Shared memory is not used for genomes. Allocated a private copy of the genome.
+Genome file size: 3200298493 bytes; state: good=1 eof=0 fail=0 bad=0
+Loading Genome ... done! state: good=1 eof=0 fail=0 bad=0; loaded 3200298493 bytes
+SA file size: 24458950464 bytes; state: good=1 eof=0 fail=0 bad=0
+Loading SA ... done! state: good=1 eof=0 fail=0 bad=0; loaded 24458950464 bytes
+Loading SAindex ... done: 1565873619 bytes
+Finished loading the genome: Sat Apr 18 18:44:52 2020
+
+Processing splice junctions database sjdbN=344593,   sjdbOverhang=150 
+alignIntronMax=alignMatesGapMax=0, the max intron size will be approximately determined by (2^winBinNbits)*winAnchorDistNbins=589824
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread0 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread0 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread1 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread1 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread2 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread2 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread3 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread3 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread4 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread4 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread5 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread5 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread6 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread6 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.sam.thread7 ... ok
+Opening the file: ./_STARtmp//Chimeric.out.junction.thread7 ... ok
+Created thread # 1
+Created thread # 2
+Created thread # 3
+Created thread # 4
+Created thread # 5
+Starting to map file # 0
+mate 1:   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair1.fastq.gz
+mate 2:   /hpf/largeprojects/ccmbio/mapostolides/validate_fusion/montreal_benchmark_validation/negative_control_beers/negative_control_beers.pair2.fastq.gz
+Created thread # 6
+Created thread # 7
+Thread #4 end of input stream, nextChar=-1
+Completed: thread #0
+Completed: thread #3
+Completed: thread #5
+Completed: thread #7
+Completed: thread #6
+Completed: thread #1
+Joined thread # 1
+Completed: thread #4
+Completed: thread #2
+Joined thread # 2
+Joined thread # 3
+Joined thread # 4
+Joined thread # 5
+Joined thread # 6
+Joined thread # 7
+ALL DONE!
