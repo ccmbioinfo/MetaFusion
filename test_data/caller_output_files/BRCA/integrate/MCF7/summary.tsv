@@ -1,0 +1,15 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	BCAS4	BCAS3	N	3	Inter_Chromosomal	120	70	BCAS4>>BCAS3(Inter_Chromosomal Canonical 4);BCAS4>>BCAS3(Inter_Chromosomal Canonical 66);
+2	LRP1B	PLXDC1	N	3	Inter_Chromosomal	3	2	LRP1B>>PLXDC1(Inter_Chromosomal Canonical 2);
+3	NBPF1	NBPF9	N	3	Intra_Chromosomal	876	2	NBPF1>>NBPF9(Intra_Chromosomal Canonical 2);
+4	ARFGEF2	SULF2	N	3	Intra_Chromosomal	17	8	ARFGEF2>>SULF2(Intra_Chromosomal Canonical 8);
+5	BC017255	VMP1	N	3	Intra_Chromosomal	4	3	BC017255>>VMP1(Intra_Chromosomal Canonical 3);
+6	GCN1L1	MSI1	N	3	Intra_Chromosomal	6	1	GCN1L1>>MSI1(Intra_Chromosomal Canonical 1);
+7	RPS6KB1	VMP1	N	3	Intra_Chromosomal	2	5	RPS6KB1>>VMP1(Intra_Chromosomal Canonical 5);
+8	RSBN1	AP4B1-AS1	N	3	Intra_Chromosomal	2	3	RSBN1>>AP4B1-AS1(Intra_Chromosomal Canonical 3);
+9	SMARCA4	CARM1	N	3	Intra_Chromosomal	3	2	SMARCA4>>CARM1(Intra_Chromosomal Canonical 2);
+10	TXLNG	SYAP1	N	3	Intra_Chromosomal	2	3	TXLNG>>SYAP1(Intra_Chromosomal Canonical 3);
+11	LOC493754	RABGEF1	N	3	Intra_Chromosomal	3	1	LOC493754>>RABGEF1(Intra_Chromosomal Canonical 1);
+12	PAPOLA	AK7	N	3	Intra_Chromosomal	2	2	PAPOLA>>AK7(Intra_Chromosomal Canonical 2);
+13	MYO9B	FCHO1	N	3	Intra_Chromosomal	2	1	MYO9B>>FCHO1(Intra_Chromosomal Canonical 1);
+14	C10orf112	AK297683	N	3	Read_Through	4	2	C10orf112>>AK297683(Read_Through Canonical 2);

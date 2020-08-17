@@ -1,0 +1,6 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	BSG	NFIX	N	3	Intra_Chromosomal	22	7	BSG>>NFIX(Intra_Chromosomal Canonical 7);
+2	NOTCH1	NUP214	N	3	Intra_Chromosomal	5	3	NOTCH1>>NUP214(Intra_Chromosomal Canonical 3);
+3	BSG	NFIC	N	3	Intra_Chromosomal	3	2	BSG>>NFIC(Intra_Chromosomal Canonical 2);
+4	EEF1DP3	FRY	N	3	Read_Through	8	2	EEF1DP3>>FRY(Read_Through Canonical 2);
+5	SCNN1A	TNFRSF1A	N	3	Read_Through	3	1	SCNN1A>>TNFRSF1A(Read_Through Canonical 1);
