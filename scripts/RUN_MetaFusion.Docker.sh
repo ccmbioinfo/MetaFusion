@@ -1,14 +1,15 @@
 #!/bin/bash
 
 #Change date to current date
-date=Aug-13-2020.V5
+date=Aug-17-2020
 
 #DATASETS
-sim45_sim52=1
-#brca_4=1
+sim45_sim52=0
+brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
+#stx16_rae1=1
 
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
@@ -118,5 +119,22 @@ bash MetaFusion.sh --outdir $outdir \
 
 fi
 
+# STX16--RAE1 from BT474.KPL4.MCF7.SKBR3 dataset
+if [ $stx16_rae1 -eq 1 ]; then
+echo STX16--RAE1
+outdir=$runs_dir/STX16--RAE1.$date
+echo generating output in $outdir
+cff=/MetaFusion/test_data/cff/STX16--RAE1.cff
 
 
+bash MetaFusion.sh --outdir $outdir \
+                 --cff $cff  \
+                 --gene_bed $gene_bed \
+                 --fusion_annotator \
+                 --gene_info $gene_info \
+                 --num_tools=2  \
+                 --recurrent_bedpe $recurrent_bedpe \
+                 --scripts $fusiontools
+
+
+fi
