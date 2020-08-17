@@ -1,0 +1,26 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	TATDN1	GSDMB	N	3	Inter_Chromosomal	76	299	TATDN1>>GSDMB(Inter_Chromosomal 4);TATDN1>>GSDMB(Inter_Chromosomal Canonical 51);TATDN1>>GSDMB(Inter_Chromosomal Canonical 15);TATDN1>>GSDMB(Inter_Chromosomal Canonical 2);TATDN1>>GSDMB(Inter_Chromosomal 10);TATDN1>>GSDMB(Inter_Chromosomal Canonical 217);
+2	CYTH1	EIF3H	N	3	Inter_Chromosomal	38	12	CYTH1>>EIF3H(Inter_Chromosomal Canonical 1);CYTH1>>EIF3H(Inter_Chromosomal Canonical 1);CYTH1>>EIF3H(Inter_Chromosomal Canonical 1);CYTH1>>EIF3H(Inter_Chromosomal Canonical 9);
+3	RARA	PKIA	N	3	Inter_Chromosomal	15	8	RARA>>PKIA(Inter_Chromosomal Canonical 7);RARA>>PKIA(Inter_Chromosomal Canonical 1);
+4	ACOT8	DKFZp434K1323/LOC100288778	N	3	Inter_Chromosomal	6	2	ACOT8>>DKFZp434K1323/LOC100288778(Inter_Chromosomal Canonical 2);
+5	KLHDC2	SNTB1	N	3	Inter_Chromosomal	2	2	KLHDC2>>SNTB1(Inter_Chromosomal Canonical 2);
+6	KRT7	KRT8	N	3	Intra_Chromosomal	27	2	KRT7>>KRT8(Intra_Chromosomal Canonical 2);
+7	ANKHD1/ANKHD1-EIF4EBP3	PCDH1	N	3	Intra_Chromosomal	16	4	ANKHD1/ANKHD1-EIF4EBP3>>PCDH1(Intra_Chromosomal Canonical 4);
+8	SUMF1	LRRFIP2	N	3	Intra_Chromosomal	10	6	SUMF1>>LRRFIP2(Intra_Chromosomal Canonical 4);SUMF1>>LRRFIP2(Intra_Chromosomal Canonical 2);
+9	PREX1	CPNE1	N	3	Intra_Chromosomal	7	1	PREX1>>CPNE1(Intra_Chromosomal Canonical 1);
+10	WDR67	ZNF704	N	3	Intra_Chromosomal	3	3	WDR67>>ZNF704(Intra_Chromosomal Canonical 3);
+11	RNASET2	RPS6KA2	N	3	Intra_Chromosomal	3	1	RNASET2>>RPS6KA2(Intra_Chromosomal Canonical 1);
+12	SLC39A1	CRTC2	N	3	Read_Through	13	2	SLC39A1>>CRTC2(Read_Through Canonical 2);
+13	AK311578	G3BP2	N	3	Read_Through	9	5	AK311578>>G3BP2(Read_Through Canonical 5);
+14	SPINT2	C19orf33	N	3	Read_Through	9	3	SPINT2>>C19orf33(Read_Through Canonical 3);
+15	CCDC85C	SETD3	N	3	Read_Through	7	1	CCDC85C>>SETD3(Read_Through Canonical 1);
+16	BC090059	RIN2	N	3	Read_Through	3	1	BC090059>>RIN2(Read_Through Canonical 1);
+17	TPD52L2	DNAJC5	N	3	Read_Through	2	2	TPD52L2>>DNAJC5(Read_Through Canonical 2);
+18	VAMP1	CD27-AS1	N	3	Read_Through	3	1	VAMP1>>CD27-AS1(Read_Through Canonical 1);
+19	ARID3C	DCTN3	N	3	Read_Through	2	1	ARID3C>>DCTN3(Read_Through Canonical 1);
+20	GOLT1A	KISS1	N	3	Read_Through	2	1	GOLT1A>>KISS1(Read_Through Canonical 1);
+21	NAA40	COX8A	N	3	Read_Through	1	1	NAA40>>COX8A(Read_Through Canonical 1);
+22	KRT8	NUP107	N	6	Intra_Chromosomal	226	4	KRT8>>NUP107(Intra_Chromosomal 4);
+23	TRAM1	REXO1L1	N	6	Intra_Chromosomal	19	5	TRAM1>>REXO1L1(Intra_Chromosomal 5);
+24	VAMP8	VAMP5	N	6	Read_Through	6	4	VAMP8>>VAMP5(Read_Through 4);
+25	RPL37	LOC100506548	N	6	Read_Through	3	3	RPL37>>LOC100506548(Read_Through 3);

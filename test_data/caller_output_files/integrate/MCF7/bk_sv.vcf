@@ -1,0 +1,42 @@
+##fileformat=VCFv4.1
+##fileDate=2020049
+##fileDate=human_g1k_v37_decoy
+##assembly=/hpf/largeprojects/ccmbio/jiangyue/hg19_decoy/human_g1k_v37_decoy.fasta
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structual variant">
+##INFO=<ID=IMPRECISE(Fucion Junction),Number=0,Type=Flag,Description="Imprecise structural variation">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=BND,Description="Breakend">
+##FORMAT=<ID=GT,Number=1,TYPE=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample_tumor
+1	16891302	bnd_3_NBPF1_NBPF9_5p	C	]1:144828541]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	114354332	bnd_8_RSBN1_AP4B1-AS1_5p	C	]1:114442494]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	114442494	bnd_8_RSBN1_AP4B1-AS1_3p	G	]1:114354332]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	144828541	bnd_3_NBPF1_NBPF9_3p	G	]1:16891302]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+10	19896829	bnd_14_C10orf112_AK297683_5p	C	C[10:19904784[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+10	19904784	bnd_14_C10orf112_AK297683_3p	A	]10:19896829]A	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	120628101	bnd_6_GCN1L1_MSI1_5p	C	]12:120785317]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	120785317	bnd_6_GCN1L1_MSI1_3p	G	G[12:120628101[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+14	96904172	bnd_12_PAPOLA_AK7_3p	G	]14:96968937]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+14	96968937	bnd_12_PAPOLA_AK7_5p	T	T[14:96904172[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	37265644	bnd_2_LRP1B_PLXDC1_3p	C	C[2:142237965[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	57184952	bnd_5_BC017255_VMP1_5p	G	G[17:57915656[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	57915656	bnd_5_BC017255_VMP1_3p	T	]17:57184952]T	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	57917129	bnd_7_RPS6KB1_VMP1_3p	G	]17:57992064]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	57992064	bnd_7_RPS6KB1_VMP1_5p	G	G[17:57917129[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	59445688	bnd_1_BCAS4_BCAS3_3p	G	]20:49411710]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+19	11015627	bnd_9_SMARCA4_CARM1_3p	A	]19:11097269]A	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+19	11097269	bnd_9_SMARCA4_CARM1_5p	G	G[19:11015627[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+19	17213367	bnd_13_MYO9B_FCHO1_5p	G	G[19:17881234[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+19	17881234	bnd_13_MYO9B_FCHO1_3p	T	]19:17213367]T	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+2	142237965	bnd_2_LRP1B_PLXDC1_5p	C	]17:37265644]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+20	46365686	bnd_4_ARFGEF2_SULF2_3p	C	C[20:47538547[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+20	47538547	bnd_4_ARFGEF2_SULF2_5p	G	G[20:46365686[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+20	49411710	bnd_1_BCAS4_BCAS3_5p	G	G[17:59445688[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	66053499	bnd_11_LOC493754_RABGEF1_5p	T	]7:66233818]T	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	66233818	bnd_11_LOC493754_RABGEF1_3p	A	]7:66053499]A	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+X	16753350	bnd_10_TXLNG_SYAP1_3p	A	]X:16804712]A	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+X	16804712	bnd_10_TXLNG_SYAP1_5p	G	G[X:16753350[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
