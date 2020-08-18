@@ -115,6 +115,7 @@ cat $outfile | awk '$1=="FN"'  > $outdir/$(basename $outfile).FN
 # --> use outfile as TP since this will allow for numerical match with truth set 
 echo -e TP\\tFP\\tFN > $outdir/$(basename $cluster).TP_FP_counts
 TP=$(cat $outfile | awk '$1=="TP"' | wc | awk '{print $1}')
-FP=$(cat $outdir/$(basename $cluster).FP | wc | awk '{print $1}')
+#FP=$(cat $outdir/$(basename $cluster).FP | wc | awk '{print $1}')
+FP=$(cat $outdir/$(basename $outfile).FP | wc | awk '{print $1}')
 FN=$(cat $outfile | awk '$1=="FN"' | wc | awk '{print $1}')
 echo -e $TP\\t$FP\\t$FN >> $outdir/$(basename $cluster).TP_FP_counts

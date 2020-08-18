@@ -69,7 +69,7 @@ class FusionResultFile():
         for line in open(result_file, "r"):
             tmp = line.split()
             #NAME	NREAD_SPANS	NREAD_JXNLEFT	NREAD_JXNRIGHT	FUSION_CLASS	SPLICE_TYPE	BRKPT_LEFT	BRKPT_RIGHT	LEFT_SYMBOL	RIGHT_SYMBOL	ANNOT_FORMAT	LEFT_ANNOT	RIGHT_ANNOT	DISTANCE	ASSEMBLED_CONTIGS	ASSEMBLY_CROSS_JXN	PRIMERS	ID	SPAN_CROSSHOM_SCORE	JXN_CROSSHOM_SCORE	OVERHANG_DIVERSITY	MINFRAG20	MINFRAG35	OVERHANG_MEANBQ	SPAN_MEANBQ	JXN_MEANBQ	OVERHANG_BQ15	SPAN_BQ15	JXN_BQ15	OVERHANG_MM	SPAN_MM	JXN_MM	OVERHANG_MEANLEN	SPAN_MEANLEN	JXN_MEANLEN	TPM_FUSION	TPM_LEFT	TPM_RIGHT	MAX_TRX_FUSION	DISPOSITION
-            if tmp[0] == "NAME": ## STAR-SEQR header 
+            if tmp[0] == "NAME"  and tmp[1] == "NREAD_SPANS": ## STAR-SEQR header 
                 self.tool = "STAR-SEQR"
                 self._idx_chr1 = tmp.index("BRKPT_LEFT")
                 self._idx_chr2 = tmp.index("BRKPT_RIGHT")
@@ -77,8 +77,8 @@ class FusionResultFile():
                 self._idx_pos2 = tmp.index("BRKPT_RIGHT")
                 self._idx_strand1 = tmp.index("BRKPT_LEFT")
                 self._idx_strand2 = tmp.index("BRKPT_RIGHT")
-                self._idx_split_cnt = tmp.index("NREAD_SPANS")
-                self._idx_pair_cnt = tmp.index("NREAD_JXNLEFT")
+                self._idx_split_cnt = tmp.index("NREAD_JXNLEFT")
+                self._idx_pair_cnt = tmp.index("NREAD_SPANS")
                 self._idx_gene1= tmp.index("LEFT_SYMBOL")
                 self._idx_gene2 = tmp.index("RIGHT_SYMBOL")
                 self._idx_gene_location1 = "NA"
