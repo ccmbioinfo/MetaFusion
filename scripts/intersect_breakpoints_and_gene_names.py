@@ -2,7 +2,6 @@
 import sys
 import pandas as pd
 import numpy as np
-sys.path.append("/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin")
 import  pygeneann_reads_capture_DEV as pygeneann
 import pybedtools.bedtool as bedtools
 import itertools

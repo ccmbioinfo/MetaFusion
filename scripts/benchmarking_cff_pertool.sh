@@ -8,7 +8,8 @@ fusiontools=$4
 FUSION_BENCHMARK=$fusiontools/FusionBenchmarking
 
 #CALLERS
-callers=$(echo arriba star_fusion star_seqr defuse ericscript integrate fusionmap chimerascan)
+#callers=$(echo arriba star_fusion star_seqr defuse ericscript integrate fusionmap chimerascan)
+callers=$(echo arriba star_fusion star_seqr defuse ericscript integrate fusionmap)
 
 # Add FID to unannotated .cff
 python $fusiontools/add_FID_to_cff.py $cff > $outdir/$(basename $cff).FID

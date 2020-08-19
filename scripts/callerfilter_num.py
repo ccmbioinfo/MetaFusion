@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import sys
-sys.path.append("/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin")
 import pygeneann_reads_capture_DEV as pygeneann
 import argparse
 
