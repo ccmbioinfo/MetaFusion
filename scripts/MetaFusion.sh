@@ -126,7 +126,7 @@ fi
 #output ANC_RT_SG file
 if [ $output_ANC_RT_SG -eq 1 ]; then
   echo output ANC_RT_SG file
-  python output_ANC_RT_SG.py $cluster > $cluster.ANC_RT_SG 
+  python output_ANC_RT_SG.py $cluster > $outdir/cis-sage.cluster 
 fi
 
 #ReadThrough Callerfilter
