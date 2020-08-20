@@ -39,6 +39,8 @@ for fusion in fusion_list:
     #if fusion.inferred_fusion_type == "ReadThrough":
         filtered_list.append(fusion)
 
+# output header
+pygeneann.output_cluster_header()
 output_filtered_list(filtered_list)
 
 #TP cis-SAGe RNAs

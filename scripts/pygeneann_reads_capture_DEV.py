@@ -24,6 +24,8 @@ class CategoryFusions():
         self.__load_category(category_line)
     def __load_category(self, category_line):
         tmp = category_line.split()
+        #HEADER
+        #cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs
         self.cluster_type = tmp[0]
         self.gene1 = tmp[1]
         self.gene2 = tmp[2]
@@ -56,7 +58,6 @@ class CategoryFusions():
         # attributes to accrue list of gene names in bed feature file that intersect with breakpoints 
         self.left = []
         self.right = []
-        
         self.captured_reads_tumor_mean = tmp[19] 
         self.captured_reads_normal_mean = tmp[20]
         self.fusion_IDs = tmp[21].split(',')
@@ -80,6 +81,12 @@ class CategoryFusions():
 
     def out(self):
         print self.line
+
+    def out_subset(self):
+        print self.line
+
+def output_cluster_header():
+        print "\t".join(["#cluster_type", "gene1", "gene2", "max_split_cnt", "max_span_cnt", "sample_type", "disease", "tools", "inferred_fusion_type", "gene1_on_bnd", "gene1_close_to_bnd", "gene2_on_bnd", "gene2_close_to_bnd", "dna_supp", "samples", "chr1", "breakpoint_1", "chr2", "breakpoint_2", "captured_reads_tumor_mean", "captured_reads_normal_mean", "fusion_IDs"])
         
             
 class CategoryFusionStats():

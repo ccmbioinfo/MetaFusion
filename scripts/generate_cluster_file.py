@@ -112,6 +112,9 @@ for cluster in FID_clusters:
     for line in df_cluster.split("\n"):
         fusion=pygeneann.CffFusion(line)
         fusion_list.append(fusion)
+    # output header
+    pygeneann.output_cluster_header()
+    #output fusion list
     output_clustered_fusions(fusion_list, "TEST")
 
 

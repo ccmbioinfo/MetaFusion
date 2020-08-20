@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 #filter fusions
 category_stats = pygeneann.CategoryFusionStats(args.cluster)
-#filtered_list = filter_tools_num(category_stats.category_list, int(args.num_tools)) 
 filtered_list = filter_tools_num(category_stats.category_list, args.num_tools)
+# output header
+pygeneann.output_cluster_header()
 output_filtered_list(filtered_list)
-#output_filtered_list(category_stats.category_list)

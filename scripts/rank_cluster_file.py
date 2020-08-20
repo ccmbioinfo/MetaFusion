@@ -49,8 +49,9 @@ if len(sys.argv) == 4:
             print ("FP/UNKNOWN, # of tools: " + str(len(fusion.tools)))
             fusion.out()
 elif len(sys.argv) == 2:
+    # output header
+    pygeneann.output_cluster_header()
     for fusion in descending_fusion_list:
-        #print("# of tools: " + str(len(fusion.tools)))
         fusion.out()
 #COMMANDS/SCRAP
 #python rank_cluster_file.py  /hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline/BT474.KPL4.MCF7.SKBR3.benchmark.June-29-2020/merged.cff.renamed.reann.cluster.RT_filter.callerfilter2.blck_filter.ANC_filter  /hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline/BT474.KPL4.MCF7.SKBR3.benchmark.June-29-2020/merged.cff.renamed.reann.cluster.RT_filter.callerfilter2.blck_filter.ANC_filter.TP 

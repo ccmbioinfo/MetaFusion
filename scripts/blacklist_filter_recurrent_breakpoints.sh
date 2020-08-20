@@ -1,13 +1,10 @@
 #!/bin/bash
 
-#module load bedtools
-
 cff=$1
 cluster=$2
 outdir=$3
 recurrent_bedpe=$4
 #BLACKLIST FILTER
-#recurrent_bedpe=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/stjude_validation/Analysis_manuscript/OUTDIR_APR-3-2020-sim45-52/recurrent_breakpoints_filtering/blacklist_breakpoints.bedpe
 cff_bedpe=$(basename $cff).bedpe
 cat $cff | awk '{FS = OFS = "\t"}{print $1,$2,$2+1,$4,$5,$5+1,$31}' | sed 's/chr//g' > $outdir/$cff_bedpe 
 pairToPair -a $recurrent_bedpe -b $outdir/$cff_bedpe -slop 5 > $outdir/recurrent_filtered_fusions.bedpe
@@ -21,7 +18,7 @@ for FID in ${ids[@]};do cat $cluster | grep $FID ;done | sort | uniq  >  $outdir
 cat $cluster | sort > $outdir/$(basename $cluster).sorted
 
 # Remove lines of BLACKLIST file from cluster, creating .blck_filter file
-comm -2 -3 $outdir/$(basename $cluster).sorted $outdir/$(basename $cluster).BLACKLIST #> $outdir/$(basename $cluster).blck_filter
+comm -2 -3 $outdir/$(basename $cluster).sorted $outdir/$(basename $cluster).BLACKLIST 
 
 
 
