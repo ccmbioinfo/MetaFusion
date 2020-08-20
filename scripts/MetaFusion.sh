@@ -9,15 +9,15 @@
 #genome_fasta=$7
 
 #STEPS
-rename=1
-annotate=1
-merge=1
-output_ANC_RT_SG=1
-RT_call_filter=1
+#rename=1
+#annotate=1
+#merge=1
+#output_ANC_RT_SG=1
+#RT_call_filter=1
 blck_filter=1
-ANC_filter=1
-rank=1
-benchmark=1
+#ANC_filter=1
+#rank=1
+#benchmark=1
 
 
 # Loop through arguments and process them
@@ -137,11 +137,10 @@ if [ $RT_call_filter -eq 1 ]; then
 fi
 cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools 
 
-# Blacklist Filter
+# Blocklist Filter
 if [ $blck_filter -eq 1 ]; then
   echo blocklist filter
-#$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
-bash blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
 cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 

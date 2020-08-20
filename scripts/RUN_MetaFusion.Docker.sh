@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Change date to current date
-date=Aug-19-2020
+date=Aug-19-2020.TEST
 
 #DATASETS
-sim45_sim52=0
-brca_4=1
+sim45_sim52=1
+#brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
