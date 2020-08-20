@@ -2,7 +2,6 @@
 import sys
 import pandas as pd
 import numpy as np
-sys.path.append("/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin")
 import  pygeneann_reads_capture_DEV as pygeneann
 import pybedtools.bedtool as bedtools
 import itertools
@@ -22,19 +21,12 @@ def output_clustered_fusions(fusion_list, cluster_type):
         #use first fusion in fusion as reference fusion to account for flipped fusions for BP_Cluster
         if use_reference_fusion:
             try:
+                # exclude defuse as ref fusion since defuse often gets the order wrong
                 ref_fus = [fusion for fusion in fusion_list if fusion.tool != 'defuse'][0]
             except IndexError:
                 ref_fus = fusion_list[0]
-            #ref_fus_bp1 = (ref_fus.chr1, ref_fus.pos1, ref_fus.strand1)
             #flip all fusions not ordered the same way as reference:
             for fusion in fusion_list:
-                #TEST: remove reannotated gene name
-                #fusion.reann_gene1 = fusion.t_gene1
-                #fusion.reann_gene2 = fusion.t_gene2
-
-                #fus_bp1 = (fusion.chr1, fusion.pos1, fusion.strand1)
-                # check both breakpoint distance AND gene names
-                #if not cmp_fusion_breakpoints(ref_fus_bp1, fus_bp1, 100000) and not (ref_fus.reann_gene1 == fusion.reann_gene1):
                 if not (ref_fus.t_gene1 == fusion.t_gene1) and ( ref_fus.t_gene1 == fusion.t_gene2 or ref_fus.t_gene2 == fusion.t_gene1 ):
                     #flip fusion:
                     fusion.chr1, fusion.chr2 = fusion.chr2, fusion.chr1
@@ -45,12 +37,10 @@ def output_clustered_fusions(fusion_list, cluster_type):
                     #fusion.reann_gene1, fusion.reann_gene2 = fusion.reann_gene2, fusion.reann_gene1
                     fusion.reann_type1,fusion.reann_type2 = fusion.reann_type2,fusion.reann_type1
         #need to remove NA values from below lists, but only if there are valid gene names in them
-        #gene1_list_orig = [f.reann_gene1 for f in fusion_list]
         gene1_list_orig = [f.t_gene1 for f in fusion_list]
         gene1_list = [gene for gene in gene1_list_orig if gene !="NA"]
         if len(gene1_list) < 1:
             gene1_list = gene1_list_orig
-        #gene2_list_orig = [f.reann_gene2 for f in fusion_list]
         gene2_list_orig = [f.t_gene2 for f in fusion_list]
         gene2_list = [gene for gene in gene2_list_orig if gene !="NA"]
         if len(gene2_list) < 1:
@@ -72,7 +62,6 @@ def output_clustered_fusions(fusion_list, cluster_type):
         except ZeroDivisionError:
             captured_reads_normal_mean = -1
 
-        # list of Fusion IDs
         fusion_IDs = [f.fusion_id for f in fusion_list]
         disease_list = [f.disease for f in fusion_list]
         tool_list = [f.tool for f in fusion_list]
@@ -85,7 +74,8 @@ def output_clustered_fusions(fusion_list, cluster_type):
         dna_supp_cluster_num = max([int(f.dnasupp) for f in fusion_list])
 
         category_list = [f.category for f in fusion_list]
-        # PRIORITIZE CATEGORIES TO REMOVE MULTIPLE CATEGORIES
+
+        # PRIORITIZE CATEGORIES TO REMOVE MULTIPLE CATEGORIES, also rename categories
         if "ReadThrough" in category_list:
             category_list = ["ReadThrough"]
         elif "GeneFusion" in category_list:
@@ -114,26 +104,15 @@ df_cff=pd.read_csv(cff, sep='\t', keep_default_na=False, index_col=False, names=
 
 # load FIDs file
 FID_clusters = [line for line in open(FIDs, "r")]
-#FID_clusters = FID_clusters[1] 
 for cluster in FID_clusters:
     if cluster.startswith('FIDs'): continue
     FID_lst = cluster.rstrip().split(",")
-    #print(FID_lst)
-    #print(df_cff[df_cff['fusion_id'].isin(FID_lst)][['t_gene1', 't_gene2', 'pos1', 'pos2']])
-    #print(df_cff[df_cff['fusion_id'].isin(FID_lst)].iloc[0:1:].to_string(header=False))
-    
     df_cluster = df_cff[df_cff['fusion_id'].isin(FID_lst)].to_csv(header=None, index=False, sep="\t").rstrip()
-    #df_cff= df_cff[df_cff['fusion_id'].isin(FID_lst)].to_csv(header=None, index=False, sep="\t").rstrip()
     fusion_list = []
     for line in df_cluster.split("\n"):
-        #print(line)
-        #print("TEST")
-        #print(pygeneann.CffFusion(line).tostring()) 
         fusion=pygeneann.CffFusion(line)
         fusion_list.append(fusion)
     output_clustered_fusions(fusion_list, "TEST")
-#df = df.to_csv(header=None, index=False).strip('\n').split('\n')
-#print(pygeneann.CffFusion(df_cff[df_cff['fusion_id'].isin(FID_lst)].iloc[0:1:].to_string(header=False)))
 
 
 
