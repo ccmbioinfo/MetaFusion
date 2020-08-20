@@ -93,7 +93,7 @@ cff=$outdir/$(basename $cff).reformat
 #Rename cff
 if [ $rename -eq 1 ]; then
   echo Rename cff
-  python rename_cff_file_genes-GENAP.py $cff $gene_info > $outdir/$(basename $cff).renamed
+  python rename_cff_file_genes.MetaFusion.py $cff $gene_info > $outdir/$(basename $cff).renamed
 fi
 cff=$outdir/$(basename $cff).renamed
 
@@ -140,7 +140,6 @@ cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 # Blacklist Filter
 if [ $blck_filter -eq 1 ]; then
   echo blocklist filter
-  #blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
 #$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 bash blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
@@ -164,17 +163,14 @@ cluster=$outdir/final.cluster
 #Benchmark
 if [ $benchmark -eq 1 ] && [ $truth_set ]; then
    echo benchmark
-  #/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster true 
   benchmark_scripts=$fusiontools/FusionBenchmarking
-  #fusionAnnotator=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
   fusionAnnotator_dir=$fusiontools/FusionAnnotator
   if [ $FA -eq 1 ]; then
-    #bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator_dir
 	echo including FusionAnnotator run in benchmarking 
-    bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $fusiontools FusionAnnotator
+    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cff $cluster $fusiontools FusionAnnotator
   else
 	echo excluding FusionAnnotator run in benchmarking 
-    bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $fusiontools 
+    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cff $cluster $fusiontools 
   fi
 else
 	echo no benchmarking performed
