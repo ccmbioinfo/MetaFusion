@@ -2,7 +2,7 @@
 import sys
 import pandas as pd
 import numpy as np
-import  pygeneann_reads_capture_DEV as pygeneann
+import  pygeneann_MetaFusion as pygeneann
 import itertools
 import sequtils
 import argparse

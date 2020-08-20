@@ -2,7 +2,7 @@
 #/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/validation_pipeline/Pipeline-scripts/rename_cff_file_genes-GENAP.py
 import os
 import sys
-import pygeneann_reads_capture_DEV as pygeneann
+import pygeneann_MetaFusion as pygeneann
 import pandas as pd
 import sequtils
 import argparse

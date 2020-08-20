@@ -1,7 +1,4 @@
 #!/bin/bash
-#INPUTS
-
-#/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster.sh $outdir $truth_fusions $cff $cluster $blacklist_filter $callerfilter2 $normal_filter  
 outdir=$1
 mkdir -p $outdir
 truth_fusions=$2
@@ -9,9 +6,11 @@ cff=$3
 cluster=$4
 fusiontools=$5
 FusionAnnotator=$6
+
 FUSION_BENCHMARK=$fusiontools/FusionBenchmarking
 FUSION_ANNOTATOR=$fusiontools/FusionAnnotator
 #normal_filter=$5
+
 #RUN FusionAnnotator if path to "FUSION_ANNOTATOR" is specified
 if [ $FusionAnnotator ]; then
     FA=1
@@ -20,29 +19,21 @@ else
 fi
 
 #MODULE PATHS
-#FUSION_ANNOTATOR=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
-#genome_lib_dir=/hpf/largeprojects/ccmbio/mapostolides/validate_fusion/test_star_star-fusion/GRCh37_v19_CTAT_lib_Feb092018.plug-n-play/ctat_genome_lib_build_dir
 genome_lib_dir=$(dirname $fusiontools)/reference_files/ctat_genome_lib_build_dir
-
-#script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
 
 #PUT CLUSTER INTO PROPER FORMAT
 outfile=$outdir/cluster.preds.collected
 echo -e "sample\tprog\tfusion\tJ\tS\tFID" > $outfile
-#cat $cluster | awk '{FS=OFS="\t"}{print $15,"metacaller",$2"--"$3, $4, $5, $NF}' >> $outfile
 # splits each call into one line per sample
 while read -r line;do samples=$(echo $line | awk '{print $15}' | sed 's/,/ /g'); for sample in ${samples[@]};do echo $line | awk -v samp="$sample" '{$15=samp;print}' | sed 's/ /\t/g' | awk '{FS=OFS="\t"}{print $15,"metacaller",$2"--"$3, $4, $5, $NF}' ;done done < $cluster  | grep -v fusion_IDs  >> $outfile 
 
-#/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionBenchmarking/resources/genes.aliases
 echo Mapping gene partners to Gencode v19 genes 
-   #${FUSION_BENCHMARK}/resources/genes.coords.gz \
 perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
    $outfile \
    ${FUSION_BENCHMARK}/resources/genes.coords.HGNC_renamed_added.gz \
    ${FUSION_BENCHMARK}/resources/genes.aliases \
    > $outdir/$(basename $outfile).gencode_mapped
 outfile=$outdir/$(basename $outfile).gencode_mapped
-
 
 #BEGIN FusionAnnotator
 if [ $FA -eq 1 ]; then
@@ -52,12 +43,10 @@ echo RUN FusionAnnotator
 perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
 outfile=$outdir/$(basename $outfile).wAnnot
 
-#SELECT FOR FUSIONS IN CANCER
-#TRY ONLY THOSE CONFIRMED CANCER FUSIONS AND EXCLUDE "Individual genes of cancer relevance, which may show up in fusions" DATABASES
+#SELECT FOR FUSIONS IN CANCER, ONLY THOSE CONFIRMED CANCER FUSIONS AND EXCLUDE "Individual genes of cancer relevance, which may show up in fusions" DATABASES
 #Oncogene, ArcherDX_panel, FoundationOne_panel, OncocartaV1_panel, OncomapV4_panel
 cat $outfile | grep 'FA_CancerSupp\|Mitelman\|chimerdb_omim\|chimerdb_pubmed\|ChimerKB\|ChimerPub\|ChimerSeq\|Cosmic\|YOSHIHARA_TCGA\|Klijn_CellLines\|Larsson_TCGA\|CCLE\|HaasMedCancer\|GUO2018CR_TCGA\|TumorFusionsNAR2018\|TCGA_StarF2019\|CCLE_StarF2019' > $outdir/$(basename $outfile).CANCER_FUSIONS
 ids=$(cat $outdir/$(basename $outfile).CANCER_FUSIONS | cut -f 8| sort | uniq)
-#rm $outdir/$(basename $cluster).CANCER_FUSIONS
 
 #add header
 echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).CANCER_FUSIONS 
@@ -67,6 +56,7 @@ for id in ${ids[@]}; do
 done
 cancer_cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
 
+# NORMAL FILTER
 #filter out anything which might be considered a "normal" tissue
 #if [ $normal_filter == true ]; then echo normal_filter; 
 #  cat $outfile | grep -v 'ConjoinG\|Babiceanu_Normal\|Greger_Normal\|HGNC_GENEFAM\|DGD_PARALOGS\|BodyMap\|GTEx' > $outdir/$(basename $outfile).NORMAL_FILTER 
@@ -80,21 +70,11 @@ cat $outfile | grep 'ConjoinG\|Babiceanu_Normal\|Greger_Normal\|HGNC_GENEFAM\|DG
 #END FusionAnnotator
 fi
 
-
 echo Scoring of fusion predictions
 ${FUSION_BENCHMARK}/benchmarking/fusion_preds_to_TP_FP_FN_FID.pl --truth_fusions $truth_fusions --fusion_preds $outfile  --allow_reverse_fusion > $outdir/$(basename $outfile).scored 
 outfile=$outdir/$(basename $outfile).scored
 
-#GET TP/FP/FN
-#echo -e TP\\tFP\\tFN > $outdir/$(basename $outfile).TP_FP_counts
-#TP=$(cat $outfile | awk '$1=="TP"' | wc | awk '{print $1}')
-#FP=$(cat $outfile | awk '$1=="FP"' | wc | awk '{print $1}')
-#FN=$(cat $outfile | awk '$1=="FN"' | wc | awk '{print $1}')
-#echo -e $TP\\t$FP\\t$FN >> $outdir/$(basename $outfile).TP_FP_counts
-
 #TP
-#rm $outdir/$(basename $cluster).TP
-#touch $outdir/$(basename $cluster).TP 
 #generate TP cluster file
 #add header
 echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).TP
@@ -102,19 +82,19 @@ ids=$( cat $outfile | awk '$1=="TP" || $1=="NA-TP"' | awk '{print $NF}' | sort |
 for id in ${ids[@]}; do
   cat $cluster | grep $id >> $outdir/$(basename $cluster).TP ;
 done
+
 #generate TP outfile in benchmarking toolkit format
 cat $outfile | awk '$1=="TP" || $1=="NA-TP"' > $outdir/$(basename $outfile).TP
 
 #FP
-#rm $outdir/$(basename $cluster).FP
 ids=$( cat $outfile | awk '$1=="FP" || $1=="NA-FP"' | awk '{print $NF}' | sort | uniq)
-#touch $outdir/$(basename $cluster).FP
 #generate FP cluster file
 #add header
 echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).FP
 for id in ${ids[@]}; do
   cat $cluster | grep $id >> $outdir/$(basename $cluster).FP ;
 done
+
 #generate FP outfile in benchmarking toolkit format
 cat $outfile | awk '$1=="FP" || $1=="NA-FP"' > $outdir/$(basename $outfile).FP
 

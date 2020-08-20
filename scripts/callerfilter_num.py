@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-
 import sys
-import pygeneann_reads_capture_DEV as pygeneann
+import pygeneann_MetaFusion as pygeneann
 import argparse
 
 def output_filtered_list(category_list):
