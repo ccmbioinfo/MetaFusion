@@ -4,11 +4,11 @@
 date=Aug-18-2020
 
 #DATASETS
-sim45_sim52=1
-#brca_4=0
-#beers_neg=1
-#sim_50=1
-#sim101=1
+sim45_sim52=0
+brca_4=1
+beers_neg=1
+sim_50=1
+sim101=1
 
 
 #REFERENCE FILES 
@@ -20,13 +20,6 @@ fusiontools=/MetaFusion/scripts
 runs_dir=/MetaFusion/RUNS
 
 
-outdir=$1
-mkdir -p $outdir
-truth_fusions=$2
-cff=$3
-cluster=$4
-fusiontools=$5
-
 # SIM45.SIM52.combined
 if [ $sim45_sim52 -eq 1 ]; then
 echo SIM45.SIM52
@@ -36,7 +29,7 @@ mkdir $outdir
 cff=/MetaFusion/test_data/cff/dream.sim45.sim52.cff
 truth_fusions=/MetaFusion/test_data/truth_sets/dream.sim45.sim52.truth_set.dat
 
-$fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
+bash $fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
 
 fi
 
@@ -48,7 +41,7 @@ echo generating output in $outdir
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
 cff=/MetaFusion/test_data/cff/BRCA.cff
 
-$fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
+bash $fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
 fi
 
 #NEGATIVE CONTROL BEERS
@@ -59,7 +52,7 @@ echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/beers_neg.cff 
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
 
-$fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
+bash $fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
 fi
 
 # SIM50 2500 fusions files:
@@ -70,7 +63,7 @@ echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/sim50.cff
 truth_fusions=/MetaFusion/test_data/truth_sets/sim50.truth_set.dat
 
-$fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
+bash $fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
 fi
 
 #SIM101 2500 fusions files, same truth set as SIM50
@@ -81,5 +74,5 @@ echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/sim101.cff
 truth_fusions=/MetaFusion/test_data/truth_sets/sim101.truth_set.dat
 
-$fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
+bash $fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
 fi

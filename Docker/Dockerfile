@@ -1,7 +1,7 @@
 
 #https://hub.docker.com/r/jsschrepping/velocyto-docker/dockerfile
 
-FROM continuumio/miniconda3:4.5.12
+FROM continuumio/miniconda2:4.7.12
 LABEL maintainer="michael.j.apostolides@gmail.com"
 ENV DEBIAN_FRONTEND noninteractive
 # INSTALL BASE REQUIREMENTS
@@ -33,9 +33,6 @@ RUN apt-get update --yes && \
     pandoc && \
     rm -rf /var/lib/apt/lists/*
 
-#RUN apt-get install -y libbz2-dev liblzma-dev
-#RUN pip install pandas==0.24.2
-#RUN pip install bedtools==2.27
 
 
 # Update conda
@@ -46,30 +43,46 @@ RUN conda config --add channels defaults
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
 
-# Install conda packages
-RUN conda install -y numpy=1.16.1 \
-    	  	     scipy=1.2.0 \ 
-		     cython=0.29.4 \
-		     numba=0.41.0 \
-		     matplotlib=3.0.2 \
-		     scikit-learn=0.20.2 \
-		     h5py=2.9.0 \
-		     click=7.0 \
-		     R=3.5.1 \
-		     rpy2=2.9.4 \
-		     git=2.20.1 \
-             python=2.7 \
-		     r-devtools=2.0.1  && \
-    conda install -c bioconda -y samtools=1.9 && \
-    conda install -c bioconda -y bedtools==2.27 
-    
+## Install conda packages
+#RUN conda install -y numpy=1.16.1 \
+#    	  	 scipy=1.2.0 \
+#		     cython=0.29.4 \
+#		     numba=0.41.0 \
+#		     h5py=2.9.0 \
+#		     click=7.0 \
+#		     R=3.5.1 \
+#		     rpy2=2.9.4 \
+#		     r-devtools=2.0.1  && \
+#    conda install -c bioconda -y samtools=1.9 && \
+#    conda install -c bioconda -y bedtools==2.27 
+RUN conda install -y R=3.5.1 && \
+    conda install -c bioconda -y bedtools==2.27
 
-#RUN \
-#  R -e 'chooseCRANmirror(ind=52); install.packages(c("devtools", "Rcpp","RcppEigen", "RInside", "Matrix", "optparse", "rmarkdown", "withr"))'
 RUN \
   R -e 'chooseCRANmirror(ind=52); install.packages("BiocManager", repos = "http://cran.us.r-project.org"); BiocManager::install("RBGL")' 
 
+RUN pip install pybedtools==0.8.1
+RUN pip install pandas==0.24.2
+
+#PERL STUFF
+RUN curl -L http://cpanmin.us | perl - App::cpanminus
+RUN cpanm Set::IntervalTree JSON::XS 
+#perl -MCPAN -e shell
+#install Set::IntervalTree
+#install JSON::XS 
+
+#FusionAnnotator - BUILD CTAT LIB
+#RUN git clone https://github.com/FusionAnnotator/CTAT_HumanFusionLib.git
+#RUN perl /CTAT_HumanFusionLib/build_fusion_lib.pl > /CTAT_HumanFusionLib/fusion_lib.dat
+
+
+
+#COPY /Users/mapostolides/MetaFusion/scripts /home 
+#SCRAP
+#RUN \
+#  R -e 'chooseCRANmirror(ind=52); install.packages(c("devtools", "Rcpp","RcppEigen", "RInside", "Matrix", "optparse", "rmarkdown", "withr"))'
 #RUN pip install pysam==0.15.2 \
 #    		loompy==2.0.17 \
 #		velocyto==0.17.17
-RUN pip install pysam==0.15.2 
+#RUN pip install pysam==0.15.2 
+#RUN pip install bedtools==2.27

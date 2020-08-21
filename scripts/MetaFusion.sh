@@ -1,13 +1,4 @@
 #!/bin/bash
-#outdir=$1
-#mkdir -p $outdir
-#cff=$2
-#gene_bed=$3
-#truth_fusions=$4
-#num_tools=$5
-#gene_info=$6
-#genome_fasta=$7
-
 #STEPS
 rename=1
 annotate=1
@@ -93,7 +84,7 @@ cff=$outdir/$(basename $cff).reformat
 #Rename cff
 if [ $rename -eq 1 ]; then
   echo Rename cff
-  python rename_cff_file_genes-GENAP.py $cff $gene_info > $outdir/$(basename $cff).renamed
+  python rename_cff_file_genes.MetaFusion.py $cff $gene_info > $outdir/$(basename $cff).renamed
 fi
 cff=$outdir/$(basename $cff).renamed
 
@@ -126,7 +117,7 @@ fi
 #output ANC_RT_SG file
 if [ $output_ANC_RT_SG -eq 1 ]; then
   echo output ANC_RT_SG file
-  python output_ANC_RT_SG.py $cluster > $cluster.ANC_RT_SG 
+  python output_ANC_RT_SG.py $cluster > $outdir/cis-sage.cluster 
 fi
 
 #ReadThrough Callerfilter
@@ -137,12 +128,10 @@ if [ $RT_call_filter -eq 1 ]; then
 fi
 cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools 
 
-# Blacklist Filter
+# Blocklist Filter
 if [ $blck_filter -eq 1 ]; then
   echo blocklist filter
-  #blck_script_dir=/hpf/largeprojects/ccmbio/mapostolides/MODULES/FusionAnnotator/TEST_FusionAnnotator
-#$blck_script_dir/blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
-bash blacklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
 cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 
@@ -163,18 +152,18 @@ cluster=$outdir/final.cluster
 
 #Benchmark
 if [ $benchmark -eq 1 ] && [ $truth_set ]; then
-   echo benchmark
-  #/hpf/largeprojects/ccmbio/mapostolides/MODULES/RUN_BENCHMARKING_TOOLKIT/benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster true 
-  benchmark_scripts=$fusiontools/FusionBenchmarking
-  #fusionAnnotator=/hpf/tools/centos6/star-fusion/1.6.0/FusionAnnotator
-  fusionAnnotator_dir=$fusiontools/FusionAnnotator
   if [ $FA -eq 1 ]; then
-    #bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $benchmark_scripts $fusionAnnotator_dir
-	echo including FusionAnnotator run in benchmarking 
-    bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $fusiontools FusionAnnotator
+	bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools 
+
+	echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
+	FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
+	python add_db_hits_to_cluster.py $cluster $FA_db_file > $outdir/$(basename $cluster).CANCER_FUSIONS
+	cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
+	echo Running benchmarking
+    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools FusionAnnotator
   else
-	echo excluding FusionAnnotator run in benchmarking 
-    bash benchmarking_cluster-GENAP.sh $outdir $truth_set $cff $cluster $fusiontools 
+	echo Running benchmarking
+    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools 
   fi
 else
 	echo no benchmarking performed

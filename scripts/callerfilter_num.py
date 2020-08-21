@@ -1,8 +1,6 @@
 #! /usr/bin/env python
-
 import sys
-sys.path.append("/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin")
-import pygeneann_reads_capture_DEV as pygeneann
+import pygeneann_MetaFusion as pygeneann
 import argparse
 
 def output_filtered_list(category_list):
@@ -21,7 +19,7 @@ args = parser.parse_args()
 
 #filter fusions
 category_stats = pygeneann.CategoryFusionStats(args.cluster)
-#filtered_list = filter_tools_num(category_stats.category_list, int(args.num_tools)) 
 filtered_list = filter_tools_num(category_stats.category_list, args.num_tools)
+# output header
+pygeneann.output_cluster_header()
 output_filtered_list(filtered_list)
-#output_filtered_list(category_stats.category_list)

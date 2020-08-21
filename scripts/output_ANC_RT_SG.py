@@ -2,13 +2,10 @@
 import sys
 import pandas as pd
 import numpy as np
-sys.path.append("/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin")
-import  pygeneann_reads_capture_DEV as pygeneann
+import  pygeneann_MetaFusion as pygeneann
 import itertools
 import sequtils
 import argparse
-
-#cluster="/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline/NEG_CONTROL_BEERS.benchmark.June-5-2020/merged.cff.renamed.reann.cluster.gene_names_cleaned.RT_filter.blck_filter.callerfilter2.FP"
 
 def output_filtered_list(category_list):
     for c in category_list:
@@ -33,13 +30,9 @@ for fusion in fusion_list:
     bp2_lst=fusion.breakpoint_2
     bp2=bp2_lst[0]
     # breakpoints closer than diff
-#    if fusion.chr1 == fusion.chr2  and abs(bp1 - bp2) < diff and fusion.inferred_fusion_type != "CodingFusion" and fusion.inferred_fusion_type != "ReadThrough" and fusion.inferred_fusion_type != "SameGene":
     if fusion.chr1 == fusion.chr2  and abs(bp1 - bp2) < diff and fusion.inferred_fusion_type != "CodingFusion" or fusion.inferred_fusion_type == "ReadThrough" or fusion.inferred_fusion_type == "SameGene":
-    #if fusion.inferred_fusion_type == "ReadThrough" or fusion.inferred_fusion_type == "SameGene":
-    #if fusion.inferred_fusion_type == "ReadThrough":
         filtered_list.append(fusion)
 
+# output header
+pygeneann.output_cluster_header()
 output_filtered_list(filtered_list)
-
-#TP cis-SAGe RNAs
-#/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/testing_pipeline/kumar_prostate.benchmark.June-17-2020.total_cluster/merged.cff.renamed.reann.cluster.prostate.TP

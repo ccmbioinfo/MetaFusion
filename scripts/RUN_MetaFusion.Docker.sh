@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Change date to current date
-date=Aug-18-2020
+date=Aug-20-2020
 
 #DATASETS
-sim45_sim52=1
-brca_4=0
+#sim45_sim52=1
+brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
@@ -14,6 +14,7 @@ brca_4=0
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
 runs_dir=/MetaFusion/RUNS
+mkdir $runs_dir
 gene_bed=/MetaFusion/reference_files/ens_known_genes.renamed.ENSG.bed
 gene_info=/MetaFusion/reference_files/Homo_sapiens.gene_info
 genome_fasta=/MetaFusion/reference_files/human_g1k_v37_decoy.fasta
@@ -44,7 +45,7 @@ fi
 #BT474.KPL4.MCF7.SKBR3
 if [ $brca_4 -eq 1 ]; then
 echo BT474.KPL4.MCF7.SKBR3
-outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.benchmark.$date
+outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.$date
 echo generating output in $outdir
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
 cff=/MetaFusion/test_data/cff/BRCA.cff
@@ -53,6 +54,7 @@ cff=/MetaFusion/test_data/cff/BRCA.cff
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
+                 --fusion_annotator \
                  --gene_info $gene_info \
                  --truth_set $truth_fusions \
                  --num_tools=2  \
@@ -63,7 +65,7 @@ fi
 #NEGATIVE CONTROL BEERS
 if [ $beers_neg -eq 1 ]; then
 echo NEGATIVE CONTROL BEERS
-outdir=$runs_dir/NEG_CONTROL_BEERS.benchmark.$date
+outdir=$runs_dir/BEERS.$date
 echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/beers_neg.cff 
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
@@ -82,7 +84,7 @@ fi
 # SIM50 2500 fusions files:
 if [ $sim_50 -eq 1 ]; then
 echo SIM50
-outdir=$runs_dir/SIM50.2500_TP.benchmark.$date
+outdir=$runs_dir/SIM50.$date
 echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/sim50.cff
 truth_fusions=/MetaFusion/test_data/truth_sets/sim50.truth_set.dat
@@ -102,7 +104,7 @@ fi
 #SIM101 2500 fusions files, same truth set as SIM50
 if [ $sim101 -eq 1 ]; then
 echo SIM101
-outdir=$runs_dir/SIM101.2500_TP.benchmark.$date
+outdir=$runs_dir/SIM101.$date
 echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/sim101.cff
 truth_fusions=/MetaFusion/test_data/truth_sets/sim101.truth_set.dat

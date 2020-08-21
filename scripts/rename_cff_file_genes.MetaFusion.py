@@ -2,20 +2,15 @@
 #/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/validation_pipeline/Pipeline-scripts/rename_cff_file_genes-GENAP.py
 import os
 import sys
-import pygeneann_reads_capture_DEV as pygeneann
+import pygeneann_MetaFusion as pygeneann
 import pandas as pd
 import sequtils
 import argparse
 import re
 
-
-
 parser = argparse.ArgumentParser()
-
 parser.add_argument('cff_file', action='store', help='CFF file before annotation. if there are multiple gene names in a field, names MUST be comma-separated lists')
 parser.add_argument('gene_info_file', action='store', help='Homo_sapiens.gene_info')
-
-
 
 args = parser.parse_args()
 cff_file = args.cff_file
