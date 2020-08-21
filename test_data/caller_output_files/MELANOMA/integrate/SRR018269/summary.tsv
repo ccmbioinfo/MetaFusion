@@ -1,0 +1,11 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	BCR	ABL1	N	3	Inter_Chromosomal	121	13	BCR>>ABL1(Inter_Chromosomal 8);BCR>>ABL1(Inter_Chromosomal Canonical 5);
+2	NUP214	XKR3	N	3	Inter_Chromosomal	57	8	NUP214>>XKR3(Inter_Chromosomal Canonical 8);
+3	SAV1	GYPE	N	3	Inter_Chromosomal	2	1	SAV1>>GYPE(Inter_Chromosomal Canonical 1);
+4	BAG6	SLC44A4	N	3	Intra_Chromosomal	28	4	BAG6>>SLC44A4(Intra_Chromosomal Canonical 4);
+5	KANSL1	ARL17A	N	3	Intra_Chromosomal	21	2	KANSL1>>ARL17A(Intra_Chromosomal Canonical 2);
+6	AK057473/BC041488	UBBP4	N	3	Intra_Chromosomal	4	2	AK057473/BC041488>>UBBP4(Intra_Chromosomal Canonical 2);
+7	KSR1	LGALS9	N	3	Read_Through	8	1	KSR1>>LGALS9(Read_Through Canonical 1);
+8	HAUS4	PRMT5	N	3	Read_Through	2	1	HAUS4>>PRMT5(Read_Through Canonical 1);
+9	KIAA0101	CSNK1G1	N	3	Read_Through	2	1	KIAA0101>>CSNK1G1(Read_Through Canonical 1);
+10	RPS14	MINOS1/MINOS1-NBL1/RPS14P3	N	6	Inter_Chromosomal	2246	3	RPS14>>MINOS1/MINOS1-NBL1/RPS14P3(Inter_Chromosomal 3);

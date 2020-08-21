@@ -1,0 +1,7 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	RECK	ALX3	N	3	Inter_Chromosomal	18	3	RECK>>ALX3(Inter_Chromosomal Canonical 1);RECK>>ALX3(Inter_Chromosomal Canonical 2);
+2	DCT	CLIC1	N	3	Inter_Chromosomal	2	1	DCT>>CLIC1(Inter_Chromosomal Canonical 1);
+3	NBPF1	NBPF9	N	3	Intra_Chromosomal	510	2	NBPF1>>NBPF9(Intra_Chromosomal Canonical 2);
+4	STAG3L3	STAG3	N	3	Intra_Chromosomal	7	1	STAG3L3>>STAG3(Intra_Chromosomal Canonical 1);
+5	TMEM8B	TLN1	N	3	Intra_Chromosomal	3	1	TMEM8B>>TLN1(Intra_Chromosomal Canonical 1);
+6	LOC728613	SDHAP3	N	3	Read_Through	3	2	LOC728613>>SDHAP3(Read_Through Canonical 2);

@@ -1,0 +1,7 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	SLC12A7	AAMDC	N	3	Inter_Chromosomal	37	16	SLC12A7>>AAMDC(Inter_Chromosomal Canonical 16);
+2	CCT3	C1orf61	N	3	Intra_Chromosomal	69	11	CCT3>>C1orf61(Intra_Chromosomal Canonical 7);CCT3>>C1orf61(Intra_Chromosomal Canonical 4);
+3	DQ266889	LRAT	N	3	Read_Through	7	1	DQ266889>>LRAT(Read_Through Canonical 1);
+4	KDM4C	ACTB	N	6	Inter_Chromosomal	168	4	KDM4C>>ACTB(Inter_Chromosomal 4);
+5	RPLP1	RGS7	N	6	Inter_Chromosomal	139	4	RPLP1>>RGS7(Inter_Chromosomal 4);
+6	CCT3	BC016978	N	6	Intra_Chromosomal	59	7	CCT3>>BC016978(Intra_Chromosomal 7);

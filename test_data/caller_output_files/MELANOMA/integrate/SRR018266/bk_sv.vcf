@@ -1,0 +1,26 @@
+##fileformat=VCFv4.1
+##fileDate=2020068
+##fileDate=human_g1k_v37_decoy
+##assembly=/hpf/largeprojects/ccmbio/jiangyue/hg19_decoy/human_g1k_v37_decoy.fasta
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structual variant">
+##INFO=<ID=IMPRECISE(Fucion Junction),Number=0,Type=Flag,Description="Imprecise structural variation">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=BND,Description="Breakend">
+##FORMAT=<ID=GT,Number=1,TYPE=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample_tumor
+1	156294763	bnd_2_CCT3_C1orf61_5p	C	]1:156374393]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	156294776	bnd_6_CCT3_BC016978_5p	G	]1:156374393]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	156374393	bnd_2_CCT3_C1orf61_3p	T	T[1:156294763[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	156374393	bnd_6_CCT3_BC016978_3p	T	T[1:156294776[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	241161840	bnd_5_RPLP1_RGS7_3p	G	G[15:69747611[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+11	77580768	bnd_1_SLC12A7_AAMDC_3p	C	]5:1085347]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+15	69747611	bnd_5_RPLP1_RGS7_5p	A	A[1:241161840[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+4	155652938	bnd_3_DQ266889_LRAT_5p	T	T[4:155670136[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+4	155670136	bnd_3_DQ266889_LRAT_3p	T	]4:155652938]T	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+5	1085347	bnd_1_SLC12A7_AAMDC_5p	G	]11:77580768]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	5567503	bnd_4_KDM4C_ACTB_3p	C	C[9:6835453[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+9	6835453	bnd_4_KDM4C_ACTB_5p	C	C[7:5567503[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.

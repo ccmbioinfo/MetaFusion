@@ -1,0 +1,8 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	KANSL1	ARL17A	N	3	Intra_Chromosomal	9	2	KANSL1>>ARL17A(Intra_Chromosomal Canonical 2);
+2	D28390	TUBA1B	N	3	Intra_Chromosomal	6	2	D28390>>TUBA1B(Intra_Chromosomal Canonical 2);
+3	RASA4B	POLR2J3	N	3	Intra_Chromosomal	2	1	RASA4B>>POLR2J3(Intra_Chromosomal Canonical 1);
+4	AF086285	ATP6V1E2	N	3	Read_Through	4	3	AF086285>>ATP6V1E2(Read_Through Canonical 3);
+5	ARNTL2	SMCO2	N	3	Read_Through	5	1	ARNTL2>>SMCO2(Read_Through Canonical 1);
+6	MGC21881	BC019880	N	3	Read_Through	3	1	MGC21881>>BC019880(Read_Through Canonical 1);
+7	BC090059	RIN2	N	3	Read_Through	2	1	BC090059>>RIN2(Read_Through Canonical 1);

@@ -1,0 +1,3 @@
+NUM_EN_RNA NUM_SP_RNA
+4 1
+7 1

@@ -1,0 +1,2 @@
+#FusionName	JunctionReadCount	SpanningFragCount	SpliceType	LeftGene	LeftBreakpoint	RightGene	RightBreakpoint	LargeAnchorSupport	FFPM	LeftBreakDinuc	LeftBreakEntropy	RightBreakDinuc	RightBreakEntropy	annots
+MIB2--PALLD	3	1	INCL_NON_REF_SPLICE	MIB2^ENSG00000197530.8	chr1:1560730:+	PALLD^ENSG00000129116.13	chr4:169611832:+	NO_LDAS	0.4897	GT	1.5656	AG	1.7819	["INTERCHROMOSOMAL[chr1--chr4]"]

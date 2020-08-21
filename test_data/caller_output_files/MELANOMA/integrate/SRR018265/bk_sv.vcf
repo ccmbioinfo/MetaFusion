@@ -1,0 +1,28 @@
+##fileformat=VCFv4.1
+##fileDate=2020064
+##fileDate=human_g1k_v37_decoy
+##assembly=/hpf/largeprojects/ccmbio/jiangyue/hg19_decoy/human_g1k_v37_decoy.fasta
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structual variant">
+##INFO=<ID=IMPRECISE(Fucion Junction),Number=0,Type=Flag,Description="Imprecise structural variation">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=BND,Description="Breakend">
+##FORMAT=<ID=GT,Number=1,TYPE=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample_tumor
+12	27571129	bnd_5_ARNTL2_SMCO2_5p	A	A[12:27627719[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	27627719	bnd_5_ARNTL2_SMCO2_3p	G	]12:27571129]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	49523505	bnd_2_D28390_TUBA1B_3p	G	G[12:49658967[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	49658967	bnd_2_D28390_TUBA1B_5p	G	G[12:49523505[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	44171926	bnd_1_KANSL1_ARL17A_5p	C	]17:44430296]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	44430296	bnd_1_KANSL1_ARL17A_3p	C	C[17:44171926[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+2	46739951	bnd_4_AF086285_ATP6V1E2_3p	G	G[2:46762952[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+2	46762952	bnd_4_AF086285_ATP6V1E2_5p	C	]2:46739951]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+20	19780391	bnd_7_BC090059_RIN2_5p	G	G[20:19870210[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+20	19870210	bnd_7_BC090059_RIN2_3p	G	]20:19780391]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	102125486	bnd_3_RASA4B_POLR2J3_5p	C	]7:102210371]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	102210371	bnd_3_RASA4B_POLR2J3_3p	C	C[7:102125486[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+9	41948877	bnd_6_MGC21881_BC019880_3p	C	C[9:41954749[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+9	41954749	bnd_6_MGC21881_BC019880_5p	C	]9:41948877]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.

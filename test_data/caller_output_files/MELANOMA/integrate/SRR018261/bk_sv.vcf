@@ -1,0 +1,26 @@
+##fileformat=VCFv4.1
+##fileDate=2020066
+##fileDate=human_g1k_v37_decoy
+##assembly=/hpf/largeprojects/ccmbio/jiangyue/hg19_decoy/human_g1k_v37_decoy.fasta
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structual variant">
+##INFO=<ID=IMPRECISE(Fucion Junction),Number=0,Type=Flag,Description="Imprecise structural variation">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=BND,Description="Breakend">
+##FORMAT=<ID=GT,Number=1,TYPE=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample_tumor
+1	153925845	bnd_6_SLC39A1_CRTC2_3p	C	C[1:153934696[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	153934696	bnd_6_SLC39A1_CRTC2_5p	C	]1:153925845]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+11	61205585	bnd_4_SDHAF2_PPP1R32_5p	G	G[11:61252160[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+11	61252160	bnd_4_SDHAF2_PPP1R32_3p	G	]11:61205585]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	56365031	bnd_2_CDK2_RAB5B_5p	G	G[12:56380653[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+12	56380653	bnd_2_CDK2_RAB5B_3p	G	]12:56365031]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+14	59928083	bnd_3_L3HYPDH_GPR135_3p	C	C[14:59942587[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+14	59942587	bnd_3_L3HYPDH_GPR135_5p	C	]14:59928083]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+14	94563311	bnd_5_IFI27L1_IFI27_5p	G	G[14:94581197[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+14	94581197	bnd_5_IFI27L1_IFI27_3p	C	]14:94563311]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	57744005	bnd_1_CLTC_VMP1_5p	G	G[17:57915656[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+17	57915656	bnd_1_CLTC_VMP1_3p	T	]17:57744005]T	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.

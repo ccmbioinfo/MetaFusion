@@ -1,0 +1,26 @@
+##fileformat=VCFv4.1
+##fileDate=2020065
+##fileDate=human_g1k_v37_decoy
+##assembly=/hpf/largeprojects/ccmbio/jiangyue/hg19_decoy/human_g1k_v37_decoy.fasta
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structual variant">
+##INFO=<ID=IMPRECISE(Fucion Junction),Number=0,Type=Flag,Description="Imprecise structural variation">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=BND,Description="Breakend">
+##FORMAT=<ID=GT,Number=1,TYPE=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample_tumor
+1	16891302	bnd_3_NBPF1_NBPF9_5p	C	]1:144828541]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	110604185	bnd_1_RECK_ALX3_3p	C	C[9:36108161[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+1	144828541	bnd_3_NBPF1_NBPF9_3p	G	]1:16891302]G	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+13	95095690	bnd_2_DCT_CLIC1_5p	C	]6:31701449]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+5	1593399	bnd_6_LOC728613_SDHAP3_3p	C	C[5:1599742[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+5	1599742	bnd_6_LOC728613_SDHAP3_5p	C	]5:1593399]C	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+6	31701449	bnd_2_DCT_CLIC1_3p	C	C[13:95095690[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	72469578	bnd_4_STAG3L3_STAG3_5p	T	]7:99796466]T	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+7	99796466	bnd_4_STAG3L3_STAG3_3p	A	]7:72469578]A	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+9	35717783	bnd_5_TMEM8B_TLN1_3p	C	C[9:35835215[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+9	35835215	bnd_5_TMEM8B_TLN1_5p	G	G[9:35717783[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.
+9	36108161	bnd_1_RECK_ALX3_5p	A	A[1:110604185[	.	.	SVTYPE=BND;IMPRECISE(Fucion Junction)	GT	./.

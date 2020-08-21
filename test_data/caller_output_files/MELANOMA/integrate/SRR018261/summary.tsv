@@ -1,0 +1,7 @@
+Fusion_Candidate	5_Prime	3_Prime	Reciprocal	Tier	Type	EN_RNA	SP_RNA	Splicings
+1	CLTC	VMP1	N	3	Read_Through	11	1	CLTC>>VMP1(Read_Through Canonical 1);
+2	CDK2	RAB5B	N	3	Read_Through	9	2	CDK2>>RAB5B(Read_Through Canonical 2);
+3	L3HYPDH	GPR135	N	3	Read_Through	3	1	L3HYPDH>>GPR135(Read_Through Canonical 1);
+4	SDHAF2	PPP1R32	N	3	Read_Through	3	1	SDHAF2>>PPP1R32(Read_Through Canonical 1);
+5	IFI27L1	IFI27	N	3	Read_Through	2	1	IFI27L1>>IFI27(Read_Through Canonical 1);
+6	SLC39A1	CRTC2	N	3	Read_Through	2	1	SLC39A1>>CRTC2(Read_Through Canonical 1);
