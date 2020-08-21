@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Change date to current date
-date=Aug-19-2020.TEST
+date=Aug-20-2020
 
 #DATASETS
-sim45_sim52=1
-#brca_4=1
+#sim45_sim52=1
+brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
@@ -14,6 +14,7 @@ sim45_sim52=1
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
 runs_dir=/MetaFusion/RUNS
+mkdir $runs_dir
 gene_bed=/MetaFusion/reference_files/ens_known_genes.renamed.ENSG.bed
 gene_info=/MetaFusion/reference_files/Homo_sapiens.gene_info
 genome_fasta=/MetaFusion/reference_files/human_g1k_v37_decoy.fasta
@@ -53,6 +54,7 @@ cff=/MetaFusion/test_data/cff/BRCA.cff
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
+                 --fusion_annotator \
                  --gene_info $gene_info \
                  --truth_set $truth_fusions \
                  --num_tools=2  \

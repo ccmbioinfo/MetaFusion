@@ -2,10 +2,9 @@
 outdir=$1
 mkdir -p $outdir
 truth_fusions=$2
-cff=$3
-cluster=$4
-fusiontools=$5
-FusionAnnotator=$6
+cluster=$3
+fusiontools=$4
+FusionAnnotator=$5
 
 FUSION_BENCHMARK=$fusiontools/FusionBenchmarking
 FUSION_ANNOTATOR=$fusiontools/FusionAnnotator
@@ -36,25 +35,25 @@ perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \
 outfile=$outdir/$(basename $outfile).gencode_mapped
 
 #BEGIN FusionAnnotator
-if [ $FA -eq 1 ]; then
+#if [ $FA -eq 1 ]; then
 
-echo RUN FusionAnnotator
-# "--full" parameter adds more detailed info to annotation
-perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
-outfile=$outdir/$(basename $outfile).wAnnot
-
-#SELECT FOR FUSIONS IN CANCER, ONLY THOSE CONFIRMED CANCER FUSIONS AND EXCLUDE "Individual genes of cancer relevance, which may show up in fusions" DATABASES
-#Oncogene, ArcherDX_panel, FoundationOne_panel, OncocartaV1_panel, OncomapV4_panel
-cat $outfile | grep 'FA_CancerSupp\|Mitelman\|chimerdb_omim\|chimerdb_pubmed\|ChimerKB\|ChimerPub\|ChimerSeq\|Cosmic\|YOSHIHARA_TCGA\|Klijn_CellLines\|Larsson_TCGA\|CCLE\|HaasMedCancer\|GUO2018CR_TCGA\|TumorFusionsNAR2018\|TCGA_StarF2019\|CCLE_StarF2019' > $outdir/$(basename $outfile).CANCER_FUSIONS
-ids=$(cat $outdir/$(basename $outfile).CANCER_FUSIONS | cut -f 8| sort | uniq)
-
-#add header
-echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).CANCER_FUSIONS 
-
-for id in ${ids[@]}; do
-  cat $cluster | grep $id >> $outdir/$(basename $cluster).CANCER_FUSIONS;
-done
-cancer_cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
+#echo RUN FusionAnnotator
+## "--full" parameter adds more detailed info to annotation
+#perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
+#outfile=$outdir/$(basename $outfile).wAnnot
+#
+##SELECT FOR FUSIONS IN CANCER, ONLY THOSE CONFIRMED CANCER FUSIONS AND EXCLUDE "Individual genes of cancer relevance, which may show up in fusions" DATABASES
+##Oncogene, ArcherDX_panel, FoundationOne_panel, OncocartaV1_panel, OncomapV4_panel
+#cat $outfile | grep 'FA_CancerSupp\|Mitelman\|chimerdb_omim\|chimerdb_pubmed\|ChimerKB\|ChimerPub\|ChimerSeq\|Cosmic\|YOSHIHARA_TCGA\|Klijn_CellLines\|Larsson_TCGA\|CCLE\|HaasMedCancer\|GUO2018CR_TCGA\|TumorFusionsNAR2018\|TCGA_StarF2019\|CCLE_StarF2019' > $outdir/$(basename $outfile).CANCER_FUSIONS
+#ids=$(cat $outdir/$(basename $outfile).CANCER_FUSIONS | cut -f 8| sort | uniq)
+#
+##add header
+#echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 cancer_db_hits captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).CANCER_FUSIONS 
+#
+#for id in ${ids[@]}; do
+#  cat $cluster | grep $id >> $outdir/$(basename $cluster).CANCER_FUSIONS;
+#done
+#cancer_cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
 
 # NORMAL FILTER
 #filter out anything which might be considered a "normal" tissue
@@ -65,10 +64,10 @@ cancer_cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
 #fi 
 
 # grep normal fusions, not a filter
-cat $outfile | grep 'ConjoinG\|Babiceanu_Normal\|Greger_Normal\|HGNC_GENEFAM\|DGD_PARALOGS\|BodyMap\|GTEx' > $outdir/$(basename $outfile).NORMALS
+#cat $outfile | grep 'ConjoinG\|Babiceanu_Normal\|Greger_Normal\|HGNC_GENEFAM\|DGD_PARALOGS\|BodyMap\|GTEx' > $outdir/$(basename $outfile).NORMALS
 
 #END FusionAnnotator
-fi
+#fi
 
 echo Scoring of fusion predictions
 ${FUSION_BENCHMARK}/benchmarking/fusion_preds_to_TP_FP_FN_FID.pl --truth_fusions $truth_fusions --fusion_preds $outfile  --allow_reverse_fusion > $outdir/$(basename $outfile).scored 
@@ -77,7 +76,7 @@ outfile=$outdir/$(basename $outfile).scored
 #TP
 #generate TP cluster file
 #add header
-echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).TP
+echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 cancer_db_hits captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).TP
 ids=$( cat $outfile | awk '$1=="TP" || $1=="NA-TP"' | awk '{print $NF}' | sort | uniq)
 for id in ${ids[@]}; do
   cat $cluster | grep $id >> $outdir/$(basename $cluster).TP ;
@@ -90,7 +89,7 @@ cat $outfile | awk '$1=="TP" || $1=="NA-TP"' > $outdir/$(basename $outfile).TP
 ids=$( cat $outfile | awk '$1=="FP" || $1=="NA-FP"' | awk '{print $NF}' | sort | uniq)
 #generate FP cluster file
 #add header
-echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 captured_reads_tumor_mean captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).FP
+echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 cancer_db_hits captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).FP
 for id in ${ids[@]}; do
   cat $cluster | grep $id >> $outdir/$(basename $cluster).FP ;
 done

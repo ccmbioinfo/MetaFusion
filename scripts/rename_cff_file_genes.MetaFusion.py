@@ -8,14 +8,9 @@ import sequtils
 import argparse
 import re
 
-
-
 parser = argparse.ArgumentParser()
-
 parser.add_argument('cff_file', action='store', help='CFF file before annotation. if there are multiple gene names in a field, names MUST be comma-separated lists')
 parser.add_argument('gene_info_file', action='store', help='Homo_sapiens.gene_info')
-
-
 
 args = parser.parse_args()
 cff_file = args.cff_file

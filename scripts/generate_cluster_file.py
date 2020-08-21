@@ -51,11 +51,6 @@ def output_clustered_fusions(fusion_list, cluster_type):
         sample_list = [f.sample_name for f in fusion_list]
 
         # get fusion.captured_reads averages for T and N
-        captured_reads_tumor = [f.captured_reads for f in fusion_list if f.sample_type == "Tumor"]
-        try:
-            captured_reads_tumor_mean = sum(captured_reads_tumor)/float(len(captured_reads_tumor))
-        except ZeroDivisionError:
-            captured_reads_tumor_mean = -1
         captured_reads_normal = [f.captured_reads for f in fusion_list if f.sample_type == "Normal"]
         try:
             captured_reads_normal_mean = sum(captured_reads_normal)/float(len(captured_reads_normal))
@@ -92,8 +87,11 @@ def output_clustered_fusions(fusion_list, cluster_type):
         breakpoint_1_list = [str(f.pos1) for f in fusion_list]
         chr2_list = [str(f.chr2) for f in fusion_list]
         breakpoint_2_list = [str(f.pos2) for f in fusion_list]
+        #cancer DB hits placeholder:
+        cancer_db_hits = "NA"
+
         # print statement modified to include the 4 above new fields
-        print "\t".join(map(str, [cluster_type, ",".join(list(set(gene1_list))), ",".join(list(set(gene2_list))), max_split_cnt, max_span_cnt, ",".join(list(set(sample_type_list))), ",".join(list(set(disease_list))), ",".join(list(set(tool_list))), ",".join(list(set(category_list))), gene1_on_bndry, gene1_close_to_bndry, gene2_on_bndry, gene2_close_to_bndry, dna_supp_cluster_num, ",".join(list(set(sample_list))), ",".join(list(set(chr1_list))), "|".join(list(set(breakpoint_1_list))), ",".join(list(set(chr2_list))), "|".join(list(set(breakpoint_2_list))), captured_reads_tumor_mean, captured_reads_normal_mean,",".join(list(set(fusion_IDs)))]))
+        print "\t".join(map(str, [cluster_type, ",".join(list(set(gene1_list))), ",".join(list(set(gene2_list))), max_split_cnt, max_span_cnt, ",".join(list(set(sample_type_list))), ",".join(list(set(disease_list))), ",".join(list(set(tool_list))), ",".join(list(set(category_list))), gene1_on_bndry, gene1_close_to_bndry, gene2_on_bndry, gene2_close_to_bndry, dna_supp_cluster_num, ",".join(list(set(sample_list))), ",".join(list(set(chr1_list))), "|".join(list(set(breakpoint_1_list))), ",".join(list(set(chr2_list))), "|".join(list(set(breakpoint_2_list))), cancer_db_hits, captured_reads_normal_mean,",".join(list(set(fusion_IDs)))]))
 
 
 # Load cff file
@@ -104,6 +102,8 @@ df_cff=pd.read_csv(cff, sep='\t', keep_default_na=False, index_col=False, names=
 
 # load FIDs file
 FID_clusters = [line for line in open(FIDs, "r")]
+# output header
+pygeneann.output_cluster_header()
 for cluster in FID_clusters:
     if cluster.startswith('FIDs'): continue
     FID_lst = cluster.rstrip().split(",")
@@ -112,8 +112,6 @@ for cluster in FID_clusters:
     for line in df_cluster.split("\n"):
         fusion=pygeneann.CffFusion(line)
         fusion_list.append(fusion)
-    # output header
-    pygeneann.output_cluster_header()
     #output fusion list
     output_clustered_fusions(fusion_list, "TEST")
 

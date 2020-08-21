@@ -1,23 +1,14 @@
 #!/bin/bash
-#outdir=$1
-#mkdir -p $outdir
-#cff=$2
-#gene_bed=$3
-#truth_fusions=$4
-#num_tools=$5
-#gene_info=$6
-#genome_fasta=$7
-
 #STEPS
-#rename=1
-#annotate=1
-#merge=1
-#output_ANC_RT_SG=1
-#RT_call_filter=1
+rename=1
+annotate=1
+merge=1
+output_ANC_RT_SG=1
+RT_call_filter=1
 blck_filter=1
-#ANC_filter=1
-#rank=1
-#benchmark=1
+ANC_filter=1
+rank=1
+benchmark=1
 
 
 # Loop through arguments and process them
@@ -161,15 +152,18 @@ cluster=$outdir/final.cluster
 
 #Benchmark
 if [ $benchmark -eq 1 ] && [ $truth_set ]; then
-   echo benchmark
-  benchmark_scripts=$fusiontools/FusionBenchmarking
-  fusionAnnotator_dir=$fusiontools/FusionAnnotator
   if [ $FA -eq 1 ]; then
-	echo including FusionAnnotator run in benchmarking 
-    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cff $cluster $fusiontools FusionAnnotator
+	bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools 
+
+	echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
+	FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
+	python add_db_hits_to_cluster.py $cluster $FA_db_file > $outdir/$(basename $cluster).CANCER_FUSIONS
+	cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
+	echo Running benchmarking
+    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools FusionAnnotator
   else
-	echo excluding FusionAnnotator run in benchmarking 
-    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cff $cluster $fusiontools 
+	echo Running benchmarking
+    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools 
   fi
 else
 	echo no benchmarking performed
