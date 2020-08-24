@@ -13,16 +13,16 @@ import ast
 #python add_db_hits_to_cluster.py /MetaFusion/RUNS/BT474.KPL4.MCF7.SKBR3.Aug-20-2020/final.cluster /MetaFusion/RUNS/BT474.KPL4.MCF7.SKBR3.Aug-20-2020/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
 
 #PARSER
-#parser = argparse.ArgumentParser()
-#parser.add_argument('fusion_cluster_file', action='store', help='Fusion cluster file )')
-#parser.add_argument('db_hit_file', action='store', help='FusionAnnotator output file subsetted for cancer DB hits')
-#args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('fusion_cluster_file', action='store', help='Fusion cluster file )')
+parser.add_argument('db_hit_file', action='store', help='FusionAnnotator output file subsetted for cancer DB hits')
+args = parser.parse_args()
 #
 ##INPUTS
-#cluster=args.fusion_cluster_file
-#db_hit_file = args.db_hit_file
-cluster="/MetaFusion/RUNS/melanoma.CML.Aug-20-2020/final.cluster"
-db_hit_file="/MetaFusion/RUNS/melanoma.CML.Aug-20-2020/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS.head1"
+cluster=args.fusion_cluster_file
+db_hit_file = args.db_hit_file
+#cluster="/MetaFusion/RUNS/melanoma.CML.Aug-20-2020/final.cluster"
+#db_hit_file="/MetaFusion/RUNS/melanoma.CML.Aug-20-2020/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS.head1"
 #CREATE FUSION LIST
 category_stats = pygeneann.CategoryFusionStats(cluster)
 fusion_list = category_stats.category_list

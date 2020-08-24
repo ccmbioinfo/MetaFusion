@@ -2,18 +2,19 @@
 #convert_fusion_results_to_cff.py sample disease_name sample_type tool fusion_results_file out_dir
 
 #raw_file_dir=/Users/mapostolides/MetaFusion/test_data/raw_output_STX16--RAE1
-dataset=DREAM.SIM45.SIM52
+dataset=MELANOMA
 raw_file_dir=/MetaFusion/test_data/caller_output_files/$dataset/star_seqr
 
-outdir=/MetaFusion/RUNS/star_seqr.$dataset.cff_convert-Aug-19-2020
+outdir=/MetaFusion/RUNS/star_seqr.$dataset.cff_convert-Aug-21-2020
 mkdir $outdir
-disease=VALIDATION
+disease=melanoma_cml
 sample_type=Tumor
 tool=star_seqr
 echo generating cff for $tool
-samples=$(echo smc_rna_sim45 smc_rna_sim52)
+samples=$(echo SRR018259 SRR018260 SRR018261 SRR018265 SRR018266 SRR018267 SRR018268 SRR018269)
 for sample in ${samples[@]};do 
-  result_file=$raw_file_dir/$sample\_STAR-SEQR/$sample\_STAR-SEQR_candidates.txt
+  #/MetaFusion/test_data/caller_output_files/MELANOMA/star_seqr/SRR018259/out_STAR-SEQR
+  result_file=$raw_file_dir/$sample/out_STAR-SEQR/out_STAR-SEQR_candidates.txt
   python convert_fusion_results_to_cff.py \
     $sample \
     $disease \
