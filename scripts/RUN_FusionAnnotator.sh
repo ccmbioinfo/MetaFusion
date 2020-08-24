@@ -15,7 +15,10 @@ genome_lib_dir=$(dirname $fusiontools)/reference_files/ctat_genome_lib_build_dir
 outfile=$outdir/cluster.preds.collected
 echo -e "sample\tprog\tfusion\tJ\tS\tFID" > $outfile
 # splits each call into one line per sample
-while read -r line;do samples=$(echo $line | awk '{print $15}' | sed 's/,/ /g'); for sample in ${samples[@]};do echo $line | awk -v samp="$sample" '{$15=samp;print}' | sed 's/ /\t/g' | awk '{FS=OFS="\t"}{print $15,"metacaller",$2"--"$3, $4, $5, $NF}' ;done done < $cluster  | grep -v fusion_IDs  >> $outfile 
+# CLUSTER FORMAT
+#while read -r line;do samples=$(echo $line | awk '{print $15}' | sed 's/,/ /g'); for sample in ${samples[@]};do echo $line | awk -v samp="$sample" '{$15=samp;print}' | sed 's/ /\t/g' | awk '{FS=OFS="\t"}{print $15,"metacaller",$2"--"$3, $4, $5, $NF}' ;done done < $cluster  | grep -v fusion_IDs  >> $outfile 
+#CLUSTER SUBSET FORMAT
+while read -r line;do samples=$(echo $line | awk '{print $13}' | sed 's/,/ /g'); for sample in ${samples[@]};do echo $line | awk -v samp="$sample" '{$13=samp;print}' | sed 's/ /\t/g' | awk '{FS=OFS="\t"}{print $13, "metacaller", $1"--"$2, $7, $8, $NF}' ;done done < $cluster  | grep -v fusion_IDs  >> $outfile
 
 #echo Mapping gene partners to Gencode v19 genes 
 perl ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \

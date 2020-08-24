@@ -44,6 +44,7 @@ if len(sys.argv) == 4:
             fusion.out()
 elif len(sys.argv) == 2:
     # output header
-    pygeneann.output_cluster_header()
+    #pygeneann.output_cluster_header()
+    pygeneann.output_cluster_header_subset()
     for fusion in descending_fusion_list:
-        fusion.out()
+        fusion.out_subset()

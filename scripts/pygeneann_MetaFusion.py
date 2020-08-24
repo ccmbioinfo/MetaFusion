@@ -84,10 +84,46 @@ class CategoryFusions():
         print "\t".join(map(str, [self.cluster_type, self.gene1, self.gene2, self.max_split_cnt, self.max_span_cnt, self.sample_type, ",".join(self.disease), ",".join(self.tools), self.inferred_fusion_type, self.gene1_on_bnd, self.gene1_close_to_bnd, self.gene2_on_bnd, self.gene2_close_to_bnd, self.dna_supp, ",".join(self.samples), self.chr1, "|".join(map(str, self.breakpoint_1)), self.chr2, "|".join(map(str, self.breakpoint_2)), ",".join(self.cancer_db_hits), self.captured_reads_normal_mean,",".join(self.fusion_IDs)]))
 
     def out_subset(self):
-        print self.line
+        # gene1   gene2   chr1    breakpoint_1    chr2    breakpoint_2    max_split_cnt   max_span_cnt    sample_type disease tools   inferred_fusion_type    samples fusion_IDs
+        print "\t".join(map(str, [self.gene1, self.gene2,  self.chr1, "|".join(map(str, self.breakpoint_1)), self.chr2, "|".join(map(str, self.breakpoint_2)), self.max_split_cnt, self.max_span_cnt, self.sample_type, ",".join(self.disease), ",".join(self.tools), self.inferred_fusion_type, ",".join(self.samples), ",".join(self.cancer_db_hits),",".join(self.fusion_IDs)]))
 
+class CategoryFusionSubset():
+    """
+    A subset of the .cluster file, abriged for easy reading
+    """
+    def __init__(self, category_line):
+        self.__load_category(category_line)
+    def __load_category(self, category_line):
+        tmp = category_line.split()
+        self.line = category_line.strip()
+        #HEADER
+        # gene1   gene2   chr1    breakpoint_1    chr2    breakpoint_2    max_split_cnt   max_span_cnt    sample_type disease tools   inferred_fusion_type    samples cancer_db_hits captured_reads_normal_mean fusion_IDs
+        self.gene1 = tmp[0]
+        self.gene2 = tmp[1]
+        self.chr1 = tmp[2]
+        self.breakpoint_1 = [int(num) for num in tmp[3].split('|')]
+        self.chr2 = tmp[4]
+        self.breakpoint_2 = [int(num) for num in tmp[5].split('|')]
+        self.max_split_cnt = int(tmp[6])
+        self.max_span_cnt = int(tmp[7])
+        self.sample_type = tmp[8] 
+        self.disease = tmp[9].split(",")
+        self.tools = tmp[10].split(",")
+        self.inferred_fusion_type = tmp[11]
+        self.samples = tmp[12].split(",")
+        self.cancer_db_hits = tmp[13].split(',') 
+        self.fusion_IDs = tmp[14].split(',')
+
+    def out_subset(self):
+        # gene1   gene2   chr1    breakpoint_1    chr2    breakpoint_2    max_split_cnt   max_span_cnt    sample_type disease tools   inferred_fusion_type    samples cancer_db_hits captured_reads_normal_mean fusion_IDs
+        print "\t".join(map(str, [self.gene1, self.gene2,  self.chr1, "|".join(map(str, self.breakpoint_1)), self.chr2, "|".join(map(str, self.breakpoint_2)), self.max_split_cnt, self.max_span_cnt, self.sample_type, ",".join(self.disease), ",".join(self.tools), self.inferred_fusion_type, ",".join(self.samples), ",".join(self.cancer_db_hits), ",".join(self.fusion_IDs)]))
+
+
+#HEAD OUTPUT FUNCTIONS
 def output_cluster_header():
         print "\t".join(["#cluster_type", "gene1", "gene2", "max_split_cnt", "max_span_cnt", "sample_type", "disease", "tools", "inferred_fusion_type", "gene1_on_bnd", "gene1_close_to_bnd", "gene2_on_bnd", "gene2_close_to_bnd", "dna_supp", "samples", "chr1", "breakpoint_1", "chr2", "breakpoint_2", "cancer_db_hits", "captured_reads_normal_mean", "fusion_IDs"])
+def output_cluster_header_subset():
+        print "\t".join(["#gene1", "gene2", "chr1", "breakpoint_1", "chr2", "breakpoint_2", "max_split_cnt", "max_span_cnt", "sample_type", "disease", "tools", "inferred_fusion_type", "samples", "cancer_db_hits", "fusion_IDs"])
         
             
 class CategoryFusionStats():
