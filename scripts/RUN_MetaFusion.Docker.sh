@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Aug-24-2020
+date=Aug-25-2020
 
 #DATASETS
 #sim45_sim52=1
-brca_4=0
+#brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
-#stx16_rae1=1
-melanoma=1
+stx16_rae1=1
+#melanoma=1
 
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
@@ -127,7 +127,7 @@ if [ $stx16_rae1 -eq 1 ]; then
 echo STX16--RAE1
 outdir=$runs_dir/STX16--RAE1.$date
 echo generating output in $outdir
-cff=/MetaFusion/test_data/cff/STX16--RAE1.cff
+cff=/MetaFusion/test_data/cff/STX16--RAE1.figure_subset.cff
 
 
 bash MetaFusion.sh --outdir $outdir \
@@ -145,11 +145,13 @@ fi
 # Melanoma and CML
 if [ $melanoma -eq 1 ]; then
 echo MELANOMA and CML 
-#outdir=$runs_dir/melanoma.CML.$date
-outdir=$runs_dir/melanoma.CML.no_SRR018269.$date
+outdir=$runs_dir/melanoma.CML.$date
+#outdir=$runs_dir/melanoma.CML.no_SRR018269.$date
 echo generating output in $outdir
-truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.no_SRR018269.dat
-cff=/MetaFusion/test_data/cff/melanoma.no_SRR018269.cff
+truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.dat
+#truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.no_SRR018269.dat
+cff=/MetaFusion/test_data/cff/melanoma.cff
+#cff=/MetaFusion/test_data/cff/melanoma.no_SRR018269.cff
 
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \

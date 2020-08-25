@@ -8,6 +8,7 @@ RT_call_filter=1
 blck_filter=1
 ANC_filter=1
 rank=1
+fusionannotator=1
 benchmark=1
 
 
@@ -116,7 +117,7 @@ fi
 
 #output ANC_RT_SG file
 if [ $output_ANC_RT_SG -eq 1 ]; then
-  echo output ANC_RT_SG file
+  echo output cis-sage.cluster file 
   python output_ANC_RT_SG.py $cluster > $outdir/cis-sage.cluster 
 fi
 
@@ -150,21 +151,32 @@ if [ $rank -eq 1 ]; then
 fi
 cluster=$outdir/final.cluster
 
+#fusionannotator
+if [ $fusionannotator -eq 1 ] && [ $FA -eq 1 ]; then
+  bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools
+  echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
+  FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
+  python add_db_hits_to_cluster.py $cluster $FA_db_file > $outdir/$(basename $cluster).CANCER_FUSIONS
+  cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
+fi
+
 #Benchmark
 if [ $benchmark -eq 1 ] && [ $truth_set ]; then
-  if [ $FA -eq 1 ]; then
-	bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools 
+  echo Running benchmarking
+  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools
+  #if [ $FA -eq 1 ]; then
+  #  bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools 
 
-	echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
-	FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
-	python add_db_hits_to_cluster.py $cluster $FA_db_file > $outdir/$(basename $cluster).CANCER_FUSIONS
-	cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
-	echo Running benchmarking
-    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools FusionAnnotator
-  else
-	echo Running benchmarking
-    bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools 
-  fi
+  #  echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
+  #  FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
+  #  python add_db_hits_to_cluster.py $cluster $FA_db_file > $outdir/$(basename $cluster).CANCER_FUSIONS
+  #  cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
+  #  echo Running benchmarking
+  #  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools FusionAnnotator
+  #else
+  #  echo Running benchmarking
+  #  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools 
+  #fi
 else
 	echo no benchmarking performed
 fi
