@@ -490,20 +490,27 @@ class CffFusion():
         self.line = cff_line
         # Breadkpoint Zone
         self.chr1 = tmp[0]
-        self.pos1 = int(tmp[1])
+        try: self.pos1 = int(tmp[1])
+        except: raise ValueError("CFF Column pos1 value " + tmp[1] + " is not a valid integer\nInvalid entry: " + cff_line)
         self.strand1 = tmp[2]
         self.chr2 = tmp[3]
-        self.pos2 = int(tmp[4])
+        try: self.pos2 = int(tmp[4])
+        except: raise ValueError("CFF Column pos1 value " + tmp[4] + " is not a valid integer\nInvalid entry: " + cff_line)
         self.strand2 = tmp[5]
         # Sample info Zone
         self.library = tmp[6] # DNA/RNA
         self.sample_name = tmp[7]
         self.sample_type = tmp[8] # Tumor/Normal
+        # Check to make sure sample_type is in ["Tumor", "Normal"]
+        if self.sample_type not in ["Tumor","Normal"]:raise ValueError("sample_type value '" + tmp[8] + "' must be Tumor or Normal\nInvalid entry: " + cff_line) 
         self.disease = tmp[9]
         # Software Zone
         self.tool = tmp[10]
-        self.split_cnt = int(tmp[11])
-        self.span_cnt = int(tmp[12]) if tmp[12] != "NA" else tmp[12]
+        try:
+          self.split_cnt = int(tmp[11])
+          self.span_cnt = int(tmp[12])
+        except: 
+          raise ValueError("split_cnt and span_cnt must be integers. Use -1 for null values\nInvalid entry: " + cff_line)
         self.t_gene1 = tmp[13] # gene reported by tool
         self.t_area1 = tmp[14] # exon/utr/intron
         self.t_gene2 = tmp[15]
@@ -511,26 +518,8 @@ class CffFusion():
         #FOR USE IN annotate_called_fusion_file.py
         self.left = []
         self.right = []
-        #try:
-        #    self.gene1_candidates = tmp[17]
-        #except IndexError:
-        #    self.gene1_candidates = ""
-        #try:
-        #    self.gene2_candidates = tmp[18]
-        #except IndexError:
-        #    self.gene2_candidates = ""
-        #try:
-        #    # GENE STRANDS REPRESENT CANDIDATE STRANDS QUERIED FROM GENE ANNOTATION FILE
-        #    self.gene1_strands = tmp[19]
-        #except IndexError:
-        #    self.gene1_strands = ""
-        #try:
-        #    self.gene2_strands = tmp[20]
-        #except IndexError:
-        #    self.gene2_strands = ""
         # Re-annotation Zone
         # ReadThrough     DTX2    cds     DTX2P1-UPK3BP1-PMS2P11  utr3    True    TrueTrue     True    5.5     1       474827  1       F00000001       CCTCCCGCAGGGCCCTGAGCACCCCAATCCCGGAAAGCCGTTCACTGCCAGAGGGTTTCCCCGCCAGTGCTACCTTCCAGACAACGCCCAGGGCCGCAAG    CCTCCAGGGGCTTCCAGAACCCGGAGACACTGGCTGACATTCCGGCCTCCCCACAGCTGCTGACCGATGGCCACTACATGACGCTGCCCGTGTCTCCGGA
-        #if len(tmp) == 33:
         if len(tmp) >= 33 :
             self.category = tmp[17]
             self.reann_gene1 = tmp[18]
