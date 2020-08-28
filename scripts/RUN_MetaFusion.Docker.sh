@@ -1,16 +1,17 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Aug-25-2020
+date=Aug-28-2020
 
 #DATASETS
-#sim45_sim52=1
+sim45_sim52=1
 #brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
-stx16_rae1=1
+#stx16_rae1=1
 #melanoma=1
+#test_run=1
 
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
@@ -51,12 +52,12 @@ echo generating output in $outdir
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
 cff=/MetaFusion/test_data/cff/BRCA.cff
 
-#                 --genome_fasta $genome_fasta \
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
                  --fusion_annotator \
                  --gene_info $gene_info \
+                 --genome_fasta $genome_fasta \
                  --truth_set $truth_fusions \
                  --num_tools=2  \
                  --recurrent_bedpe $recurrent_bedpe \
@@ -159,6 +160,23 @@ bash MetaFusion.sh --outdir $outdir \
                  --fusion_annotator \
                  --gene_info $gene_info \
                  --truth_set $truth_fusions \
+                 --num_tools=2  \
+                 --recurrent_bedpe $recurrent_bedpe \
+                 --scripts $fusiontools
+fi
+
+#TEST_RUN
+if [ $test_run -eq 1 ]; then
+echo TEST_RUN 
+outdir=$runs_dir/TEST.$date
+echo generating output in $outdir
+cff=/MetaFusion/test_data/cff/test.cff
+gene_info=/MetaFusion/reference_files/Homo_sapiens.gene_info.RAE1--STX16
+
+bash MetaFusion.sh --outdir $outdir \
+                 --cff $cff  \
+                 --gene_bed $gene_bed \
+                 --gene_info $gene_info \
                  --num_tools=2  \
                  --recurrent_bedpe $recurrent_bedpe \
                  --scripts $fusiontools
