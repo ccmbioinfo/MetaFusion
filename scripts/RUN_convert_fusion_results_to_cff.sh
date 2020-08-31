@@ -4,8 +4,9 @@
 #raw_file_dir=/Users/mapostolides/MetaFusion/test_data/raw_output_STX16--RAE1
 dataset=MELANOMA
 raw_file_dir=/MetaFusion/test_data/caller_output_files/$dataset/star_seqr
+date=Aug-21-2020
 
-outdir=/MetaFusion/RUNS/star_seqr.$dataset.cff_convert-Aug-21-2020
+outdir=/MetaFusion/RUNS/star_seqr.$dataset.cff_convert-$date
 mkdir $outdir
 disease=melanoma_cml
 sample_type=Tumor

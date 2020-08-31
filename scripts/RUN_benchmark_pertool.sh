@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date
-date=Aug-24-2020
+date=Aug-25-2020
 
 #DATASETS
 sim45_sim52=0
@@ -81,12 +81,13 @@ fi
 ## Melanoma and CML
 if [ $melanoma -eq 1 ]; then
 echo MELANOMA and CML
-outdir=$runs_dir/melanoma.CML.pertool_benchmark.truth_set.NO_DUPS.$date
+outdir=$runs_dir/melanoma.CML.pertool_benchmark.$date
+#outdir=$runs_dir/melanoma.CML.pertool_benchmark.truth_set.NO_DUPS.$date
 echo generating output in $outdir
-#cff=/MetaFusion/test_data/cff/melanoma.cff
-cff=/MetaFusion/test_data/cff/melanoma.no_SRR018269.cff
-#truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.dat
-truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.no_SRR018269.dat
+cff=/MetaFusion/test_data/cff/melanoma.cff
+#cff=/MetaFusion/test_data/cff/melanoma.no_SRR018269.cff
+truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.dat
+#truth_fusions=/MetaFusion/test_data/truth_sets/melanoma.truth_set.no_SRR018269.dat
 
 bash $fusiontools/benchmarking_cff_pertool.sh $outdir $truth_fusions $cff $fusiontools
 fi
