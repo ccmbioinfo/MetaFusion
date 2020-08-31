@@ -1859,6 +1859,41 @@ class GeneAnnotation():
                             #   break
             idx -= 1
         return previous_exons, next_exons   
+
+    def get_closest_exon_lists(self, chr, pos):
+        # returns exon if breakpoint (pos) falls within it, otherwise returns 2 exons that flank breakpoint. previous and next exons are based on coordinates, not strand. i.e. if a adjacent exon's coordinate < bp, it is a previous exon, otherwise next exon
+        previous_exons = []
+        next_exons = []
+        if not chr in self.__gene_starts:
+            raise Exception(" 'chr' prefix needed for chromosomes")
+            return previous_exons, next_exons
+        idx = bisect.bisect(self.__gene_starts[chr], pos)
+        #print("idx", idx)
+        while 0 < idx <= len(self.__gene_starts[chr]):
+            bpann = self.__genes[chr][idx-1]
+            #search within a limited region (default 1000000)
+            if pos - bpann.start > self.__max_diff:
+                break
+            # search all annotations that breakpoint is within 
+            if bpann.start <= pos <= bpann.end:
+                # if current annnotation is a cds, we have found closest exon
+                if bpann.type == "cds":
+                    return [bpann], [bpann]
+                # search for "next" exon (i.e on right)
+                for i in range(idx, min(idx+100, len(self.__gene_starts[chr]))):
+                    adjacent_bpann = self.__genes[chr][i]
+                    # in next 100 annotations, try to find exon adjacent to current intron of the same transcript
+                    if bpann.transcript_id == adjacent_bpann.transcript_id and adjacent_bpann.type == "cds" and abs(adjacent_bpann.idx - bpann.idx) <= 1:
+                        next_exons.append(adjacent_bpann)
+                # search for "previous" exon (i.e on left)
+                for i in range(idx-2, max(0, idx-100), -1):
+                    adjacent_bpann = self.__genes[chr][i]
+                    # in next 100 annotations, try to find exon adjacent to current intron of the same transcript
+                    if bpann.transcript_id == adjacent_bpann.transcript_id and adjacent_bpann.type == "cds" and abs(adjacent_bpann.idx - bpann.idx) <= 1:
+                        previous_exons.append(adjacent_bpann)
+            idx -= 1
+        return previous_exons, next_exons
+
     def get_adjacent_introns(self, chr, pos):
         previous_introns = []
         next_introns = []   
