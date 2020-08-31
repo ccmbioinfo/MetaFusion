@@ -6,7 +6,7 @@ outdir=$2
 fusiontools_dir=$3
 
 #Generate intersections file for exons 
-fid_intersection_file=$outdir/FID.intersections.tsv
+fid_intersection_file=$outdir/FID.intersections.exons.tsv
 python $fusiontools_dir/intersect_exons.py $cff > $fid_intersection_file 
 
 # Graph clustering

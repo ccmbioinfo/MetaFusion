@@ -50,14 +50,15 @@ def intersect_fusions_by_exons(cff_file):
         if line.startswith("#"):
             continue
         fusion = pygeneann.CffFusion(line)
-        if fusion.t_gene1 == "NA" or fusion.t_gene2 == "NA":
+        # skip those fusions which lack "closest exons" near at least one of their breakpoints
+        if fusion.closest_exon1 == "NA" or fusion.closest_exon2 == "NA":
             continue
         else:
-            key = ",".join(sorted([fusion.t_gene1 + "|" + fusion.chr1, fusion.t_gene2+ "|" + fusion.chr2])) 
+            key = ",".join(sorted([fusion.closest_exon1, fusion.closest_exon2])) 
             fusion_dict.setdefault(key, []).append(fusion.fusion_id)
     return fusion_dict
 
-fusion_dict = intersect_fusions_by_genes(cff)
+fusion_dict = intersect_fusions_by_exons(cff)
 
 count = df.shape[0] + 1 
 for key in fusion_dict.keys():

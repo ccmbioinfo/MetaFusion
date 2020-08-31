@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Aug-28-2020.pygeneann_MetaFusion
+date=Aug-31-2020
 
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
@@ -25,18 +25,47 @@ extract_exon_pipeline (){
   gene_bed=$3
   genome_fasta=$4
   
+  fusiontools=/MetaFusion/scripts 
   #REFORMAT
-  cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'BEGIN{FS=OFS="\t"} $3 !~ /^[-+]$/{$3="NA"} 1' | awk 'BEGIN{FS=OFS="\t"} $6 !~ /^[-+]$/{$6="NA"} 1'   > $outdir/$(basename $cff).reformat
+  #cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'BEGIN{FS=OFS="\t"} $3 !~ /^[-+]$/{$3="NA"} 1' | awk 'BEGIN{FS=OFS="\t"} $6 !~ /^[-+]$/{$6="NA"} 1'   > $outdir/$(basename $cff).reformat
   cff=$outdir/$(basename $cff).reformat
 
-  echo Annotate cff, no extraction of sequence surrounding breakpoint
-  python reann_cff_fusion.py --cff $cff --gene_bed $gene_bed > $outdir/$(basename $cff).reann.NO_SEQ
+  #echo Annotate cff, no extraction of sequence surrounding breakpoint
+  #python reann_cff_fusion.py --cff $cff --gene_bed $gene_bed > $outdir/$(basename $cff).reann.NO_SEQ
   cff=$outdir/$(basename $cff).reann.NO_SEQ
-  echo Add adjacent exons to cff
-  python $fusiontools/extract_closest_exons.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).exons
+  #echo Add adjacent exons to cff
+  #python $fusiontools/extract_closest_exons.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).exons
 
-  echo Merge cff by exon
-  bash RUN_cluster_exons.sh $cff $outdir $fusiontools > $cluster
+  #echo Merge cff by exon
+  cluster=$outdir/$(basename $cff).cluster
+  #bash RUN_cluster_exons.sh $cff $outdir $fusiontools > $cluster
+  #ReadThrough Callerfilter
+
+  echo ReadThrough, callerfilter
+  num_tools=2
+  python callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
+  cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
+
+  # Blocklist Filter
+  echo blocklist filter
+  bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+  cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+
+  echo ANC adjacent noncoding filter
+  python filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter
+  cluster=$outdir/$(basename $cluster).ANC_filter
+
+  echo Rank and generate final.cluster
+  python rank_cluster_file.py $cluster > $outdir/final.cluster
+  cluster=$outdir/final.cluster
+
+  echo Running benchmarking
+  echo $outdir
+  truth_set=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
+  echo $truth_set
+  echo $cluster
+  echo $fusiontools
+  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools
 
 }
 
@@ -131,14 +160,3 @@ outdir=$runs_dir/melanoma.CML.$date
 cff=/MetaFusion/test_data/cff/melanoma.cff
 fi
 
-run_reann_cluster (){
-  outdir=$1
-  mkdir -p $outdir
-  cff=$2
-  gene_bed=$3
-  fusiontools=/hpf/largeprojects/ccmbio/mapostolides/MODULES/MetaFusion/scripts
-  genome_fasta=/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/pipeline/config_reference_files/human_g1k_v37_decoy.fasta
-  #cat $cff
-  python $fusiontools/reann_cff_fusion_exon_test2.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).exons
-
-}

@@ -62,7 +62,7 @@ for line in open(cff_file, "r"):
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      fusion.splice_site1=exon
+      fusion.closest_exon1=exon
     #NEXT HEAD
     elif fusion.strand1 == '-':
       try:
@@ -70,7 +70,7 @@ for line in open(cff_file, "r"):
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      fusion.splice_site1=exon
+      fusion.closest_exon1=exon
     else: raise Exception('Strand must be either + or -')
 
     if debug: 
@@ -84,7 +84,7 @@ for line in open(cff_file, "r"):
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      fusion.splice_site2=exon
+      fusion.closest_exon2=exon
     #NEXT TAIL
     elif fusion.strand2 == '+':
       try:
@@ -92,7 +92,7 @@ for line in open(cff_file, "r"):
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
       except:
         exon="NA"
-      fusion.splice_site2=exon
+      fusion.closest_exon2=exon
     else: raise Exception('Strand must be either + or -')
     print fusion.tostring() 
 

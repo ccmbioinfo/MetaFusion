@@ -89,7 +89,7 @@ class CategoryFusions():
 
 class CategoryFusionSubset():
     """
-    A subset of the .cluster file, abriged for easy reading
+    A subset of the .cluster file, abridged for easy reading
     """
     def __init__(self, category_line):
         self.__load_category(category_line)
@@ -538,8 +538,10 @@ class CffFusion():
             self.seq1 = tmp[31]
             self.seq2 = tmp[32]
             self.is_inframe = False
-            self.splice_site1 = "NA"
-            self.splice_site2 = "NA"
+            #self.splice_site1 = "NA"
+            #self.splice_site2 = "NA"
+            self.closest_exon1 = "NA"
+            self.closest_exon2 = "NA"
             self.captured_reads = int(tmp[36]) 
         else:
             self.category = "NA"    # category
@@ -558,8 +560,10 @@ class CffFusion():
             self.seq1 = "NA"
             self.seq2 = "NA"
             self.is_inframe = False
-            self.splice_site1 = "NA"
-            self.splice_site2 = "NA"
+            #self.splice_site1 = "NA"
+            #self.splice_site2 = "NA"
+            self.closest_exon1 = "NA"
+            self.closest_exon2 = "NA"
             self.captured_reads = -1
             if len(tmp) == 30:
                 self.dnasupp = tmp[29]
@@ -722,7 +726,7 @@ class CffFusion():
                 value.append(self.__dict__[attr])
         self.boundary_info = "\t".join(map(str, [self.gene1_on_bndry, self.gene1_close_to_bndry, self.gene2_on_bndry, self.gene2_close_to_bndry]))
         if self.fusion_id != "NA":
-            return "\t".join(map(lambda x:str(x), value)) + "\t" + self.category + "\t" + self.reann_gene1 + "\t" + self.reann_type1 + "\t" + self.reann_gene2 + "\t" + self.reann_type2 + "\t" + self.boundary_info + "\t" + str(self.score) + "\t" + str(self.coding_id_distance) + "\t" + str(self.gene_interval_distance) + "\t" + str(self.dnasupp) + "\t" + self.fusion_id + "\t" + self.seq1 + "\t" + self.seq2 + "\t" + str(self.is_inframe) + "\t" + self.splice_site1 + "\t" + self.splice_site2 + "\t" + str(self.captured_reads)
+            return "\t".join(map(lambda x:str(x), value)) + "\t" + self.category + "\t" + self.reann_gene1 + "\t" + self.reann_type1 + "\t" + self.reann_gene2 + "\t" + self.reann_type2 + "\t" + self.boundary_info + "\t" + str(self.score) + "\t" + str(self.coding_id_distance) + "\t" + str(self.gene_interval_distance) + "\t" + str(self.dnasupp) + "\t" + self.fusion_id + "\t" + self.seq1 + "\t" + self.seq2 + "\t" + str(self.is_inframe) + "\t" + self.closest_exon1 + "\t" + self.closest_exon2 + "\t" + str(self.captured_reads)
         else:
             return "\t".join(map(lambda x:str(x), value)) 
     
