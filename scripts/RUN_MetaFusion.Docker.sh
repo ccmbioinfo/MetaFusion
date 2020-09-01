@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Aug-28-2020
+date=Sept-1-2020
 
 #DATASETS
-sim45_sim52=1
-#brca_4=1
+#sim45_sim52=1
+brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
@@ -52,6 +52,7 @@ echo generating output in $outdir
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
 cff=/MetaFusion/test_data/cff/BRCA.cff
 
+#                 --annotate_exons \
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \

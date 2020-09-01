@@ -38,15 +38,15 @@ def intersect_fusions_by_breakpoints():
     #write paired F_IDs to tsv
     return df
 
-df = intersect_fusions_by_breakpoints()
-df.to_csv(sys.stdout,header=True,index=True, sep="\t")
+#df = intersect_fusions_by_breakpoints()
+#df.to_csv(sys.stdout,header=True,index=True, sep="\t")
 
-# CLUSTER GENES
+# CLUSTER EXONS 
 
-def intersect_fusions_by_exons(cff_file):
+def intersect_fusions_by_exons(cff):
     fusion_dict = {}
     # cluster fusions by gene pairs, save in fusion_dict
-    for line in open(cff_file, "r"):
+    for line in open(cff, "r"):
         if line.startswith("#"):
             continue
         fusion = pygeneann.CffFusion(line)
@@ -55,15 +55,23 @@ def intersect_fusions_by_exons(cff_file):
             continue
         else:
             key = ",".join(sorted([fusion.closest_exon1, fusion.closest_exon2])) 
+            # append fusion_id twice so it intersects with itself
+            fusion_dict.setdefault(key, []).append(fusion.fusion_id)
             fusion_dict.setdefault(key, []).append(fusion.fusion_id)
     return fusion_dict
 
 fusion_dict = intersect_fusions_by_exons(cff)
-
-count = df.shape[0] + 1 
+#print(fusion_dict)
+#exit(0)
+#count = df.shape[0] + 1 
+count = 0
+#print header
+print("\t" + "fusion_id" + "\t" + "fusion_id_lst")
 for key in fusion_dict.keys():
     lst=fusion_dict[key]
+    #print(lst)
     edges=list(itertools.permutations(lst, 2))
+    #print(edges)
     for edge in edges:
         print("\t".join([str(count)] + list(edge)))
         count += 1

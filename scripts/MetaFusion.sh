@@ -1,8 +1,9 @@
 #!/bin/bash
 #STEPS
-rename=1
-annotate=1
-merge=1
+#rename=1
+#annotate=1
+#annotate_exons=1
+#merge=1
 output_ANC_RT_SG=1
 RT_call_filter=1
 blck_filter=1
@@ -53,6 +54,10 @@ while test $# -gt 0;do
         ;;
         --fusion_annotator)
         FA=1
+        shift
+        ;;
+        --annotate_exons)
+        exons=1
         shift
         ;;
         *)
@@ -108,10 +113,22 @@ else
   echo cff $cff
 fi
 
+if [ $annotate_exons -eq 1 ] && [ $exons -eq 1 ]; then
+  echo Add adjacent exons to cff
+  python $fusiontools/extract_closest_exons.py $cff $gene_bed $genome_fasta  > $outdir/$(basename $cff).exons
+fi
+# assign cff as ".exons" if --annotate_exons flag was specified
+if [ $exons -eq 1 ]; then
+  cff=$outdir/$(basename $cff).exons
+fi
+
 #Merge
 cluster=$outdir/$(basename $cff).cluster
-if [ $merge -eq 1 ]; then
-  echo Merge cff
+if [ $exons -eq 1 ] && [ $merge -eq 1 ]; then
+  echo Merge cff by exons
+  bash RUN_cluster_exons.sh $cff $outdir $fusiontools > $cluster
+elif [ $merge -eq 1 ]; then
+  echo Merge cff by genes and breakpoints
   bash RUN_cluster_genes_breakpoints.sh $cff $outdir $fusiontools > $cluster
 fi
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Aug-31-2020
+date=Sept-1-2020
 
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
@@ -27,18 +27,20 @@ extract_exon_pipeline (){
   
   fusiontools=/MetaFusion/scripts 
   #REFORMAT
-  #cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'BEGIN{FS=OFS="\t"} $3 !~ /^[-+]$/{$3="NA"} 1' | awk 'BEGIN{FS=OFS="\t"} $6 !~ /^[-+]$/{$6="NA"} 1'   > $outdir/$(basename $cff).reformat
+  cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'BEGIN{FS=OFS="\t"} $3 !~ /^[-+]$/{$3="NA"} 1' | awk 'BEGIN{FS=OFS="\t"} $6 !~ /^[-+]$/{$6="NA"} 1'   > $outdir/$(basename $cff).reformat
   cff=$outdir/$(basename $cff).reformat
 
-  #echo Annotate cff, no extraction of sequence surrounding breakpoint
-  #python reann_cff_fusion.py --cff $cff --gene_bed $gene_bed > $outdir/$(basename $cff).reann.NO_SEQ
+  echo Annotate cff, no extraction of sequence surrounding breakpoint
+  python reann_cff_fusion.py --cff $cff --gene_bed $gene_bed > $outdir/$(basename $cff).reann.NO_SEQ
   cff=$outdir/$(basename $cff).reann.NO_SEQ
-  #echo Add adjacent exons to cff
-  #python $fusiontools/extract_closest_exons.py $cff $gene_bed $genome_fasta > $outdir/$(basename $cff).exons
 
-  #echo Merge cff by exon
+  echo Add adjacent exons to cff
+  python $fusiontools/extract_closest_exons.py $cff $gene_bed $genome_fasta  > $outdir/$(basename $cff).exons
+  cff=$outdir/$(basename $cff).exons
+
+  echo Merge cff by exon
   cluster=$outdir/$(basename $cff).cluster
-  #bash RUN_cluster_exons.sh $cff $outdir $fusiontools > $cluster
+  bash RUN_cluster_exons.sh $cff $outdir $fusiontools > $cluster
   #ReadThrough Callerfilter
 
   echo ReadThrough, callerfilter
@@ -59,13 +61,13 @@ extract_exon_pipeline (){
   python rank_cluster_file.py $cluster > $outdir/final.cluster
   cluster=$outdir/final.cluster
 
-  echo Running benchmarking
-  echo $outdir
-  truth_set=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
-  echo $truth_set
-  echo $cluster
-  echo $fusiontools
-  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools
+  #echo Running benchmarking
+  #echo $outdir
+  #truth_set=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
+  #echo $truth_set
+  #echo $cluster
+  #echo $fusiontools
+  #bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools
 
 }
 
@@ -83,7 +85,8 @@ fi
 if [ $stx_rae -eq 1 ]; then
 #STX16--RAE1
 cff=/MetaFusion/test_data/cff/STX16--RAE1.ALL.cff
-outdir=$runs_dir/outdir-$date
+#cff=/MetaFusion/EXON_RUNS/outdir-Aug-27-2020/STX16--RAE1.ALL.cff.reann.NO_SEQ.55929088.arriba.1entry
+outdir=$runs_dir/STX16--RAE1-$date
 mkdir $outdir
 gene_bed=/MetaFusion/test_data/cff_test/ens_known_genes.STX16--RAE1.renamed.bed
 extract_exon_pipeline $outdir $cff $gene_bed $genome_fasta 

@@ -49,14 +49,7 @@ def output_clustered_fusions(fusion_list, cluster_type):
         max_split_cnt = max([f.split_cnt for f in fusion_list])
         max_span_cnt = max([f.span_cnt for f in fusion_list])
         sample_list = [f.sample_name for f in fusion_list]
-
-        # get fusion.captured_reads averages for T and N
-        captured_reads_normal = [f.captured_reads for f in fusion_list if f.sample_type == "Normal"]
-        try:
-            captured_reads_normal_mean = sum(captured_reads_normal)/float(len(captured_reads_normal))
-        except ZeroDivisionError:
-            captured_reads_normal_mean = -1
-
+        
         fusion_IDs = [f.fusion_id for f in fusion_list]
         disease_list = [f.disease for f in fusion_list]
         tool_list = [f.tool for f in fusion_list]
@@ -65,9 +58,10 @@ def output_clustered_fusions(fusion_list, cluster_type):
         gene1_close_to_bndry = "True" in [f.gene1_close_to_bndry for f in fusion_list]
         gene2_on_bndry = "True" in [f.gene2_on_bndry for f in fusion_list]
         gene2_close_to_bndry = "True" in [f.gene2_close_to_bndry for f in fusion_list]
-
-        dna_supp_cluster_num = max([int(f.dnasupp) for f in fusion_list])
-
+        #closest exons
+        exon1 = ",".join(set([f.closest_exon1 for f in fusion_list]))
+        exon2 = ",".join(set([f.closest_exon2 for f in fusion_list]))
+        #categories
         category_list = [f.category for f in fusion_list]
 
         # PRIORITIZE CATEGORIES TO REMOVE MULTIPLE CATEGORIES, also rename categories
@@ -91,7 +85,7 @@ def output_clustered_fusions(fusion_list, cluster_type):
         cancer_db_hits = "NA"
 
         # print statement modified to include the 4 above new fields
-        print "\t".join(map(str, [cluster_type, ",".join(list(set(gene1_list))), ",".join(list(set(gene2_list))), max_split_cnt, max_span_cnt, ",".join(list(set(sample_type_list))), ",".join(list(set(disease_list))), ",".join(list(set(tool_list))), ",".join(list(set(category_list))), gene1_on_bndry, gene1_close_to_bndry, gene2_on_bndry, gene2_close_to_bndry, dna_supp_cluster_num, ",".join(list(set(sample_list))), ",".join(list(set(chr1_list))), "|".join(list(set(breakpoint_1_list))), ",".join(list(set(chr2_list))), "|".join(list(set(breakpoint_2_list))), cancer_db_hits, captured_reads_normal_mean,",".join(list(set(fusion_IDs)))]))
+        print "\t".join(map(str, [cluster_type, ",".join(list(set(gene1_list))), ",".join(list(set(gene2_list))), max_split_cnt, max_span_cnt, ",".join(list(set(sample_type_list))), ",".join(list(set(disease_list))), ",".join(list(set(tool_list))), ",".join(list(set(category_list))), gene1_on_bndry, gene1_close_to_bndry, gene2_on_bndry, gene2_close_to_bndry, cancer_db_hits, ",".join(list(set(sample_list))), ",".join(list(set(chr1_list))), "|".join(list(set(breakpoint_1_list))), ",".join(list(set(chr2_list))), "|".join(list(set(breakpoint_2_list))), exon1, exon2 ,",".join(list(set(fusion_IDs)))]))
 
 
 # Load cff file

@@ -40,7 +40,7 @@ class CategoryFusions():
         self.gene1_close_to_bnd = tmp[10]
         self.gene2_on_bnd = tmp[11]
         self.gene2_close_to_bnd = tmp[12]   
-        self.dna_supp = tmp[13]
+        self.cancer_db_hits = tmp[13].split(',')
         # dna support values: 
         #0: has data, no dna pairs; >0:  number of dna pair clusters; -1: no data;
         # -2: gene not in annotation; -3: chr not in bam; -4: confilicting window start and end 
@@ -58,8 +58,8 @@ class CategoryFusions():
         # attributes to accrue list of gene names in bed feature file that intersect with breakpoints 
         self.left = []
         self.right = []
-        self.cancer_db_hits = tmp[19].split(',') 
-        self.captured_reads_normal_mean = tmp[20]
+        self.exon1 = tmp[19]
+        self.exon2 = tmp[20]
         self.fusion_IDs = tmp[21].split(',')
        # try:
        #     self.gene1_candidates = tmp[19] 
@@ -81,7 +81,7 @@ class CategoryFusions():
 
     def out(self):
         #print self.line
-        print "\t".join(map(str, [self.cluster_type, self.gene1, self.gene2, self.max_split_cnt, self.max_span_cnt, self.sample_type, ",".join(self.disease), ",".join(self.tools), self.inferred_fusion_type, self.gene1_on_bnd, self.gene1_close_to_bnd, self.gene2_on_bnd, self.gene2_close_to_bnd, self.dna_supp, ",".join(self.samples), self.chr1, "|".join(map(str, self.breakpoint_1)), self.chr2, "|".join(map(str, self.breakpoint_2)), ",".join(self.cancer_db_hits), self.captured_reads_normal_mean,",".join(self.fusion_IDs)]))
+        print "\t".join(map(str, [self.cluster_type, self.gene1, self.gene2, self.max_split_cnt, self.max_span_cnt, self.sample_type, ",".join(self.disease), ",".join(self.tools), self.inferred_fusion_type, self.gene1_on_bnd, self.gene1_close_to_bnd, self.gene2_on_bnd, self.gene2_close_to_bnd, ",".join(self.cancer_db_hits), ",".join(self.samples), self.chr1, "|".join(map(str, self.breakpoint_1)), self.chr2, "|".join(map(str, self.breakpoint_2)), self.exon1, self.exon2, ",".join(self.fusion_IDs)]))
 
     def out_subset(self):
         # gene1   gene2   chr1    breakpoint_1    chr2    breakpoint_2    max_split_cnt   max_span_cnt    sample_type disease tools   inferred_fusion_type    samples fusion_IDs
@@ -121,7 +121,7 @@ class CategoryFusionSubset():
 
 #HEAD OUTPUT FUNCTIONS
 def output_cluster_header():
-        print "\t".join(["#cluster_type", "gene1", "gene2", "max_split_cnt", "max_span_cnt", "sample_type", "disease", "tools", "inferred_fusion_type", "gene1_on_bnd", "gene1_close_to_bnd", "gene2_on_bnd", "gene2_close_to_bnd", "dna_supp", "samples", "chr1", "breakpoint_1", "chr2", "breakpoint_2", "cancer_db_hits", "captured_reads_normal_mean", "fusion_IDs"])
+        print "\t".join(["#cluster_type", "gene1", "gene2", "max_split_cnt", "max_span_cnt", "sample_type", "disease", "tools", "inferred_fusion_type", "gene1_on_bnd", "gene1_close_to_bnd", "gene2_on_bnd", "gene2_close_to_bnd", "cancer_db_hits", "samples", "chr1", "breakpoint_1", "chr2", "breakpoint_2", "exon1", "exon2", "fusion_IDs"])
 def output_cluster_header_subset():
         print "\t".join(["#gene1", "gene2", "chr1", "breakpoint_1", "chr2", "breakpoint_2", "max_split_cnt", "max_span_cnt", "sample_type", "disease", "tools", "inferred_fusion_type", "samples", "cancer_db_hits", "fusion_IDs"])
         
@@ -540,8 +540,8 @@ class CffFusion():
             self.is_inframe = False
             #self.splice_site1 = "NA"
             #self.splice_site2 = "NA"
-            self.closest_exon1 = "NA"
-            self.closest_exon2 = "NA"
+            self.closest_exon1 = tmp[34] 
+            self.closest_exon2 = tmp[35]
             self.captured_reads = int(tmp[36]) 
         else:
             self.category = "NA"    # category
@@ -579,7 +579,8 @@ class CffFusion():
         self.zone1_attrs = ["chr1", "pos1", "strand1", "chr2", "pos2", "strand2"]
         self.zone2_attrs = ["library", "sample_name", "sample_type", "disease"]
         self.zone3_attrs = ["tool", "split_cnt", "span_cnt", "t_gene1", "t_area1", "t_gene2", "t_area2"]
-        self.zone4_attrs = ["category", "reann_gene1", "reann_type1", "reann_gene2", "reann_type2", "gene1_on_bdry", "gene1_close_to_bndry", "gene2_on_bdry", "gene2_close_to_bndry", "score", "coding_id_distance", "gene_interval_distance", "dna_support", "fusion_id", "seq1", "seq2", "is_inframe", "splice_site1", "splice_site2", "captured_reads"]  
+        #self.zone4_attrs = ["category", "reann_gene1", "reann_type1", "reann_gene2", "reann_type2", "gene1_on_bdry", "gene1_close_to_bndry", "gene2_on_bdry", "gene2_close_to_bndry", "score", "coding_id_distance", "gene_interval_distance", "dna_support", "fusion_id", "seq1", "seq2", "is_inframe", "splice_site1", "splice_site2", "captured_reads"]  
+        self.zone4_attrs = ["category", "reann_gene1", "reann_type1", "reann_gene2", "reann_type2", "gene1_on_bdry", "gene1_close_to_bndry", "gene2_on_bdry", "gene2_close_to_bndry", "score", "coding_id_distance", "gene_interval_distance", "dna_support", "fusion_id", "seq1", "seq2", "is_inframe", "closest_exon1", "closest_exon2", "captured_reads"]  
         #self.zone4_attrs = ["reann_gene_order1", "reann_gene_type1", "reann_gene_index1", "reann_category1", "reann_gene_order2", "reann_gene_type2", "reann_gene_index2", "reann_category2"]
         # format chr
         if not self.chr1.startswith("chr"):

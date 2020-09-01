@@ -27,7 +27,7 @@ def choose_closest_exon(exon_list, pos, strand, ori):
     #chooses the closest exon from a list of adjacent exons either upstream (head) or downstream (tail) of the fusion breakpoint
     smallest_dist=float('inf')
     closest_exon=""
-    if debug: print("There are " + str(len(exon_list)) + " exons in the list")
+    if debug == 1: print("There are " + str(len(exon_list)) + " exons in the list")
     for exon in exon_list:
       # get dist, exon.start will always be larger value than pos2
       if (strand=="+" and ori=="tail") or (strand=="-" and ori=="head"):
@@ -39,7 +39,7 @@ def choose_closest_exon(exon_list, pos, strand, ori):
         closest_exon=exon
         smallest_dist = dist
       exon_igv=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
-    if debug: 
+    if debug == 1: 
       print("Closest exon: " + str(closest_exon.chr) + ":" + str(closest_exon.start) + "-" + str(closest_exon.end))
       if (strand=="+" and ori=="tail") or (strand=="-" and ori=="head"): print(closest_exon.start - pos)
       elif (strand=="+" and ori=="head") or (strand=="-" and ori=="tail"): print(pos - exon.start)
@@ -52,7 +52,7 @@ for line in open(cff_file, "r"):
     adjacent_exons1 = gene_ann.get_closest_exon_lists(fusion.chr1, fusion.pos1)
     adjacent_exons2 = gene_ann.get_closest_exon_lists(fusion.chr2, fusion.pos2)
     #exons downstream of breakpoint on + strand
-    if debug:
+    if debug == 1:
       print("HEAD GENE: ", fusion.t_gene1)
       print("BREAKPOINT: ", fusion.chr1, fusion.pos1, fusion.strand1) 
     #PREV HEAD 
@@ -73,12 +73,12 @@ for line in open(cff_file, "r"):
       fusion.closest_exon1=exon
     else: raise Exception('Strand must be either + or -')
 
-    if debug: 
+    if debug == 1: 
       print("TAIL GENE: ", fusion.t_gene2)
       print("BREAKPOINT: ", fusion.chr2, fusion.pos2, fusion.strand2) 
 
     #PREV TAIL 
-    if fusion.strand2 == '-':# or debug:
+    if fusion.strand2 == '-':
       try:
         exon=choose_closest_exon(adjacent_exons2[0], fusion.pos2, fusion.strand2, "tail")
         exon=str(exon.chr) + ":" + str(exon.start) + "-" + str(exon.end)
