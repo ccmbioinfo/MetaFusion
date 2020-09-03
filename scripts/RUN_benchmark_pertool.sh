@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date
-date=Aug-25-2020
+date=Sept-2-2020
 
 #DATASETS
 sim45_sim52=0

@@ -18,7 +18,8 @@ cff=$outdir/$(basename $cff).FID
 #PUT CFF INTO PROPER FORMAT
 outfile=$outdir/cff.preds.collected
 echo -e "sample\tprog\tfusion\tJ\tS\tFID" > $outfile
-cat $cff | awk '{FS=OFS="\t"}{print $8,$11,$14"--"$16, $12, $13, $31}' >> $outfile
+#cat $cff | awk '{FS=OFS="\t"}{print $8,$11,$14"--"$16, $12, $13, $31}' >> $outfile
+cat $cff | sed 's/(.\+)//g' | sed 's/\//,/g' | awk '{FS=OFS="\t"}{print $8,$11,$14"--"$16, $12, $13, $31}' >> $outfile
 
 echo Mapping gene partners to Gencode v19 genes 
 $perl_bin ${FUSION_BENCHMARK}/benchmarking/map_gene_symbols_to_gencode_FID.pl \

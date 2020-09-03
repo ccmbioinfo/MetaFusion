@@ -104,7 +104,7 @@ fi
 #BT474.KPL4.MCF7.SKBR3
 if [ $brca_4 -eq 1 ]; then
 echo BT474.KPL4.MCF7.SKBR3
-outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.$date
+outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.exon_annotation.$date
 echo generating output in $outdir
 cff=/MetaFusion/test_data/cff/BRCA.cff
 extract_exon_pipeline $outdir $cff $gene_bed $genome_fasta

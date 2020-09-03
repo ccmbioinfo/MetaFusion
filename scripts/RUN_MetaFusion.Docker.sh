@@ -9,9 +9,7 @@ brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
-#stx16_rae1=1
 #melanoma=1
-#test_run=1
 
 fusiontools=/MetaFusion/scripts
 #REFERENCE FILES FILES
@@ -47,14 +45,15 @@ fi
 #BT474.KPL4.MCF7.SKBR3
 if [ $brca_4 -eq 1 ]; then
 echo BT474.KPL4.MCF7.SKBR3
-outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.$date
+#outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.$date
+outdir=$runs_dir/BT474.KPL4.MCF7.SKBR3.exon_annot.$date
 echo generating output in $outdir
 truth_fusions=/MetaFusion/test_data/truth_sets/BRCA.truth_set.dat
 cff=/MetaFusion/test_data/cff/BRCA.cff
 
-#                 --annotate_exons \
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
+                 --annotate_exons \
                  --gene_bed $gene_bed \
                  --fusion_annotator \
                  --gene_info $gene_info \
@@ -161,23 +160,6 @@ bash MetaFusion.sh --outdir $outdir \
                  --fusion_annotator \
                  --gene_info $gene_info \
                  --truth_set $truth_fusions \
-                 --num_tools=2  \
-                 --recurrent_bedpe $recurrent_bedpe \
-                 --scripts $fusiontools
-fi
-
-#TEST_RUN
-if [ $test_run -eq 1 ]; then
-echo TEST_RUN 
-outdir=$runs_dir/TEST.$date
-echo generating output in $outdir
-cff=/MetaFusion/test_data/cff/test.cff
-gene_info=/MetaFusion/reference_files/Homo_sapiens.gene_info.RAE1--STX16
-
-bash MetaFusion.sh --outdir $outdir \
-                 --cff $cff  \
-                 --gene_bed $gene_bed \
-                 --gene_info $gene_info \
                  --num_tools=2  \
                  --recurrent_bedpe $recurrent_bedpe \
                  --scripts $fusiontools

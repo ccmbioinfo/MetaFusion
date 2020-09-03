@@ -1882,19 +1882,19 @@ class GeneAnnotation():
             # search all annotations that breakpoint is within 
             if bpann.start <= pos <= bpann.end:
                 # if current annnotation is a cds, we have found closest exon
-                if bpann.type == "cds":
+                if bpann.type in ["cds", "utr5", "utr3"]:
                     return [bpann], [bpann]
                 # search for "next" exon (i.e on right)
                 for i in range(idx, min(idx+100, len(self.__gene_starts[chr]))):
                     adjacent_bpann = self.__genes[chr][i]
-                    # in next 100 annotations, try to find exon adjacent to current intron of the same transcript
-                    if bpann.transcript_id == adjacent_bpann.transcript_id and adjacent_bpann.type == "cds" and abs(adjacent_bpann.idx - bpann.idx) <= 1:
+                    # in next 100 annotations, try to find exon or UTR adjacent to current intron of the same transcript
+                    if bpann.transcript_id == adjacent_bpann.transcript_id and adjacent_bpann.type in ["cds", "utr5", "utr3"] and abs(adjacent_bpann.idx - bpann.idx) <= 1:
                         next_exons.append(adjacent_bpann)
                 # search for "previous" exon (i.e on left)
                 for i in range(idx-2, max(0, idx-100), -1):
                     adjacent_bpann = self.__genes[chr][i]
                     # in next 100 annotations, try to find exon adjacent to current intron of the same transcript
-                    if bpann.transcript_id == adjacent_bpann.transcript_id and adjacent_bpann.type == "cds" and abs(adjacent_bpann.idx - bpann.idx) <= 1:
+                    if bpann.transcript_id == adjacent_bpann.transcript_id and adjacent_bpann.type == ["cds", "utr5", "utr3"] and abs(adjacent_bpann.idx - bpann.idx) <= 1:
                         previous_exons.append(adjacent_bpann)
             idx -= 1
         return previous_exons, next_exons
