@@ -137,13 +137,32 @@ class CategoryFusionStats():
     def __init__(self, category_file):
         self.category_list = []
         self.num_fusions = 0
-        self.__load_category_file(category_file)
+        #Check if Subset
+        file = open(category_file, "r")
+        line = file.readline().split("\t")
+        file.close()
+        if line[0] == "#gene1": self.__load_category_file_subset(category_file) 
+        else: self.__load_category_file(category_file)
 
     def __load_category_file(self, category_file):
         for line in open(category_file, "r"):
             if line.startswith("#"):
                 continue
             category = CategoryFusions(line)
+            self.category_list.append(category)
+        self.num_fusions = len(self.category_list)
+        # count number of samples present in category file
+        samples = []
+        for fusion in self.category_list:
+            samples += fusion.samples
+        self.samples = set(samples)
+        self.num_samples = len(self.samples)
+
+    def __load_category_file_subset(self, category_file):
+        for line in open(category_file, "r"):
+            if line.startswith("#"):
+                continue
+            category = CategoryFusionSubset(line)
             self.category_list.append(category)
         self.num_fusions = len(self.category_list)
         # count number of samples present in category file

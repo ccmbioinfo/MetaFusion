@@ -1,9 +1,9 @@
 #!/bin/bash
 #STEPS
-#rename=1
-#annotate=1
-#annotate_exons=1
-#merge=1
+rename=1
+annotate=1
+annotate_exons=1
+merge=1
 output_ANC_RT_SG=1
 RT_call_filter=1
 blck_filter=1
@@ -11,7 +11,6 @@ ANC_filter=1
 rank=1
 fusionannotator=1
 benchmark=1
-
 
 # Loop through arguments and process them
 while test $# -gt 0;do
@@ -149,7 +148,8 @@ cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 # Blocklist Filter
 if [ $blck_filter -eq 1 ]; then
   echo blocklist filter
-bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+  #echo bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe
+  bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
 cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 
@@ -170,6 +170,7 @@ cluster=$outdir/final.cluster
 
 #fusionannotator
 if [ $fusionannotator -eq 1 ] && [ $FA -eq 1 ]; then
+  echo Running FusionAnnotator
   bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools
   echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
   FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS

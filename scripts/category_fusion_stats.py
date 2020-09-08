@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 
 import sys
-#sys.path.append("/hpf/largeprojects/ccmbio/jiangyue/DIPG_analysis_by_samples/Scripts/pygeneann/pygenefusionann")
-#sys.path.append("/hpf/largeprojects/ccmbio/jiangyue/Genap_ccm/pygenefusionann/")
-import pygeneann_OLD_star_fusion_defuse_style as pygeneann
+import pygeneann_MetaFusion as pygeneann
 import argparse
 import itertools
 import subprocess
@@ -11,7 +9,7 @@ import subprocess
 parser = argparse.ArgumentParser()
 
 parser.add_argument('fusion_cluster_file', action='store', help='Fusion reannation file clustered by head/tail genes. (.reann.cluster file)')
-parser.add_argument('sample_name_file', action='store', help='A file containing all sample names')
+#parser.add_argument('sample_name_file', action='store', help='A file containing all sample names')
 
 args = parser.parse_args()
 
@@ -128,48 +126,53 @@ def get_num_fusions_per_category(category_stats):
     print
 
 # init Sampleinfo object using sample_name_files
-sampleinfo_dict = init_sampleinfo_objects(args.sample_name_file)
+#sampleinfo_dict = init_sampleinfo_objects(args.sample_name_file)
 
 category_stats = pygeneann.CategoryFusionStats(args.fusion_cluster_file)
 
 
 #get count of fusions detected by each tool
-get_num_fusions_per_tool(category_stats)
+#get_num_fusions_per_tool(category_stats)
 
 # get count of fusions falling under each category
-get_num_fusions_per_category(category_stats)
+#get_num_fusions_per_category(category_stats)
 
 # output number of fusions detected in each sample
 #output_sample_fusion_cnt(category_stats.category_list, sampleinfo_dict, group)
 
 fusion_list = category_stats.category_list
+#fusion_list = []
+#for line in open(args.fusion_cluster_file, 'r+'):
+#    if line.startswith('#'): continue
+#    fusion_list.append(pygeneann.CategoryFusionSubset(line))
 
 # Apply Covfilter5
-covfilter3=True
-if covfilter3:
-    fusion_list = category_stats.filter_split_cnt(fusion_list, 5)
-    # need to NOT filter out FUSIONMAP calls based on span_cnt, calls are all -1, since fusionmap doesn't give this info
-    fusion_list = [fusion for fusion in fusion_list if (fusion.max_span_cnt >= 5) or ('fusionmap' in fusion.tools and len(fusion.tools)==1)]
+#covfilter3=True
+#if covfilter3:
+#    fusion_list = category_stats.filter_split_cnt(fusion_list, 5)
+#    # need to NOT filter out FUSIONMAP calls based on span_cnt, calls are all -1, since fusionmap doesn't give this info
+#    fusion_list = [fusion for fusion in fusion_list if (fusion.max_span_cnt >= 5) or ('fusionmap' in fusion.tools and len(fusion.tools)==1)]
 
 
 # output count table for total
 print >> sys.stderr, "Total input category number:", len(fusion_list)
 group = "Total"
-output_cnt_table(fusion_list, group)
+#output_cnt_table(fusion_list, group)
 
 # enumerate all combinations of tools
 print("ENUMERATING TOOLS")
+tool_list=["ericscript", "fusionmap", "defuse", "integrate", "arriba", "star_fusion", "star_seqr"]
 combinations = []
-for r in range(2,6):
-    combinations += list(itertools.combinations(["ericscript", "fusionmap", "defuse", "integrate", "star_fusion"], r))
-combinations = [list(combination) for combination in combinations]
-print(combinations)
-print(len(combinations))
+for r in range(1,8):
+    combinations += list(itertools.combinations(tool_list, r))
+combinations = [sorted(list(combination)) for combination in combinations]
+#print(combinations)
+#print(len(combinations))
 
 #filtering based on fusion being detected by a specific list of tools, and only those tools
 print "FILTERING BY TOOL COMBINATIONS AND WRITING FILE"
-filename = "tool_combination_counts.tsv"
-file1 = open(filename, "w+")
+#filename = "tool_combination_counts.tsv"
+#file1 = open(filename, "w+")
 tool_combinations = [] # [0]
 corresponding_counts = [] # [1]
 for combination in combinations:
@@ -178,18 +181,21 @@ for combination in combinations:
     to_write = str(sorted(combination)) + "\t" + str(len(filtered_list)) + "\n"
     tool_combinations.append(sorted(combination))
     corresponding_counts.append(len(filtered_list))
-    file1.write(to_write)
-file1.close()
-print(tool_combinations)
+    #file1.write(to_write)
+    print(to_write)
+#file1.close()
+#print(tool_combinations)
 #print(type(tuple(tool_combinations)))
-print(corresponding_counts)
+#print(corresponding_counts)
+
+#for tool in tool_list: print corresponding_counts[tool]
 
 # make dictionary of {tool_combinations:corresponding_fusions}
 tool_count_dict={}
 for i in range(len(tool_combinations)):
     tool_count_dict[",".join(tool_combinations[i])]=corresponding_counts[i]
 #tool_count_dict = dict(itertools.izip(tuple(tool_combinations),tuple(corresponding_counts)))
-print(tool_count_dict)
+#print(tool_count_dict)
 #print "RUNNING R VENN DIAGRAM SCRIPT"
 #subprocess.call ("pwd", shell=True)
 #subprocess.call ("cat tool_combination_counts.tsv", shell=True)

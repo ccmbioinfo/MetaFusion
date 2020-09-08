@@ -82,7 +82,7 @@ outfile=$outdir/$(basename $outfile).scored
 #TP
 #generate TP cluster file
 #add header
-echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 cancer_db_hits captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).TP
+echo \#gene1  gene2   chr1    breakpoint_1    chr2    breakpoint_2    max_split_cnt   max_span_cnt    sample_type disease tools   inferred_fusion_type    samples cancer_db_hits  fusion_IDs | sed 's/ \+/\t/g' > $outdir/$(basename $cluster).TP
 ids=$( cat $outfile | awk '$1=="TP" || $1=="NA-TP"' | awk '{print $NF}' | sort | uniq)
 for id in ${ids[@]}; do
   cat $cluster | grep $id >> $outdir/$(basename $cluster).TP ;
@@ -95,7 +95,8 @@ cat $outfile | awk '$1=="TP" || $1=="NA-TP"' > $outdir/$(basename $outfile).TP
 ids=$( cat $outfile | awk '$1=="FP" || $1=="NA-FP"' | awk '{print $NF}' | sort | uniq)
 #generate FP cluster file
 #add header
-echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 cancer_db_hits captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).FP
+#echo \#cluster_type gene1 gene2 max_split_cnt max_span_cnt sample_type disease tools inferred_fusion_type gene1_on_bnd gene1_close_to_bnd gene2_on_bnd gene2_close_to_bnd dna_supp samples chr1 breakpoint_1 chr2 breakpoint_2 cancer_db_hits captured_reads_normal_mean fusion_IDs | sed 's/ /\t/g' > $outdir/$(basename $cluster).FP
+echo \#gene1  gene2   chr1    breakpoint_1    chr2    breakpoint_2    max_split_cnt   max_span_cnt    sample_type disease tools   inferred_fusion_type    samples cancer_db_hits  fusion_IDs | sed 's/ \+/\t/g' > $outdir/$(basename $cluster).FP
 for id in ${ids[@]}; do
   cat $cluster | grep $id >> $outdir/$(basename $cluster).FP ;
 done

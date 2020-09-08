@@ -30,7 +30,7 @@ outfile=$outdir/$(basename $outfile).gencode_mapped
 
 #BEGIN FusionAnnotator
 
-echo RUN FusionAnnotator
+#echo RUN FusionAnnotator
 # "--full" parameter adds more detailed info to annotation
 perl ${FUSION_ANNOTATOR}/FusionAnnotator --annotate $outfile --genome_lib_dir $genome_lib_dir  -C 2 --full > $outdir/$(basename $outfile).wAnnot
 outfile=$outdir/$(basename $outfile).wAnnot

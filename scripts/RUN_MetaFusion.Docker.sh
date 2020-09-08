@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Sept-1-2020
+date=Sept-3-2020
 
 #DATASETS
-#sim45_sim52=1
-brca_4=1
+sim45_sim52=1
+#brca_4=1
 #beers_neg=1
 #sim_50=1
 #sim101=1
@@ -18,7 +18,7 @@ mkdir $runs_dir
 gene_bed=/MetaFusion/reference_files/ens_known_genes.renamed.ENSG.bed
 gene_info=/MetaFusion/reference_files/Homo_sapiens.gene_info
 genome_fasta=/MetaFusion/reference_files/human_g1k_v37_decoy.fasta
-recurrent_bedpe=/MetaFusion/reference_files/blacklist_breakpoints.bedpe
+recurrent_bedpe=/MetaFusion/reference_files/blocklist_breakpoints.bedpe
 
 
 # SIM45.SIM52.combined
@@ -77,6 +77,8 @@ bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
                  --gene_info $gene_info \
+                 --fusion_annotator \
+                 --genome_fasta $genome_fasta \
                  --truth_set $truth_fusions \
                  --num_tools=2  \
                  --recurrent_bedpe $recurrent_bedpe \
@@ -95,6 +97,8 @@ truth_fusions=/MetaFusion/test_data/truth_sets/sim50.truth_set.dat
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
+                 --fusion_annotator \
+                 --genome_fasta $genome_fasta \
                  --gene_info $gene_info \
                  --truth_set $truth_fusions \
                  --num_tools=2  \
@@ -116,6 +120,8 @@ bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
                  --gene_info $gene_info \
+                 --fusion_annotator \
+                 --genome_fasta $genome_fasta \
                  --truth_set $truth_fusions \
                  --num_tools=2  \
                  --recurrent_bedpe $recurrent_bedpe \
@@ -135,6 +141,7 @@ bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
                  --fusion_annotator \
+                 --genome_fasta $genome_fasta \
                  --gene_info $gene_info \
                  --num_tools=2  \
                  --recurrent_bedpe $recurrent_bedpe \
@@ -158,6 +165,7 @@ bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
                  --gene_bed $gene_bed \
                  --fusion_annotator \
+                 --genome_fasta $genome_fasta \
                  --gene_info $gene_info \
                  --truth_set $truth_fusions \
                  --num_tools=2  \
