@@ -139,7 +139,7 @@ fi
 
 #ReadThrough Callerfilter
 if [ $RT_call_filter -eq 1 ]; then
-  echo ReadThrough, callerfilter
+  echo ReadThrough, callerfilter $num_tools
   cat $cluster | grep ReadThrough > $outdir/$(basename $cluster).ReadThrough
   python callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 fi
@@ -164,9 +164,9 @@ cluster=$outdir/$(basename $cluster).ANC_filter
 #Rank and generate final.cluster
 if [ $rank -eq 1 ]; then
    echo Rank and generate final.cluster 
-  python rank_cluster_file.py $cluster > $outdir/final.cluster
+  python rank_cluster_file.py $cluster > $outdir/final.callerfilter$num_tools.cluster
 fi
-cluster=$outdir/final.cluster
+cluster=$outdir/final.callerfilter$num_tools.cluster
 
 #fusionannotator
 if [ $fusionannotator -eq 1 ] && [ $FA -eq 1 ]; then
