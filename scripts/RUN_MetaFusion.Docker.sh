@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Sept-3-2020
+date=Sept-17-2020
 
 #DATASETS
 sim45_sim52=1

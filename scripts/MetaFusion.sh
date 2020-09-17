@@ -164,9 +164,9 @@ cluster=$outdir/$(basename $cluster).ANC_filter
 #Rank and generate final.cluster
 if [ $rank -eq 1 ]; then
    echo Rank and generate final.cluster 
-  python rank_cluster_file.py $cluster > $outdir/final.callerfilter$num_tools.cluster
+  python rank_cluster_file.py $cluster > $outdir/final.n$num_tools.cluster
 fi
-cluster=$outdir/final.callerfilter$num_tools.cluster
+cluster=$outdir/final.n$num_tools.cluster
 
 #fusionannotator
 if [ $fusionannotator -eq 1 ] && [ $FA -eq 1 ]; then
