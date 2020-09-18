@@ -182,19 +182,6 @@ fi
 if [ $benchmark -eq 1 ] && [ $truth_set ]; then
   echo Running benchmarking
   bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools
-  #if [ $FA -eq 1 ]; then
-  #  bash RUN_FusionAnnotator.sh $outdir $cluster $fusiontools 
-
-  #  echo Adding FusionAnnotator database hits to final.cluster.CANCER_FUSIONS file
-  #  FA_db_file=$outdir/cluster.preds.collected.gencode_mapped.wAnnot.CANCER_FUSIONS
-  #  python add_db_hits_to_cluster.py $cluster $FA_db_file > $outdir/$(basename $cluster).CANCER_FUSIONS
-  #  cluster=$outdir/$(basename $cluster).CANCER_FUSIONS
-  #  echo Running benchmarking
-  #  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools FusionAnnotator
-  #else
-  #  echo Running benchmarking
-  #  bash benchmarking_cluster.MetaFusion.sh $outdir $truth_set $cluster $fusiontools 
-  #fi
 else
 	echo no benchmarking performed
 fi
