@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Sept-18-2020-TEST
+date=Sept-18-2020-Sing
 
 #DATASETS
 sim45_sim52=1
@@ -12,7 +12,7 @@ sim45_sim52=1
 #melanoma=1
 
 #Set topdir for running on local machine
-topdir=/Users/mapostolides
+topdir=/hpf/largeprojects/ccmbio/mapostolides
 fusiontools=$topdir/MetaFusion/scripts
 runs_dir=$topdir/MetaFusion/RUNS
 mkdir $runs_dir
