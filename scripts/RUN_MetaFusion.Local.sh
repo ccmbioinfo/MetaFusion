@@ -12,7 +12,7 @@ sim45_sim52=1
 #melanoma=1
 
 #Set topdir for running on local machine
-topdir=/Users/mapostolides
+#topdir=/Users/mapostolides
 fusiontools=$topdir/MetaFusion/scripts
 runs_dir=$topdir/MetaFusion/RUNS
 mkdir $runs_dir
