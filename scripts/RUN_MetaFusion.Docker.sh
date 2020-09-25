@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change date to current date. Can also add tag to this string for multiple runs
-date=Sept-17-2020
+date=Sept-25-2020
 
 #DATASETS
 sim45_sim52=1
@@ -52,7 +52,6 @@ cff=/MetaFusion/test_data/cff/BRCA.cff
 
 bash MetaFusion.sh --outdir $outdir \
                  --cff $cff  \
-                 --annotate_exons \
                  --gene_bed $gene_bed \
                  --fusion_annotator \
                  --gene_info $gene_info \
