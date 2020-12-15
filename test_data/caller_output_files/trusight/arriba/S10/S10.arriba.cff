@@ -1,0 +1,5 @@
+7	138552721	-	7	140487384	-	in-frame	S10	Tumor	glioma	arriba	3	9	KIAA1549	NA	BRAF	NA
+11	85195153	-	11	65189913	+	.	S10	Tumor	glioma	arriba	0	18	DLG2	NA	MALAT1	NA
+14	56103190	+	3	49763830	-	out-of-frame	S10	Tumor	glioma	arriba	1	1	KTN1	NA	IP6K1	NA
+7	137206612	-	7	137294355	-	out-of-frame	S10	Tumor	glioma	arriba	0	1	DGKI	NA	DGKI	NA
+6	108986044	+	6	109103388	-	.	S10	Tumor	glioma	arriba	0	2	FOXO3	NA	ZNF259P1	NA

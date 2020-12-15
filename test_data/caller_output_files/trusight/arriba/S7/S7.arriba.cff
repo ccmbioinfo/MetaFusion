@@ -1,0 +1,10 @@
+7	138545885	-	7	140487384	-	in-frame	S7	Tumor	glioma	arriba	3	10	KIAA1549	NA	BRAF	NA
+17	47492221	-	1	164687415	+	.	S7	Tumor	glioma	arriba	3	2	PHB	NA	PBX1	NA
+7	121513454	+	11	35250804	+	.	S7	Tumor	glioma	arriba	0	1	PTPRZ1	NA	CD44	NA
+10	128335134	-	10	128768966	+	in-frame	S7	Tumor	glioma	arriba	0	0	C10orf90	NA	DOCK1	NA
+10	532399	-	10	225934	+	out-of-frame	S7	Tumor	glioma	arriba	0	1	DIP2C	NA	ZMYND11	NA
+6	129811991	+	5	142779645	-	.	S7	Tumor	glioma	arriba	0	1	LAMA2	NA	NR3C1	NA
+9	119188155	-	9	119114904	+	out-of-frame	S7	Tumor	glioma	arriba	0	1	ASTN2	NA	PAPPA	NA
+16	31200459	+	3	188604486	+	.	S7	Tumor	glioma	arriba	0	2	FUS	NA	LPP	NA
+1	175286086	-	9	131337062	+	.	S7	Tumor	glioma	arriba	0	2	TNR	NA	SPTAN1	NA
+1	113010213	+	1	113005177	+	out-of-frame	S7	Tumor	glioma	arriba	1	0	WNT2B	NA	CTTNBP2NL	NA

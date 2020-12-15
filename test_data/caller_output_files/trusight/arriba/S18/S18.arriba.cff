@@ -1,0 +1,10 @@
+7	138545885	-	7	140487384	-	in-frame	S18	Tumor	glioma	arriba	3	7	KIAA1549	NA	BRAF	NA
+11	85195153	-	11	65189913	+	.	S18	Tumor	glioma	arriba	0	253	DLG2	NA	MALAT1	NA
+17	49708895	-	1	150238911	-	.	S18	Tumor	glioma	arriba	0	2	CA10	NA	APH1A	NA
+16	79632682	-	16	79246798	-	out-of-frame	S18	Tumor	glioma	arriba	1	1	MAF	NA	RP11-679B19.2	NA
+7	72891251	-	7	13949278	-	.	S18	Tumor	glioma	arriba	0	2	BAZ1B	NA	ETV1	NA
+17	76849280	-	10	32594852	-	.	S18	Tumor	glioma	arriba	0	2	TIMP2	NA	EPC1	NA
+8	42050666	-	6	108985320	+	.	S18	Tumor	glioma	arriba	0	2	PLAT	NA	FOXO3	NA
+1	156767133	+	1	156807518	+	out-of-frame	S18	Tumor	glioma	arriba	1	0	PRCC	NA	NTRK1	NA
+1	31345212	-	X	119582948	-	.	S18	Tumor	glioma	arriba	0	2	SDC3	NA	LAMP2	NA
+8	74659018	-	8	70570740	+	.	S18	Tumor	glioma	arriba	0	0	STAU2	NA	SULF1	NA

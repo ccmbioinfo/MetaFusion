@@ -1,0 +1,5 @@
+7	138545885	-	7	140487384	-	in-frame	S11	Tumor	glioma	arriba	9	11	KIAA1549	NA	BRAF	NA
+11	85195153	-	11	65189913	+	.	S11	Tumor	glioma	arriba	0	14	DLG2	NA	MALAT1	NA
+11	19852549	+	11	62400212	-	.	S11	Tumor	glioma	arriba	0	1	NAV2	NA	GANAB	NA
+6	146720835	+	6	146719905	+	out-of-frame	S11	Tumor	glioma	arriba	0	1	GRM1	NA	GRM1	NA
+1	98399555	-	1	98348931	-	.	S11	Tumor	glioma	arriba	0	2	RP11-272L13.3	NA	DPYD	NA

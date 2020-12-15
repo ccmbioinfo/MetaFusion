@@ -1,0 +1,7 @@
+7	138555903	-	7	140487384	-	in-frame	S9	Tumor	glioma	arriba	0	3	KIAA1549	NA	BRAF	NA
+18	59078560	+	3	186345675	+	.	S9	Tumor	glioma	arriba	0	1	CDH20	NA	EIF4A2	NA
+2	213869199	-	X	123220528	+	.	S9	Tumor	glioma	arriba	0	2	IKZF2	NA	STAG2	NA
+2	61711172	-	4	114374805	-	.	S9	Tumor	glioma	arriba	0	2	XPO1	NA	CAMK2D	NA
+19	40374014	-	10	25887352	+	.	S9	Tumor	glioma	arriba	0	2	FCGBP	NA	GPR158	NA
+1	98399552	-	1	98348930	-	.	S9	Tumor	glioma	arriba	1	0	RP11-272L13.3	NA	DPYD	NA
+X	71681854	-	8	17814113	+	out-of-frame	S9	Tumor	glioma	arriba	0	0	HDAC8	NA	PCM1	NA

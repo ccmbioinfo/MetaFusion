@@ -1,0 +1,6 @@
+4	2958397	-	20	57470667	+	in-frame	S15	Tumor	glioma	arriba	0	0	NOP14	NA	GNAS	NA
+3	179336275	+	2	111304433	-	.	S15	Tumor	glioma	arriba	0	2	NDUFB5	NA	RGPD6	NA
+10	76788486	+	22	41737130	+	.	S15	Tumor	glioma	arriba	0	2	KAT6B	NA	ZC3H7B	NA
+17	7096837	-	13	38934852	+	.	S15	Tumor	glioma	arriba	0	2	DLG4	NA	UFM1	NA
+14	21679687	-	4	85623519	-	.	S15	Tumor	glioma	arriba	0	2	HNRNPC	NA	WDFY3	NA
+Y	1503915	-	Y	1535475	-	out-of-frame	S15	Tumor	glioma	arriba	2	0	ASMTL	NA	P2RY8	NA

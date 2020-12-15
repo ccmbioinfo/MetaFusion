@@ -1,0 +1,6 @@
+7	140500162	-	7	139316471	-	in-frame	S2	Tumor	glioma	arriba	3	2	BRAF	NA	HIPK2	NA
+7	138545885	-	7	140487384	-	in-frame	S2	Tumor	glioma	arriba	2	1	KIAA1549	NA	BRAF	NA
+10	87628775	-	11	71728811	-	.	S2	Tumor	glioma	arriba	0	2	GRID1	NA	NUMA1	NA
+3	50095199	+	4	186286111	-	.	S2	Tumor	glioma	arriba	0	2	RBM6	NA	LRP2BP	NA
+15	72511380	-	2	242014046	+	.	S2	Tumor	glioma	arriba	0	2	PKM	NA	SNED1	NA
+15	72511380	-	2	242014046	-	.	S2	Tumor	glioma	arriba	0	2	PKM	NA	MTERFD2	NA
