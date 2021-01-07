@@ -1,0 +1,6 @@
+sample	disease	sample_type
+sim_adipose	VALIDATION	TP
+sim_brain	VALIDATION	TP
+sim_colon	VALIDATION	TP
+sim_heart	VALIDATION	TP
+sim_testis	VALIDATION	TP
