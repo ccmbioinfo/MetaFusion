@@ -39,6 +39,7 @@ def intersect_fusions_by_breakpoints():
     return df
 
 df = intersect_fusions_by_breakpoints()
+# Write breakpoint intersections to file
 df.to_csv(sys.stdout,header=True,index=True, sep="\t")
 
 # CLUSTER GENES
