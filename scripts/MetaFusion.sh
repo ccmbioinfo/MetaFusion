@@ -89,6 +89,7 @@ cff=$outdir/$(basename $cff).reformat
 #Rename cff
 if [ $rename -eq 1 ]; then
   echo Rename cff
+  echo python rename_cff_file_genes.MetaFusion.py $cff $gene_info \> $outdir/$(basename $cff).renamed
   python rename_cff_file_genes.MetaFusion.py $cff $gene_info > $outdir/$(basename $cff).renamed
 fi
 cff=$outdir/$(basename $cff).renamed
@@ -141,6 +142,7 @@ fi
 if [ $RT_call_filter -eq 1 ]; then
   echo ReadThrough, callerfilter $num_tools
   cat $cluster | grep ReadThrough > $outdir/$(basename $cluster).ReadThrough
+  echo python callerfilter_num.py --cluster $cluster  --num_tools $num_tools \| grep -v ReadThrough \> $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
   python callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 fi
 cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools 
