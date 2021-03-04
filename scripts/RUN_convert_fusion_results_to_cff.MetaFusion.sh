@@ -16,7 +16,8 @@ caller_file_dir=/MetaFusion/test_data/caller_output_files/
 #MCF7    BRCA      TP
 #SKBR3   BRCA      TP
 #In the above example, "TP" is used for Tumor tissue and "NT" is for normal tissue
-sampleinfo=/MetaFusion/Sandbox/BRCA_test/sampleinfo
+#sampleinfo=/MetaFusion/Sandbox/BRCA_test/sampleinfo
+sampleinfo=/MetaFusion/test_data/sampleinfo/sampleinfo.BRCA
 
 # The dataset variable is specified here. This string must exactly match the dataset name (i.e. the directory "dataset" in /MetaFusion/caller_output_files/dataset) as well as the "disease" field of the "sampleinfo file" 
 dataset=BRCA
