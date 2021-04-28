@@ -1,7 +1,7 @@
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager", repos = "http://cran.us.r-project.org")
-if (!requireNamespace("RBGL", quietly = TRUE))
-  BiocManager::install("RBGL")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#  install.packages("BiocManager", repos = "http://cran.us.r-project.org")
+#if (!requireNamespace("RBGL", quietly = TRUE))
+#  BiocManager::install("RBGL")
 #library(RBGL)
 suppressPackageStartupMessages(library(RBGL))
 #Command args
