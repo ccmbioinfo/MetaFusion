@@ -41,7 +41,7 @@ while IFS= read -r sample_infor; do
   type=`echo $sample_infor | awk '{print $3}'`
   echo generating cff for $sample
 
-	for tool in "${tools[@]}";do
+	for tool in ${tools[@]};do
     echo $tool
     raw_file_dir=$caller_file_dir/$sample/$tool
     if [[ $tool = "arriba" ]]
