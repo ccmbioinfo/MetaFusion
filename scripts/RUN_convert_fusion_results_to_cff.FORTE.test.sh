@@ -24,7 +24,7 @@ dataset=TheTwelve
 
 # Next, the output directory, where the CFF files are generated, must be specified. It should be a directory different from where the caller output files are specified
 outdir=/juno/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/testing_twelve_cff
-
+mkdir outdir
 # Next, the tools used should be specified. Note that the names of the tools must exactly match "tool_name" at "/MetaFusion/caller_output_files/dataset/tool_name"
 tools=$(echo arriba fusioncatcher starfusion)
 
