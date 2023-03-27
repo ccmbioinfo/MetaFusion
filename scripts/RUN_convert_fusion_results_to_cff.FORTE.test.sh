@@ -35,8 +35,12 @@ tools=$(echo arriba fusioncatcher starfusion)
 
 
 
-for sample in `awk -F '\t'  '{print $1}' $sampleinfo | tail -n+2`;do
-  echo generating cff for $sample
+for sample_infor in `awk -F '\t'  '{print $0}' $sampleinfo | tail -n+2`;do
+  sample=`echo $sample_infor | awk '{print $1}'`
+  disease=`echo $sample_infor | awk '{print $2}'`
+  type=`echo $sample_infor | awk '{print $3}'`
+  echo generating cff for $sample_infor
+
 	for tool in ${tools[@]};do
     echo $tool
     raw_file_dir=$caller_file_dir/$sample/$tool
@@ -53,7 +57,8 @@ for sample in `awk -F '\t'  '{print $1}' $sampleinfo | tail -n+2`;do
 
     echo "python convert_fusion_results_to_cff.py \
       --sample $sample \
-      --sample_info_file $sampleinfo \
+      --disease_name $disease \
+      --sample_type $type \
       --tool $tool \
       --fusion_result_file $result_file \
       --outdir $outdir "
