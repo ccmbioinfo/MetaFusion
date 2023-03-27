@@ -35,7 +35,7 @@ tools=$(echo arriba fusioncatcher starfusion)
 
 
 
-for sample_infor in `tail -n+2 $sampleinfo`; do
+for sample_infor in $sampleinfo; do
   sample=`echo $sample_infor | awk '{print $1}'`
   disease=`echo $sample_infor | awk '{print $2}'`
   type=`echo $sample_infor | awk '{print $3}'`
