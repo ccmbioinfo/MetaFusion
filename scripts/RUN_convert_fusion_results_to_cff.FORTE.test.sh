@@ -35,7 +35,7 @@ tools=$(echo arriba fusioncatcher starfusion)
 
 
 echo generating cff for $tool
-for sample in `awk -F '\t'  '{print $1} $sampleinfo | tail -n+2';do
+for sample in `awk -F '\t'  '{print $1} $sampleinfo | tail -n+2'`;do
 	for tool in ${tools[@]};do
 
     raw_file_dir=$caller_file_dir/$sample/$tool
