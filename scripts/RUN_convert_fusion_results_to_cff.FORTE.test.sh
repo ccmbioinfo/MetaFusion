@@ -35,7 +35,7 @@ tools=$(echo arriba fusioncatcher starfusion)
 
 
 
-for sample_infor in `cat $sampleinfo`; do
+while IFS= read -r sample_infor; do
   sample=`echo $sample_infor | awk '{print $1}'`
   disease=`echo $sample_infor | awk '{print $2}'`
   type=`echo $sample_infor | awk '{print $3}'`
@@ -64,7 +64,7 @@ for sample_infor in `cat $sampleinfo`; do
       --outdir $outdir "
   done
 
-done
+done < "$sampleinfo"
 
 # Merge all .cff files into one combined file, "merged.cff"
 
