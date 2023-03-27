@@ -39,10 +39,10 @@ for sample in `awk -F '\t'  '{print $1} $sampleinfo | tail -n+2'`;do
 	for tool in ${tools[@]};do
 
     raw_file_dir=$caller_file_dir/$sample/$tool
-    if [[ $tool == "arriba"]]
+    if [[ $tool == "arriba" ]]
     then
       $result_file=$(ls $raw_file_dir/*/*)
-    elif [[ $tool == "fusioncatcher"]]
+    elif [[ $tool == "fusioncatcher" ]]
     then
       $result_file=$(ls $raw_file_dir/*.fusions.tsv)
     else
