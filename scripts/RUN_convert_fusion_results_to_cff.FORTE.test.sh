@@ -38,12 +38,12 @@ tools=$(echo arriba fusioncatcher starfusion)
 for sample in `awk -F '\t'  '{print $1}' $sampleinfo | tail -n+2`;do
   echo generating cff for $sample
 	for tool in ${tools[@]};do
-
+    echo $tool
     raw_file_dir=$caller_file_dir/$sample/$tool
-    if [[ $tool == "arriba" ]]
+    if [[ $tool = "arriba" ]]
     then
       $result_file=$(ls $raw_file_dir/*.fusions.tsv)
-    elif [[ $tool == "fusioncatcher" ]]
+    elif [[ $tool = "fusioncatcher" ]]
     then
       $result_file=$(ls $raw_file_dir/*.fusion-genes.txt)
     else
