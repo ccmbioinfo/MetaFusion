@@ -39,7 +39,7 @@ for sample_infor in `tail -n+2 $sampleinfo`; do
   sample=`echo $sample_infor | awk '{print $1}'`
   disease=`echo $sample_infor | awk '{print $2}'`
   type=`echo $sample_infor | awk '{print $3}'`
-  echo generating cff for sample
+  echo generating cff for $sample
 
 	for tool in ${tools[@]};do
     echo $tool
