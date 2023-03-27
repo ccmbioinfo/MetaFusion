@@ -231,7 +231,7 @@ parser.add_argument("--out_dir", help="Output folder")
 args = parser.parse_args()
 
 
-if len(sys.argv) != 7:
+if len(sys.argv) != 6:
     print "USAGE: convert_fusion_results_to_cff.py sample disease_name sample_type tool fusion_results_file out_dir"
     sys.exit(1)
 
