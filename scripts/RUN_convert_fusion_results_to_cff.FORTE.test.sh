@@ -51,12 +51,12 @@ for sample in `awk -F '\t'  '{print $1}' $sampleinfo | tail -n+2`;do
     fi
     echo $sample, $tool, $result_file, $outdir
 
-    python convert_fusion_results_to_cff.py \
+    echo "python convert_fusion_results_to_cff.py \
       --sample $sample \
       --sample_info_file $sampleinfo \
       --tool $tool \
       --fusion_result_file $result_file \
-      --outdir $outdir
+      --outdir $outdir "
   done
 
 done
