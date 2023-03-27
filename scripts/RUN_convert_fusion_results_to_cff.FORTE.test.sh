@@ -59,7 +59,7 @@ while IFS= read -r sample_infor; do
           --sample_type $type \
           --tool $tool \
           --fusion_result_file $result_file \
-          --outdir $outdir
+          --out_dir $outdir
   done
 
 done < "$sampleinfo"
