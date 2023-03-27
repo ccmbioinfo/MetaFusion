@@ -55,13 +55,13 @@ while IFS= read -r sample_infor; do
     fi
     echo $sample, $tool, $result_file, $outdir, $disease, $type
 
-    python convert_fusion_results_to_cff.py \
+    echo "python convert_fusion_results_to_cff.py \
       --sample $sample \
       --disease_name $disease \
       --sample_type $type \
       --tool $tool \
       --fusion_result_file $result_file \
-      --outdir $outdir
+      --outdir $outdir "
   done
 
 done < "$sampleinfo"
