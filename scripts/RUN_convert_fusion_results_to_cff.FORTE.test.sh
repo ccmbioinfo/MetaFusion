@@ -42,14 +42,13 @@ for sample in `awk -F '\t'  '{print $1}' $sampleinfo | tail -n+2`;do
     raw_file_dir=$caller_file_dir/$sample/$tool
     if [[ $tool == "arriba" ]]
     then
-      $result_file=$(ls $raw_file_dir/*/*)
+      $result_file=$(ls $raw_file_dir/*.fusions.tsv)
     elif [[ $tool == "fusioncatcher" ]]
     then
-      $result_file=$(ls $raw_file_dir/*.fusions.tsv)
-    else
       $result_file=$(ls $raw_file_dir/*.fusion-genes.txt)
-    fi
+    else
       $result_file=$(ls $raw_file_dir/*.fusion_predictions.tsv)
+    fi
     echo $sample, $tool, $result_file, $outdir
 
     python convert_fusion_results_to_cff.py \
