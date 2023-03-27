@@ -53,13 +53,7 @@ while IFS= read -r sample_infor; do
     else
       result_file=$(ls $raw_file_dir/*.fusion_predictions.tsv)
     fi
-    python convert_fusion_results_to_cff.py \
-          --sample $sample \
-          --disease_name $disease \
-          --sample_type $type \
-          --tool $tool \
-          --fusion_result_file $result_file \
-          --out_dir $outdir
+    python convert_fusion_results_to_cff.py --sample $sample --disease_name $disease --sample_type $type --tool $tool -fusion_result_file $result_file --out_dir $outdir
   done
 
 done < "$sampleinfo"
