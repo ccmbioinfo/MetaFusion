@@ -21,6 +21,7 @@ cd  /path/to/this/metafusion/repo/MetaFusion/scripts/
 bsub -R "rusage[mem=16]" -o %J.out singularity exec -B /juno/ -B /path/to/this/metafusion/repo/MetaFusion/ -B /tmp -B /scratch/ metafusion.img bash  MetaFusion.sh --outdir /path/to/desired/output/directory/ \
                  --cff my_prefix.merged.cff \
                  --gene_bed /path/to/this/metafusion/repo/MetaFusion/reference_files/ens_known_genes.renamed.ENSG.bed  \
+                 --fusion_annotator \
                  --genome_fasta /path/to/this/metafusion/repo/MetaFusion/reference_files/human_g1k_v37_decoy.fasta \
                  --gene_info /path/to/this/metafusion/repo/MetaFusion/reference_files/Homo_sapiens.gene_info  \
                  --num_tools=2  \
