@@ -28,6 +28,15 @@ bsub -R "rusage[mem=16]" -o %J.out singularity exec -B /juno/ -B /path/to/this/m
                  --scripts /path/to/this/metafusion/repo/MetaFusion/scripts
 ````
 
+If you really dont want to download things and can access juno, use  `/juno/work/ccs/pintoa1/fusion_report/metafusion/metafusion.img` as the image and use my references 
+```
+gene_bed=/juno/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/reference_files/ens_known_genes.renamed.ENSG.bed
+gene_info=/juno/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/reference_files/Homo_sapiens.gene_info
+genome_fasta=/juno/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/reference_files/human_g1k_v37_decoy.fasta
+recurrent_bedpe=/juno/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/reference_files/blocklist_breakpoints.bedpe
+```
+
+
 See the Wiki for documentation at https://github.com/ccmbioinfo/MetaFusion/wiki
 
 Full text can be found here: https://www.biorxiv.org/content/10.1101/2020.09.17.302307v2
