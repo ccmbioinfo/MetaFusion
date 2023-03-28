@@ -11,18 +11,10 @@ opt = commandArgs(TRUE)
 
 parser=ArgumentParser()
 parser$add_argument("-f",'--forte_out_dir',type="character",default = NULL)
-parser$add_argument("-m","--mapping_sample_types",type = "character",default = NULL)
-parser$add_argument("-g","--filter_to_gene_list",type = "character",default = NULL)
 parser$add_argument("-p","--prefix",type = "character", default = NULL)
 parser$add_argument("-o",'--output_dir',type="character",default = getwd())
 opt=parser$parse_args()
 
-
-
-if(!is.null(opt$mapping_sample_types )){
-  ### TO DO: Work out mapping sample types.... disease etc,,,
-  stop("This has not been built yet")
-}
 
 my_samples_dirs <- list.dirs(paste0(opt$forte_out_dir,"/analysis"),recursive = F)
 
