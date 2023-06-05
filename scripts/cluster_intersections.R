@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript --vanilla
+
 suppressPackageStartupMessages(library(RBGL))
 
 #Command args
