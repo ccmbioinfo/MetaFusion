@@ -13,7 +13,7 @@ intersect_breakpoints_and_gene_names.py $cff > $fid_intersection_file
 fid_clusters_file=$outdir/FID.clusters.tsv
 #ls -l $fid_intersection_file
 #ls -l $fusiontools_dir/cluster_intersections.local.R
-Rscript --vanilla cluster_intersections.R $fid_intersection_file $fid_clusters_file
+Rscript --vanilla /MetaFusion/scripts/cluster_intersections.R $fid_intersection_file $fid_clusters_file
 
 # generate cluster file using clustered FIDs and cff file
 generate_cluster_file.py $cff $fid_clusters_file
