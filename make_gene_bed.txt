@@ -1,0 +1,410 @@
+Utilized gtf from igenomes for FORTE This corresponds to GRCh37 ensembl 75
+Add introns to gtf, convert to gff3
+bsub -R "rusage[mem=64]" -o add_introns_agat_%J.out singularity exec -B /juno/ -B /tmp -B /scratch/ docker://quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0 /bin/bash -c "agat_sp_add_introns.pl -g /juno/work/taylorlab/cmopipeline/mskcc-igenomes/igenomes/Homo_sapiens/Ensembl/GRCh37/Annotation/Genes/genes.gtf -o genes.INTRONS.gff3"
+gff2bed < genes.INTRONS.gff3 > genes.INTRONS.agat.bed
+
+
+### IN R
+`
+library("biomaRt")
+library("dplyr")
+library("stringr")
+library(kableExtra)
+library(data.table)
+
+total.introns.bed <-  paste0("~/forte_refs/genes.INTRONS.agat.bed")
+total.introns.bed <- fread(file=total.introns.bed, header = FALSE, stringsAsFactors = F, sep="\t", na.strings = "",data.table = F)
+colnames(total.introns.bed) <- c("chr","start","end","gene_id","tmp","strand","gene_biotype","type","V9","description")
+
+
+total.introns.bed$ID <-str_remove(str_split_fixed(total.introns.bed$description,";",n=2)[,1],"ID=")
+total.introns.bed$Parent <- ifelse(grepl("Parent",total.introns.bed$description),str_split_fixed(total.introns.bed$description,";",n=3)[,2] , NA)
+total.introns.bed$Parent[!is.na(total.introns.bed$Parent)] <- str_remove(total.introns.bed$Parent[!is.na(total.introns.bed$Parent)],"Parent=")
+
+all(grepl("transcript_id",total.introns.bed$description))
+#### ORIGINAL IGENOME GENES>GTF FILE LOADED WITH RTRACKLAYER MAY 31 2023
+gtf_loaded <- readRDS("~/forte_refs/genes_gtf_asdataframe_rtracklayer.rds")
+
+
+#remove all characters from column 10 except the ENST IDs
+total.introns.bed$transcript_id <- gsub("\\;.*","",str_split_fixed(total.introns.bed$description,"transcript_id=",n=2)[,2])
+total.introns.bed$gene_name <-gsub("\\;.*","",str_split_fixed(total.introns.bed$description,"gene_name=",n=2)[,2])
+all(grepl("ENST",total.introns.bed$transcript_id))
+#TRUE
+
+summarse_t_type <- total.introns.bed %>% group_by(transcript_id) %>%   summarise(total_stops = length(which(type == "stop_codon")),total_starts = length(which(type == "start_codon")), both = all(c("stop_codon","start_codon") %in% type))
+table(summarse_t_type$total_stops, summarse_t_type$total_starts,summarse_t_type$both)
+
+
+# Index exons, introns, utr5, utr3
+# Process and index each transcript_id separately
+transcript_ids <- unique(total.introns.bed$transcript_id)
+#215123
+file.to_write <- "~/forte_refs/genes.v75.meta.bed"
+
+if(file.exists(file.to_write) ) {file.remove(file.to_write)}
+
+#START CLOCK: THE INDEXING TAKES A LONG TIME, LIKE 5 HOURS
+ptm <- proc.time()
+# Index each transcript feature, incrementing when an intron is passed
+
+var <- c()
+
+for (id in transcript_ids){
+  tryCatch({
+    transcript <- total.introns.bed[total.introns.bed$transcript_id == id,]
+
+    # Remove cds if exon exists
+    if ("CDS" %in% transcript$type & "exon" %in% transcript$type){
+      transcript <- transcript[!transcript$type == "CDS",]
+    }
+    # Order features by increasing bp ( this should already be happening, but its good to have in case)
+    transcript <- transcript[order(transcript$start, decreasing = FALSE),]
+    # Index features
+    # Index features
+    # Index features
+    idx <- 0
+    transcript$idx <- idx
+    for (i in 1:nrow(transcript)){
+      transcript[i,]$idx <- idx
+      if (transcript[i,]$type == "intron"){
+        #print(transcript[i,]$type)
+        idx <- idx + 1
+      }
+    }
+    # REFORMAT TRANSCRIPT
+    #Change strand info (+ --> f, - --> r)
+    if (unique(transcript$strand) == "+"){
+      transcript$strand <- 'f'
+    } else if  (unique(transcript$strand) == "-"){
+      transcript$strand <- 'r'
+    } else {
+      errorCondition("Strand info for this transcript is inconsistent")
+    }
+    #Add "chr" prefix to chromosomes
+    transcript$chr <- sapply("chr", paste0,  transcript$chr)
+    #Change CDS --> cds (also exon --> cds )
+    if ("CDS" %in% unique(transcript$type) | "exon" %in% unique(transcript$type) & unique(transcript$gene_biotype) %in% c("polymorphic_pseudogene","protein_coding","retained_intron","nonsense_mediated_decay","non_stop_decay","IG_C_gene" , "IG_D_gene", "IG_J_gene" , "IG_V_gene"  , "TR_C_gene","TR_V_gene" ,"TR_J_gene")  ){transcript[transcript$type == "CDS" | transcript$type == "exon" ,]$type <- "cds"}
+
+    if ("UTR" %in% unique(transcript$type) &  unique(transcript$gene_biotype) %in% c("polymorphic_pseudogene","protein_coding","retained_intron","nonsense_mediated_decay","non_stop_decay","IG_C_gene" , "IG_D_gene", "IG_J_gene" , "IG_V_gene"  , "TR_C_gene","TR_V_gene","TR_J_gene" )  ){
+      my_utrs_index <- which(transcript$type == "UTR")
+      if(any(transcript$type %in% c("stop_codon","start_codon"))){
+        stop_index <- which(transcript$type == "stop_codon")
+        start_index <- which(transcript$type == "start_codon")
+        if(unique(transcript$strand) == "f"){
+          #first start codon
+          if( length(start_index) > 1){ start_index <- start_index[1]}
+          #last stop codon
+          if( length(stop_index) > 1){ stop_index <- stop_index[length(stop_index)]}
+          if(length(stop_index) > 0 & length(start_index) >0 ){
+
+            utr_3s <- my_utrs_index[my_utrs_index > stop_index]
+            utr_5s <- my_utrs_index[my_utrs_index < start_index]
+          } else if(length(stop_index) > 0){
+            utr_3s <- my_utrs_index[my_utrs_index > stop_index]
+            utr_5s <- my_utrs_index[my_utrs_index < stop_index]
+
+          }else {
+            utr_3s <- my_utrs_index[my_utrs_index > start_index]
+            utr_5s <- my_utrs_index[my_utrs_index < start_index]
+          }
+
+        }
+        else{# reverse strand
+          #first stop codon
+          if( length(stop_index) > 1){ stop_index <- stop_index[1]}
+
+          #last start codon
+          if( length(start_index) > 1){ start_index <- start_index[length(start_index)]}
+          if(length(stop_index) > 0 & length(start_index) >0 ){
+
+            utr_3s <- my_utrs_index[my_utrs_index < stop_index]
+            utr_5s <- my_utrs_index[my_utrs_index > start_index]
+          } else if(length(stop_index) > 0){
+            utr_3s <- my_utrs_index[my_utrs_index < stop_index]
+            utr_5s <- my_utrs_index[my_utrs_index  > stop_index]
+
+          }else {
+            utr_3s <- my_utrs_index[my_utrs_index < start_index]
+            utr_5s <- my_utrs_index[my_utrs_index > start_index]
+          }
+
+        }
+
+      } else{
+        first_exon_idx <- which(transcript$type == "cds")[1]
+        if(unique(transcript$strand) == "f"){
+          utr_5s <- my_utrs_index[my_utrs_index < first_exon_idx]
+          utr_3s <- my_utrs_index[!my_utrs_index %in% utr_5s]
+        }else{
+          utr_5s <- my_utrs_index[my_utrs_index > first_exon_idx]
+          utr_3s <- my_utrs_index[!my_utrs_index %in% utr_5s]
+        }
+
+      }
+      if(length(utr_3s) > 0){
+        transcript$type[utr_3s] <- "utr3"
+      }
+      if(length(utr_5s) > 0){
+        transcript$type[utr_5s] <- "utr5"
+      }
+    }
+    transcript <- transcript[c("chr", "start", "end", "transcript_id", "type", "idx", "strand", "gene_name", "gene_id","gene_biotype" )]
+    write.table(transcript, file.to_write, append=TRUE, sep="\t", quote=F,  row.names=F, col.names=F)
+
+  }, error=function(e){
+    msg <- paste("ERROR :",id, "   ", conditionMessage(e))
+    message(msg)
+    var <<- c(var, id)
+  })
+}
+
+#STOP CLOCK
+time <- proc.time() - ptm
+time
+
+
+#1. LOAD NEW BED
+my_new_bed <- read.csv(file=file.to_write, header = FALSE, stringsAsFactors = F, sep="\t", na.strings = "")
+bed.fields <- c("chr", "start", "end", "transcript_id", "type", "idx", "strand", "gene_name", "gene_id","gene_biotype")
+colnames(my_new_bed) <- bed.fields
+## am i missing transcripts.....
+total.introns.bed[which(!total.introns.bed$transcript_id %in% my_new_bed$transcript_id),] ## ALL TRANSCRIPTS YAY
+## check which UTRs havent changed, forgot to add IG and T genes to be changed
+### clean up situations where only one stop/orstart found
+### remove Selenocysteine, start codon, stop codon and transc ript
+my_new_bed <- my_new_bed[my_new_bed$type %in% c("cds","exon","intron","UTR","utr3","utr5"),]
+
+
+
+#2. Modify new.bed region types which differ, these are transcripts/genes which have no coding region (i.e. exon --> utr3/utr5)
+
+all_info_for_gene_biotypes <- table(total.introns.bed$type,total.introns.bed$gene_biotype)
+all_info_for_gene_biotypes
+features<-names(which(all_info_for_gene_biotypes[1,] == 0))
+# [1] "3prime_overlapping_ncrna"           "antisense"                          "IG_C_pseudogene"                    "IG_J_pseudogene"
+# [5] "IG_V_pseudogene"                    "lincRNA"                            "miRNA"                              "misc_RNA"
+# [9] "Mt_rRNA"                            "Mt_tRNA"                            "processed_pseudogene"               "processed_transcript"
+# [13] "pseudogene"                         "retained_intron"                    "rRNA"                               "sense_intronic"
+# [17] "sense_overlapping"                  "snoRNA"                             "snRNA"                              "TR_J_pseudogene"
+# [21] "TR_V_pseudogene"                    "transcribed_processed_pseudogene"   "transcribed_unprocessed_pseudogene" "translated_processed_pseudogene"
+# [25] "unitary_pseudogene"                 "unprocessed_pseudogene"
+ensemblToGeneName.rna <- my_new_bed[my_new_bed$gene_biotype %in% features,]
+
+inconsistent.features.ENSTs <-ensemblToGeneName.rna$transcript_id[ensemblToGeneName.rna$gene_biotype %in% features]
+
+# Weird rule in metafusion where any unprocessed exons will become UTR5 if forward strand and 3 if reverse....
+# #Forward strand
+my_new_bed$type[my_new_bed$strand == "f" &  my_new_bed$type == "exon" & my_new_bed$transcript_id %in%  inconsistent.features.ENSTs] <- "utr5"
+# #Reverse strand
+my_new_bed$type[my_new_bed$strand == "r" &  my_new_bed$type == "exon" & my_new_bed$transcript_id %in%  inconsistent.features.ENSTs]<- "utr3"
+
+table(my_new_bed$type) ### Forgot to changeTR_D_gene exon to cds
+my_new_bed$type[my_new_bed$type == "exon" & my_new_bed$gene_biotype == "TR_D_gene"] <- "cds"
+table(my_new_bed$type)
+### finished
+
+## did i keep all transcriotps
+length(unique(my_new_bed$transcript_id))
+length(unique(total.introns.bed$transcript_id))
+total.introns.bed[which(!total.introns.bed$transcript_id %in% my_new_bed$transcript_id),]
+### removed transcripts have no exons/utrs/not valid for this analysos
+
+
+my_new_bed$gene_biotype <- NULL
+write.table(my_new_bed, "~/forte_refs/genes.v75.meta.final.bed", sep="\t", quote=F,  row.names=F, col.names=F)
+
+`
+### Generated Gene info file as well....
+library(dplyr)
+library(data.table)
+library(stringr)
+ensembl_gtf <- readRDS("/work/ccs/pintoa1/references/genes_gtf_asdataframe_rtracklayer.rds")
+
+gencode_starfusion <- rtracklayer::import("/work/taylorlab/cmopipeline/rnaseq_reference/GRCh37/starfusion/ctat_genome_lib_build_dir/ref_annot.gtf")
+genecode_starfusion <- as.data.frame(gencode_starfusion)
+## gencode assds .# to their gene ids. parse this off
+genecode_starfusion$gene_id <- str_split_fixed(genecode_starfusion$gene_id,pattern = "\\.",n =2 )[,1]
+
+just_ids_and_names_ensembl <- unique(ensembl_gtf[,c('gene_id',"gene_name")])
+just_ids_and_names_gencode <- unique(genecode_starfusion[,c("gene_id","gene_name")])
+                 #chekc if names and gene ids match for the most part between gencode and ensmebl. Ensembl v75 has extra gene_ids
+all(just_ids_and_names_gencode$gene_id %in% just_ids_and_names_ensembl$gene_id)
+### notall gene ids exist in ensembl
+missing_gene_ids_from_gencode <- just_ids_and_names_gencode[!just_ids_and_names_gencode$gene_id %in% just_ids_and_names_ensembl$gene_id,"gene_id"]
+### 51 ids missing
+genecode_starfusion[genecode_starfusion$gene_id %in% missing_gene_ids_from_gencode,]
+### remove ids not in both ensembl and genecode. deal with them later
+shared_genew_ids <- intersect(just_ids_and_names_ensembl$gene_id,just_ids_and_names_gencode$gene_id)
+missing_gene_ids <- setdiff(just_ids_and_names_ensembl$gene_id,just_ids_and_names_gencode$gene_id)
+
+just_ids_and_names_gencode_shared <- just_ids_and_names_gencode[just_ids_and_names_gencode$gene_id %in% shared_genew_ids,]
+just_ids_and_names_ensembl_shared <- just_ids_and_names_ensembl[just_ids_and_names_ensembl$gene_id %in% shared_genew_ids,]
+just_ids_and_names_ensembl_shared <- just_ids_and_names_ensembl_shared[match(just_ids_and_names_gencode_shared$gene_id,just_ids_and_names_ensembl_shared$gene_id),]
+
+mapping_file_for_gencode_symbols_to_ensemblv75_symbols <- merge(just_ids_and_names_gencode_shared,just_ids_and_names_ensembl_shared,by = "gene_id",suffixes = c(".gencode",".ensembl75"))
+
+### add missing gencodes, they will map to NAs in v75.... note this is NOT  perfect.... its possible the number of exons/introns etc could have changed between versions
+missing_gene_ids_gencode_add <- data.frame( just_ids_and_names_gencode[!just_ids_and_names_gencode$gene_id %in% just_ids_and_names_ensembl$gene_id,])
+
+gene_info <- fread("/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/reference_files/Homo_sapiens.gene_info")
+
+problem_gene_names <- c()
+get_both_all_unsupget_both_all_unsup <- do.call(rbind,lapply(missing_gene_ids_gencode_add$gene_name,function(gene){
+  print(gene)
+  syn_str <- paste("^",gene,"[\\|]|^",gene,"$","|[\\|]",gene,"[\\|]|[\\|]",gene,"$", sep="")
+  gencode_gene_id <- missing_gene_ids_gencode_add$gene_id[missing_gene_ids_gencode_add$gene_name == gene]
+
+  if(any(gene_info$Symbol == gene)){
+    ensembl_gene_id <- regmatches(gene_info$dbXrefs[gene_info$Symbol == gene],
+                          regexpr("ENSG[0-9]+",gene_info$dbXrefs[gene_info$Symbol == gene]) )
+    ensembl_gene_name <- just_ids_and_names_ensembl$gene_name[just_ids_and_names_ensembl$gene_id == ensembl_gene_id]
+
+    df <- data.frame(gene_id.gencode = gencode_gene_id, gene_id.ensembl75 =  ifelse(length(ensembl_gene_id) > 0, ensembl_gene_id,NA),gene_name.ensembl75 = ifelse(length(ensembl_gene_name) > 0, ensembl_gene_name,NA), gene_name.gencode = gene)
+    return(df)
+  } else if (any(grepl(syn_str,gene_info$Synonyms))) {
+    ensembl_gene_id <- regmatches(gene_info$dbXrefs[grepl(syn_str,gene_info$Synonyms)],
+                          regexpr("ENSG[0-9]+",gene_info$dbXrefs[grepl(syn_str,gene_info$Synonyms)]) )
+    ensembl_gene_name <- just_ids_and_names_ensembl$gene_name[just_ids_and_names_ensembl$gene_id == ensembl_gene_id]
+
+    df <- data.frame(gene_id.gencode = gencode_gene_id, gene_id.ensembl75 =  ifelse(length(ensembl_gene_id) > 0, ensembl_gene_id,NA),gene_name.ensembl75 = ifelse(length(ensembl_gene_name) > 0, ensembl_gene_name,NA), gene_name.gencode = gene)
+    return(df)
+  } else{
+    df <- data.frame(gene_id.gencode = gencode_gene_id, gene_id.ensembl75 =  NA,gene_name.ensembl75 = NA, gene_name.gencode = gene)
+    return(df)
+  }
+
+}))
+mapping_file_for_gencode_symbols_to_ensemblv75_symbols$gene_id.gencode <- mapping_file_for_gencode_symbols_to_ensemblv75_symbols$gene_id
+
+mapping_file_for_gencode_symbols_to_ensemblv75_symbols$gene_id.ensembl75 <- mapping_file_for_gencode_symbols_to_ensemblv75_symbols$gene_id
+mapping_file_for_gencode_symbols_to_ensemblv75_symbols$gene_id <- NULL
+mapping_file_for_gencode_symbols_to_ensemblv75_symbols <- mapping_file_for_gencode_symbols_to_ensemblv75_symbols[,c("gene_id.gencode","gene_id.ensembl75","gene_name.ensembl75","gene_name.gencode")]
+
+mapping_file_for_gencode_symbols_to_ensemblv75_symbols <- rbind(mapping_file_for_gencode_symbols_to_ensemblv75_symbols,get_both_all_unsupget_both_all_unsup)
+
+
+
+write.table(mapping_file_for_gencode_symbols_to_ensemblv75_symbols,file = "/work/ccs/pintoa1/references/meta_fusion_bed_generation/mapper_for_gencode_to_v75.tsv",row.names = F,quote = F,sep = "\t")
+
+library(dplyr)
+library(data.table)
+library(stringr)
+### download may 31st 2023
+gene_info_ncbi <- fread("/work/ccs/pintoa1/references/Homo_sapiens.gene_info (1)",data.table =  F)
+## this is igenomes v75 hg37 gTF
+ensemblToGeneName <- readRDS("/work/ccs/pintoa1/references/genes_gtf_asdataframe_rtracklayer.rds")
+ensemblToGeneName <- unique(ensemblToGeneName[,c("gene_id","gene_name")])
+length(unique(ensemblToGeneName$gene_id)) # 63677 gene ids
+length(unique(ensemblToGeneName$gene_name))# 56638 gene names
+
+
+gene_info_ncbi$Symbol_v75 <- NA
+gene_info_ncbi$gene_id_ensg <- NA
+### first identify rows with ensembl gene ids
+
+gene_info_ncbi$gene_id_ensg[grepl("Ensembl:",gene_info_ncbi$dbXrefs)] <- regmatches(gene_info_ncbi$dbXrefs[grepl("Ensembl:",gene_info_ncbi$dbXrefs)],regexpr("ENSG[0-9]+",gene_info_ncbi$dbXrefs[grepl("Ensembl:",gene_info_ncbi$dbXrefs)] ))
+
+## check how many of the ensgs are actually in our  version of gtf
+all(gene_info_ncbi$gene_id_ensg %in% ensemblToGeneName$gene_id)
+ensemblToGeneName_need_to_find_still <- ensemblToGeneName[!ensemblToGeneName$gene_id %in% gene_info_ncbi$gene_id_ensg,]
+length(unique(ensemblToGeneName_need_to_find_still$gene_id)) ### 30062
+length(unique(ensemblToGeneName_need_to_find_still$gene_name)) ### 25514 there are about 5k gene names that have more than 1 gene_id
+### since gene info does nto have any more ENSG ids, will be using unique gene names for now. will need to paste in the additionally geneids when all gene names are found in gene_info
+
+gene_info_ncbi_matching_v75_ensg <- gene_info_ncbi[gene_info_ncbi$gene_id_ensg %in% ensemblToGeneName$gene_id,] ### 33726 no problem getting symbol
+gene_info_ncbi_matching_v75_ensg$Symbol_v75 <- ensemblToGeneName$gene_name[match(gene_info_ncbi_matching_v75_ensg$gene_id_ensg,ensemblToGeneName$gene_id)]
+any(ensemblToGeneName_need_to_find_still$gene_name %in% gene_info_ncbi_matching_v75_ensg$Symbol_v75 )
+## remove duplicates that have already been found via ENSG
+ensemblToGeneName_need_to_find_still <- ensemblToGeneName_need_to_find_still[!ensemblToGeneName_need_to_find_still$gene_name %in% gene_info_ncbi_matching_v75_ensg$Symbol_v75,]
+length(unique(ensemblToGeneName_need_to_find_still$gene_id)) ### 25059
+length(unique(ensemblToGeneName_need_to_find_still$gene_name)) ### 23487 there are about 1.5k gene names that have more than 1 gene_id
+
+
+problem_genes <- c()
+try_to_match_symbols_from_gene_info_to_v75 <- lapply(unique(ensemblToGeneName_need_to_find_still$gene_name), function(gene){
+  if(grepl("\\.",gene)){
+    ### parse off version
+    gene <- str_split_fixed(gene,"\\.",n=2)[1]
+  }
+
+  syn_str <- paste("^",gene,"[\\|]|^",gene,"$","|[\\|]",gene,"[\\|]|[\\|]",gene,"$", sep="")
+
+  if(any(gene_info_ncbi$Symbol == gene)){
+    tmp <- gene_info_ncbi[gene_info_ncbi$Symbol == gene,]
+    tmp$Symbol_v75 <- gene
+    return(tmp)
+  } else if (any(grepl(syn_str,gene_info_ncbi$Synonyms))){
+    tmp <- gene_info_ncbi[grepl(syn_str,gene_info_ncbi$Synonyms),]
+    tmp$Symbol_v75 <- gene
+    return(tmp)
+  }else{
+    problem_genes <<- c(problem_genes,gene)
+    return(NA)
+  }
+
+
+
+})
+
+
+
+
+try_to_match_symbols_from_gene_info_to_v75 <- do.call(rbind,try_to_match_symbols_from_gene_info_to_v75)
+try_to_match_symbols_from_gene_info_to_v75 <- try_to_match_symbols_from_gene_info_to_v75[!is.na(try_to_match_symbols_from_gene_info_to_v75$GeneID),]
+nrow(try_to_match_symbols_from_gene_info_to_v75)##recovered 5404
+try_to_match_symbols_from_gene_info_to_v75$gene_id_ensg[is.na(try_to_match_symbols_from_gene_info_to_v75$gene_id_ensg)] <- ensemblToGeneName_need_to_find_still$gene_id[match(try_to_match_symbols_from_gene_info_to_v75[is.na(try_to_match_symbols_from_gene_info_to_v75$gene_id_ensg),"Symbol_v75"],ensemblToGeneName_need_to_find_still$gene_name)]
+
+final_gene_infos_with_clear_match_to_v75 <- rbind(try_to_match_symbols_from_gene_info_to_v75,gene_info_ncbi_matching_v75_ensg)
+
+
+final_gene_infos_with_clear_match_to_v75$Synonyms <- paste(final_gene_infos_with_clear_match_to_v75$Symbol,final_gene_infos_with_clear_match_to_v75$Synonyms,sep = "|")
+final_gene_infos_with_clear_match_to_v75$Symbol <- final_gene_infos_with_clear_match_to_v75$Symbol_v75
+
+
+
+#write.table(final_gene_infos_with_clear_match_to_v75,"/work/ccs/pintoa1/references/meta_fusion_bed_generation/Homo_sapiens_v75.gene_info",sep = "\t",quote = F,row.names = F)
+final_gene_infos_with_clear_match_to_v75 <- fread("/work/ccs/pintoa1/references/meta_fusion_bed_generation/Homo_sapiens_v75.gene_info",data.table = F)
+#ensemblToGeneName <- readRDS("/work/ccs/pintoa1/references/genes_gtf_asdataframe_rtracklayer.rds")
+#ensemblToGeneName <- unique(ensemblToGeneName[,c("gene_biotype","gene_id","gene_name")])
+
+missing <- ensemblToGeneName[!ensemblToGeneName$gene_name %in% final_gene_infos_with_clear_match_to_v75$Symbol,]
+## 18897
+## missing ones dont matter unless they need to be mapped to. tool will automatically ignore any missing symbols and keep the original symbol
+
+#### confirm gencode names mapping are in gene_info...
+### if v75 and v74/gencode have differing symbols, confirm that mapping exists in gene_info
+out <- fread("/work/ccs/pintoa1/references/meta_fusion_bed_generation/mapper_for_gencode_to_v75.tsv",data.table = F)
+
+weirdo <- out[out$gene_name.ensembl75 != out$gene_name.gencode,]
+weirdo <- weirdo[!is.na(weirdo$gene_name.ensembl75),]
+## for each check that gene name exist in gene INfo
+
+
+
+for(i in 1:nrow(weirdo)){
+  row <- weirdo[i,]
+  symbol <- row$gene_name.ensembl75
+  exists_geneInfo <- final_gene_infos_with_clear_match_to_v75[final_gene_infos_with_clear_match_to_v75$Symbol == symbol,]
+  gencode <- row$gene_name.gencode
+
+  if(nrow(exists_geneInfo) > 0){
+    syn_str <- paste("^",gencode,"[\\|]|^",gencode,"$","|[\\|]",gencode,"[\\|]|[\\|]",gencode,"$", sep="")
+    if(!grepl(syn_str,exists_geneInfo$Synonyms)){
+      print(syn_str)
+      #### ADD GENCODE IF ITS NOT IN GENEINFO SYNONYMS ALREADY
+      final_gene_infos_with_clear_match_to_v75$Synonyms[final_gene_infos_with_clear_match_to_v75$Symbol == symbol] <- paste(final_gene_infos_with_clear_match_to_v75$Synonyms[final_gene_infos_with_clear_match_to_v75$Symbol == symbol],gencode,sep="|")
+    }
+  } else{
+    ### IF syMBOL ISNT IN GENE LIST NEEDD TO ADD
+    df <- data.frame(matrix(ncol = ncol(final_gene_infos_with_clear_match_to_v75), nrow = 1))
+
+    colnames(df) <- colnames(final_gene_infos_with_clear_match_to_v75)
+    df$Symbol <- symbol
+    df$Synonyms <- gencode
+    final_gene_infos_with_clear_match_to_v75 <- rbind(final_gene_infos_with_clear_match_to_v75,df)
+  }
+}
+missing <- ensemblToGeneName[!ensemblToGeneName$gene_name %in% final_gene_infos_with_clear_match_to_v75$Symbol,]
+### added gencode mapping and recovered 20 more genes
+write.table(final_gene_infos_with_clear_match_to_v75,"/work/ccs/pintoa1/references/meta_fusion_bed_generation/Homo_sapiens_v75_gencodeSyn.gene_info",sep = "\t",quote = F,row.names = F)
