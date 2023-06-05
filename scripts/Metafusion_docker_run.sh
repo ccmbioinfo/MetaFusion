@@ -135,7 +135,7 @@ fi
 #output ANC_RT_SG file
 if [ $output_ANC_RT_SG -eq 1 ]; then
   echo output cis-sage.cluster file
-  python output_ANC_RT_SG.py $cluster > $outdir/cis-sage.cluster
+  output_ANC_RT_SG.py $cluster > $outdir/cis-sage.cluster
 fi
 
 #ReadThrough Callerfilter
@@ -143,7 +143,7 @@ if [ $RT_call_filter -eq 1 ]; then
   echo ReadThrough, callerfilter $num_tools
   cat $cluster | grep ReadThrough > $outdir/$(basename $cluster).ReadThrough
   echo python callerfilter_num.py --cluster $cluster  --num_tools $num_tools \| grep -v ReadThrough \> $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
-  python callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
+  callerfilter_num.py --cluster $cluster  --num_tools $num_tools | grep -v ReadThrough  > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 fi
 cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 
@@ -151,7 +151,7 @@ cluster_RT_call=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools
 if [ $blck_filter -eq 1 ]; then
   echo blocklist filter
   #echo bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe
-  bash blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
+  blocklist_filter_recurrent_breakpoints.sh $cff $cluster_RT_call $outdir $recurrent_bedpe > $outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 fi
 cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filter
 
@@ -159,14 +159,14 @@ cluster=$outdir/$(basename $cluster).RT_filter.callerfilter.$num_tools.blck_filt
 # Adjacent Noncoding filter
 if [ $ANC_filter -eq 1 ]; then
   echo ANC adjacent noncoding filter
-  python filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter
+  filter_adjacent_noncoding.py $cluster > $outdir/$(basename $cluster).ANC_filter
 fi
 cluster=$outdir/$(basename $cluster).ANC_filter
 
 #Rank and generate final.cluster
 if [ $rank -eq 1 ]; then
    echo Rank and generate final.cluster
-  python rank_cluster_file.py $cluster > $outdir/final.n$num_tools.cluster
+  rank_cluster_file.py $cluster > $outdir/final.n$num_tools.cluster
 fi
 cluster=$outdir/final.n$num_tools.cluster
 ### Generate filtered FID file
