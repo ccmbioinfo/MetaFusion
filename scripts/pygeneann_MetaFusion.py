@@ -562,6 +562,8 @@ class CffFusion():
             self.closest_exon1 = tmp[34] 
             self.closest_exon2 = tmp[35]
             self.captured_reads = int(tmp[36]) 
+            self.transcript1 = tmp[37]
+            self.transcript2 = tmp[38]
         else:
             self.category = "NA"    # category
             self.reann_gene1 = "NA"
@@ -583,6 +585,8 @@ class CffFusion():
             #self.splice_site2 = "NA"
             self.closest_exon1 = "NA"
             self.closest_exon2 = "NA"
+            self.transcript1 = "NA"
+            self.transcript2 = "NA"
             self.captured_reads = -1
             if len(tmp) == 30:
                 self.dnasupp = tmp[29]
@@ -911,6 +915,8 @@ class CffFusion():
                 self.coding_id_distance = abs(idx1 - idx2)
             gene_interval1 = gene_ann.get_gene_interval(self.bpann1.gene_name)
             gene_interval2 = gene_ann.get_gene_interval(self.bpann2.gene_name)
+            self.transcript1 = gene_interval1.transcript_ids
+            self.transcript2 = gene_interval2.transcript_ids
             if gene_interval1 and gene_interval2:
                 if gene_interval1.chr == gene_interval2.chr:
                     self.gene_interval_distance = max(gene_interval1.start, gene_interval2.start) - min(gene_interval1.end, gene_interval2.end)
