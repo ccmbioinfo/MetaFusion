@@ -603,7 +603,7 @@ class CffFusion():
         self.zone2_attrs = ["library", "sample_name", "sample_type", "disease"]
         self.zone3_attrs = ["tool", "split_cnt", "span_cnt", "t_gene1", "t_area1", "t_gene2", "t_area2"]
         #self.zone4_attrs = ["category", "reann_gene1", "reann_type1", "reann_gene2", "reann_type2", "gene1_on_bdry", "gene1_close_to_bndry", "gene2_on_bdry", "gene2_close_to_bndry", "score", "coding_id_distance", "gene_interval_distance", "dna_support", "fusion_id", "seq1", "seq2", "is_inframe", "splice_site1", "splice_site2", "captured_reads"]  
-        self.zone4_attrs = ["category", "reann_gene1", "reann_type1", "reann_gene2", "reann_type2", "gene1_on_bdry", "gene1_close_to_bndry", "gene2_on_bdry", "gene2_close_to_bndry", "score", "coding_id_distance", "gene_interval_distance", "dna_support", "fusion_id", "seq1", "seq2", "is_inframe", "closest_exon1", "closest_exon2", "captured_reads"]  
+        self.zone4_attrs = ["category", "reann_gene1", "reann_type1", "reann_gene2", "reann_type2", "gene1_on_bdry", "gene1_close_to_bndry", "gene2_on_bdry", "gene2_close_to_bndry", "score", "coding_id_distance", "gene_interval_distance", "dna_support", "fusion_id", "seq1", "seq2", "is_inframe", "closest_exon1", "closest_exon2", "captured_reads","transcript1","transcript2"]
         #self.zone4_attrs = ["reann_gene_order1", "reann_gene_type1", "reann_gene_index1", "reann_category1", "reann_gene_order2", "reann_gene_type2", "reann_gene_index2", "reann_category2"]
         # format chr
         if not self.chr1.startswith("chr"):
@@ -750,7 +750,7 @@ class CffFusion():
                 value.append(self.__dict__[attr])
         self.boundary_info = "\t".join(map(str, [self.gene1_on_bndry, self.gene1_close_to_bndry, self.gene2_on_bndry, self.gene2_close_to_bndry]))
         if self.fusion_id != "NA":
-            return "\t".join(map(lambda x:str(x), value)) + "\t" + self.category + "\t" + self.reann_gene1 + "\t" + self.reann_type1 + "\t" + self.reann_gene2 + "\t" + self.reann_type2 + "\t" + self.boundary_info + "\t" + str(self.score) + "\t" + str(self.coding_id_distance) + "\t" + str(self.gene_interval_distance) + "\t" + str(self.dnasupp) + "\t" + self.fusion_id + "\t" + self.seq1 + "\t" + self.seq2 + "\t" + str(self.is_inframe) + "\t" + self.closest_exon1 + "\t" + self.closest_exon2 + "\t" + str(self.captured_reads)
+            return "\t".join(map(lambda x:str(x), value)) + "\t" + self.category + "\t" + self.reann_gene1 + "\t" + self.reann_type1 + "\t" + self.reann_gene2 + "\t" + self.reann_type2 + "\t" + self.boundary_info + "\t" + str(self.score) + "\t" + str(self.coding_id_distance) + "\t" + str(self.gene_interval_distance) + "\t" + str(self.dnasupp) + "\t" + self.fusion_id + "\t" + self.seq1 + "\t" + self.seq2 + "\t" + str(self.is_inframe) + "\t" + self.closest_exon1 + "\t" + self.closest_exon2 + "\t" + str(self.captured_reads) + "\t" + str(self.transcript1) + "\t"  + str(self.transcript2)
         else:
             return "\t".join(map(lambda x:str(x), value)) 
     
@@ -915,8 +915,7 @@ class CffFusion():
                 self.coding_id_distance = abs(idx1 - idx2)
             gene_interval1 = gene_ann.get_gene_interval(self.bpann1.gene_name)
             gene_interval2 = gene_ann.get_gene_interval(self.bpann2.gene_name)
-            self.transcript1 = gene_interval1.transcript_ids
-            self.transcript2 = gene_interval2.transcript_ids
+
             if gene_interval1 and gene_interval2:
                 if gene_interval1.chr == gene_interval2.chr:
                     self.gene_interval_distance = max(gene_interval1.start, gene_interval2.start) - min(gene_interval1.end, gene_interval2.end)
@@ -971,7 +970,8 @@ class CffFusion():
                     print >> sys.stderr, "Warning: Unknown category."
                     print >> sys.stderr, type1, type2
             self.category = category
-
+            self.transcript1 = gene_interval1.transcript_ids
+            self.transcript2 = gene_interval2.transcript_ids
         return ""
 
     # based on given gene annotations re-annotate cff fusions, infer possible up/downstream genes, try to fill in strand if info missing
