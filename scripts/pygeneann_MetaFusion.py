@@ -970,8 +970,8 @@ class CffFusion():
                     print >> sys.stderr, "Warning: Unknown category."
                     print >> sys.stderr, type1, type2
             self.category = category
-            self.transcript1 = gene_interval1.transcript_ids
-            self.transcript2 = gene_interval2.transcript_ids
+            self.transcript1 = self.bpann1.transcript_id
+            self.transcript2 = self.bpann2.transcript_id
         return ""
 
     # based on given gene annotations re-annotate cff fusions, infer possible up/downstream genes, try to fill in strand if info missing
