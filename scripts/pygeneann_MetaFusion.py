@@ -877,7 +877,7 @@ class CffFusion():
         for gname1 in genes1:
             for bpann1 in genes1[gname1]:
                 score1, is_on_boundary1, close_to_boundary1 = self.__cal_score(bpann1, "head")  
-                if score1 == max_t2[0] and gname1==self.t_gene1:
+                if score1 == max_t1[0] and gname1==self.t_gene1:
                     max_t1 = score1, is_on_boundary1, close_to_boundary1, bpann1
                 if score1 > max_t1[0]:
                     max_t1 = score1, is_on_boundary1, close_to_boundary1, bpann1
