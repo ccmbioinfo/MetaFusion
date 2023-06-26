@@ -127,12 +127,13 @@ star_fusion_ref_name_to_id$starfusion_gene_id_no_version <- str_split_fixed(star
 ### match starfusion and v75 via ENSGid
 v75_to_starfusion <- merge(ensemblToGeneName,star_fusion_ref_name_to_id,by.x = "gene_id",by.y ="starfusion_gene_id_no_version",all= F)
 # 63232     
+### if a gene id did not successfully map via geneid... 
 missing_ensg_ids_starFusion <- star_fusion_ref_name_to_id[!star_fusion_ref_name_to_id$starfusion_gene_id %in% v75_to_starfusion$starfusion_gene_id,] ## 51
 # starfusion_gene_id starfusion_gene_name starfusion_gene_id_no_version
 # 2588077  ENSGR0000228572.2      LL0YNC03-29C1.1               ENSGR0000228572
 # 2588081  ENSGR0000182378.8               PLCXD1               ENSGR0000182378
 # 2588228  ENSGR0000178605.8               GTPBP6               ENSGR0000178605
-
+###merge by gene name
 missing_ensg_id_match_via_name <-  merge(ensemblToGeneName,missing_ensg_ids_starFusion,by.x = "gene_name",by.y ="starfusion_gene_name",all= F)## 49. all but 2 have a gene name match. 
 
 still_missing <- missing_ensg_ids_starFusion[!missing_ensg_ids_starFusion$starfusion_gene_id %in% missing_ensg_id_match_via_name$starfusion_gene_id,]
@@ -161,71 +162,117 @@ for(i in 1:nrow(indirect_gene_name_match_starfusion_v75)){
 #### any star fusion and v75 mismatches that do not already exist in synoyms have been added at this point. 
 write.table(clean_mapping,"/work/ccs/pintoa1/references/meta_fusion_bed_generation/gene_info.v75.sf.june222023",row.names = F,sep = "\t")
 
-
-
+clean_mapping <- fread("/work/ccs/pintoa1/references/meta_fusion_bed_generation/gene_info.v75.sf.june222023")
+# 59270 mappings
+#> length(unique(clean_mapping$Symbol))
+# 56638 unique gene names in v75
 
 ### NOW DO IT FOR FUSIONCATCHER
-fusioncatcher_ref_name_to_id <- unique(fusioncatcher_ref_df[,c("gene_id","gene_name")]) #60620
+
+### REDO FUSIONCATCHER MERGE WE ARE MISSING A CANCER GENE FROM ONCOKB
+## we can reaquire itwith ENST/transcript_id
+# cancer_genes[cancer_genes$`GRCh37 Isoform` %in% fusioncatcher_ref_df$transcript_id[fusioncatcher_ref_df$gene_name %in% problem_genes_fc],]
+# Hugo Symbol Entrez Gene ID  GRCh37 Isoform GRCh37 RefSeq  GRCh38 Isoform GRCh38 RefSeq # of occurrence within resources (Column D-J)
+# 1:      PTP4A1           7803 ENST00000370651   NM_003463.4 ENST00000626021   NM_003463.4                                             3
+# OncoKB Annotated Is Oncogene Is Tumor Suppressor Gene MSK-IMPACT MSK-HEME FOUNDATION ONE FOUNDATION ONE HEME Vogelstein SANGER CGC(05/30/2017)
+# 1:              Yes          No                       No        Yes      Yes             No                  No         No                     No
+# Gene Aliases
+# 1: PRL-1, PTPCAAX1
+fusioncatcher_ref_name_to_id <- unique(fusioncatcher_ref_df[,c("gene_id","gene_name")]) #60620 unique mappings,59409 gene names
 colnames(fusioncatcher_ref_name_to_id) <- c("FC_gene_id","FC_gene_name")
 
+#### keep only genes which have differing gene names. attempt to map to v75
+fusioncatcher_ref_name_to_id <- fusioncatcher_ref_name_to_id[!fusioncatcher_ref_name_to_id$FC_gene_name %in% clean_mapping$Symbol,]
+###25027 gene names do not exist as Symbol
 
+### keep problem genes which still have no mapping
+problem_genes_fc <- c()
+for(i in 1:nrow(fusioncatcher_ref_name_to_id)){
+  gene <- fusioncatcher_ref_name_to_id$FC_gene_name[i]
+  syn_str <- paste("^",gene,"[\\|]|^",gene,"$","|[\\|]",gene,"[\\|]|[\\|]",gene,"$", sep="")
+  
+  ## if gene doesnt exist in synonmys retain it
+  if(!any(grepl(syn_str,clean_mapping$Synonyms))){
+    problem_genes_fc <<- c(gene,problem_genes_fc)
+  }
+}
 
-
+### 21139 gene names which do not exist within synonmys 
+problem_genes_fc_df <-fusioncatcher_ref_name_to_id[fusioncatcher_ref_name_to_id$FC_gene_name %in% problem_genes_fc,]
 ### match starfusion and v75 via ENSGid
-v75_to_fusioncatcher <- merge(ensemblToGeneName,fusioncatcher_ref_name_to_id,by.x = "gene_id",by.y ="FC_gene_id",all= F)
-# 52369     
+v75_to_fusioncatcher <- merge(ensemblToGeneName,problem_genes_fc_df,by.x = "gene_id",by.y ="FC_gene_id",all= F)
+# 14443 matches between v75 and fusion catcher on GENE ID
+### add fusioncatchers expectd gene name to synonmys 
+for(i in 1:nrow(v75_to_fusioncatcher)){
+  gene <- v75_to_fusioncatcher$FC_gene_name[i]
+  syn_str <- paste("^",gene,"[\\|]|^",gene,"$","|[\\|]",gene,"[\\|]|[\\|]",gene,"$", sep="")
+  
+  if(any(!grepl(syn_str,clean_mapping$Synonyms[clean_mapping$Symbol == v75_to_fusioncatcher$gene_name[i]]))){
+    clean_mapping$Synonyms[clean_mapping$Symbol == v75_to_fusioncatcher$gene_name[i]] <- ifelse( clean_mapping$Synonyms[clean_mapping$Symbol == v75_to_fusioncatcher$gene_name[i]] == '-',
+                                                                                                             gene ,
+                                                                                                             paste0(gene,"|",clean_mapping$Synonyms[clean_mapping$Symbol == v75_to_fusioncatcher$gene_name[i]]))
+  }
+}
 
-missing_ensg_ids_fusioncatcher <- fusioncatcher_ref_name_to_id[!fusioncatcher_ref_name_to_id$FC_gene_id %in% v75_to_fusioncatcher$gene_id,] ## 8251 
+
+missing_ensg_ids_fusioncatcher <- problem_genes_fc_df[!problem_genes_fc_df$FC_gene_id %in% v75_to_fusioncatcher$gene_id,] ## 6707 
 #### there are some gene names which have more than 1 ENSG id. see if any of the other ENGs pairs matched for a gene name
-## removed 240 because they already mapped EX:
+## removed 10 because they already mapped EX:
 # 863279 ENSG00000275631             U1
 # 2894643 ENSG00000276932          Y_RNA
 # 2894660 ENSG00000277428          Y_RNA
 # 2894896 ENSG00000277374             U1
 # 2895086 ENSG00000275405             U1
 # 2895089 ENSG00000275987             U1
-missing_ensg_ids_fusioncatcher <- missing_ensg_ids_fusioncatcher[!missing_ensg_ids_fusioncatcher$FC_gene_name %in% v75_to_fusioncatcher$FC_gene_name,] #8011
+###  these gene names already exist within the v75_to_fusioncatcher dataframe as a different gene_id merge. 
+missing_ensg_ids_fusioncatcher <- missing_ensg_ids_fusioncatcher[!missing_ensg_ids_fusioncatcher$FC_gene_name %in% v75_to_fusioncatcher$FC_gene_name,] #6696 unqiue genes
+### match these via transcript id
+ensemblTranscriptToGeneName <- unique(our_gtf[,c("transcript_id","gene_name")])
+missing_ensg_ids_fusioncatcher_transcript <- unique(fusioncatcher_ref_df[fusioncatcher_ref_df$gene_name %in% missing_ensg_ids_fusioncatcher$FC_gene_name,c("transcript_id","gene_name")])
+colnames(missing_ensg_ids_fusioncatcher_transcript) <- c("FC_transcript_id","FC_gene_name")
+missing_ensg_ids_fusioncatcher_transcript <- missing_ensg_ids_fusioncatcher_transcript[!is.na(missing_ensg_ids_fusioncatcher_transcript$FC_transcript_id),]
+v75_t_to_fc_t <-  merge(ensemblTranscriptToGeneName,missing_ensg_ids_fusioncatcher_transcript,by.x = "transcript_id",by.y ="FC_transcript_id",all = F) 
+# length(unique(v75_t_to_fc_t$gene_name))
+# [1] 309
+# > length(unique(v75_t_to_fc_t$FC_gene_name))
+# 354 gene names rescued by mapping via transcript id
 
+### add these gene names to synonyms
+for(i in 1:nrow(v75_t_to_fc_t)){
+  gene <- v75_t_to_fc_t$FC_gene_name[i]
 
-missing_ensg_id_match_via_name <-  merge(ensemblToGeneName,missing_ensg_ids_fusioncatcher,by.x = "gene_name",by.y ="FC_gene_name",all= F)## 3746
-### since these gene names match, we can remove them. 
+  clean_mapping$Synonyms[clean_mapping$Symbol == v75_t_to_fc_t$gene_name[i]] <- ifelse( clean_mapping$Synonyms[clean_mapping$Symbol == v75_t_to_fc_t$gene_name[i]] == '-',
+                                                                                                 gene ,
+                                                                                                 paste0(gene,"|",clean_mapping$Synonyms[clean_mapping$Symbol == v75_t_to_fc_t$gene_name[i]]))
 
-
-mismatch_gene_names_mapped_vi_id <- unique(v75_to_fusioncatcher[v75_to_fusioncatcher$gene_name != v75_to_fusioncatcher$FC_gene_name,c("gene_name" ,"FC_gene_name")])
-#20045 will need to confirm that these FC gene names are in the synonmys of gene info
-
-for(i in 1:nrow(mismatch_gene_names_mapped_vi_id)){
-  gene <- mismatch_gene_names_mapped_vi_id$FC_gene_name[i]
-  syn_str <- paste("^",gene,"[\\|]|^",gene,"$","|[\\|]",gene,"[\\|]|[\\|]",gene,"$", sep="")
-  
-  if(any(!grepl(syn_str,clean_mapping$Synonyms[clean_mapping$Symbol == mismatch_gene_names_mapped_vi_id$gene_name[i]]))){
-    clean_mapping$Synonyms[clean_mapping$Symbol == mismatch_gene_names_mapped_vi_id$gene_name[i]] <- ifelse( clean_mapping$Synonyms[clean_mapping$Symbol == mismatch_gene_names_mapped_vi_id$gene_name[i]] == '-',
-                                                                                                                    gene ,
-                                                                                                                    paste0(gene,"|",clean_mapping$Synonyms[clean_mapping$Symbol == mismatch_gene_names_mapped_vi_id$gene_name[i]]))
-  }
 }
 
 
-still_missing <- missing_ensg_ids_fusioncatcher[!missing_ensg_ids_fusioncatcher$FC_gene_id %in% missing_ensg_id_match_via_name$FC_gene_id,]
-### 6785 gene names do not exist in our v75 gtf
-### check if these exist in synonyms of our gene info
-new_problem_genes <- c()
 
+still_missing_ensg_id_match_even_after_transcript <- missing_ensg_ids_fusioncatcher[!missing_ensg_ids_fusioncatcher$FC_gene_name %in% c(v75_t_to_fc_t$FC_gene_name),]
+###6351 rows, 6342  gne namesSTILL MISSING EVEN AFTER MATCH VIA TRANSCRIPT 
+# ## t FC_gene_id FC_gene_name
+# 26  ENSG00000278267    MIR6859-1
+# 152 ENSG00000279928   FO538757.1
+# 159 ENSG00000279457       WASH9P
+# 171 ENSG00000273874    MIR6859-2
+# 437 ENSG00000278791   AC114498.2
+# 642 ENSG00000285268   AL669831.6
+table(fusioncatcher_ref_df$gene_biotype[fusioncatcher_ref_df$gene_name %in% still_missing_ensg_id_match_even_after_transcript$FC_gene_name & !duplicated(fusioncatcher_ref_df$gene_id)])
 
-for(i in 1:nrow(still_missing)){
-  gene <- still_missing$FC_gene_name[i]
-  
-  syn_str <- paste("^",gene,"[\\|]|^",gene,"$","|[\\|]",gene,"[\\|]|[\\|]",gene,"$", sep="")
-  if(any(!grepl(syn_str,clean_mapping$Synonyms))){
-    new_problem_genes <<- c(new_problem_genes,gene)
-  }
-  
-  
-  
-}
-
-
-##gene names which will NOT be converted by metafusion will not exist in the synonyms of gene info
-### NONE OF THE 6785 genes exist in the synonmys to v75. this means the 6785 genes from fusioncatcher will not be within the GENE bed file and therefore will nto be scored in metafusion
-
-write.table(clean_mapping,"/work/ccs/pintoa1/references/meta_fusion_bed_generation/gene_info.v75.sf.fc.june222023",sep = "\t",quote =  F)
+                     IG_pseudogene                          IG_V_gene                    IG_V_pseudogene                             lncRNA 
+                                 1                                  7                                  5                               3445 
+                             miRNA                           misc_RNA             polymorphic_pseudogene               processed_pseudogene 
+                               431                                223                                  4                                364 
+                    protein_coding                         pseudogene                           ribozyme                               rRNA 
+                               260                                 16                                  1                                 24 
+                   rRNA_pseudogene                             scaRNA                             snoRNA                              snRNA 
+                                 7                                  2                                 14                                  1 
+                              sRNA                                TEC                          TR_D_gene                          TR_J_gene 
+                                 4                                957                                  1                                  6 
+  transcribed_processed_pseudogene     transcribed_unitary_pseudogene transcribed_unprocessed_pseudogene    translated_processed_pseudogene 
+                                21                                  9                                 89                                  1 
+                unitary_pseudogene             unprocessed_pseudogene 
+                                21                                437 
+write.table(still_missing_ensg_id_match_even_after_transcript, "/work/ccs/pintoa1/references/meta_fusion_bed_generation/fusion_catcher_genes_missing_from_gene_info_metafusion_june262023",sep ="\t",quote = F)
+write.table(clean_mapping,"/work/ccs/pintoa1/references/meta_fusion_bed_generation/gene_info.v75.sf.fc.june262023",sep = "\t",quote =  F)
