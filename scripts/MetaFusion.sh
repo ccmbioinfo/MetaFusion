@@ -77,13 +77,10 @@ done
 mkdir $outdir
 
 #Check CFF file format:
-#Remove entries with nonconformming chromosome name
+#Remove entries with nonconformming chromosome name (1..22, X, Y)
 #Remove "." from strand field and replace with "NA"
-cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'BEGIN{FS=OFS="\t"} $3 !~ /^[-+]$/{$3="NA"} 1' | awk 'BEGIN{FS=OFS="\t"} $6 !~ /^[-+]$/{$6="NA"} 1'   > $outdir/$(basename $cff).reformat 
-#cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' |  awk 'FS=OFS="\t"{if ($3==".") {$3="NA"}; print}'|  awk 'FS=OFS="\t"{if ($6==".") {$6="NA"}; print}'  > $outdir/$(basename $cff).reformat 
-#cat $cff | awk '$1 ~ /[0-9XY]/ && $4 ~ /[0-9XY]/ ' | awk 'FS=OFS="\t"{ if ($3 !="+" || $3 != "-" ); $3="NA"; print }' | awk 'FS=OFS="\t"{ if ($6 !="+" || $6 != "-" ); $6="NA"; print }' > $outdir/$(basename $cff).reformat 
+awk 'BEGIN {OFS="\t"; FS="\t";} ($1 ~ /^(([1-9])|(1[0-9])|(2[0-2])|[XY])$/ && $4 ~ /^(([1-9])|(1[0-9])|(2[0-2])|[XY])$/) { if($3 !~ /^[-+]$/) {$3="NA"}; if($6 !~ /^[-+]$/) {$6="NA"}; print}' $cff > outdir/$(basename $cff).reformat 
 cff=$outdir/$(basename $cff).reformat
-#NEED TO INSERT +/-/NA for strand, make NA if other
 
 
 #Rename cff
