@@ -520,8 +520,9 @@ class CffFusion():
         self.library = tmp[6] # DNA/RNA
         self.sample_name = tmp[7]
         self.sample_type = tmp[8] # Tumor/Normal
-        # Check to make sure sample_type is in ["Tumor", "Normal"]
-        if self.sample_type not in ["Tumor","Normal"]:raise ValueError("sample_type value '" + tmp[8] + "' must be Tumor or Normal\nInvalid entry: " + cff_line) 
+        # Check to make sure sample_type is in ["Tumor", "Normal", "NA"]
+        if self.sample_type not in ["Tumor","Normal", "NA"]:
+          raise ValueError("sample_type value '" + tmp[8] + "' must be Tumor or Normal\nInvalid entry: " + cff_line) 
         self.disease = tmp[9]
         # Software Zone
         self.tool = tmp[10]
