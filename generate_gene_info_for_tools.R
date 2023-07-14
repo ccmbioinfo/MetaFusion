@@ -60,5 +60,5 @@ gene_info$Symbol <- gene_info$gene_name
 
 gene_info <- gene_info[,c("Symbol","Synonyms")]
 
-write.table(gene_info,"/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/gene_info_20230714.txt")
-write.table(add_these_exess_gene_ids,"/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/excess_gene_ids_20230714.txt")
+write.table(gene_info,"/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/gene_info_20230714.txt",sep ="\t",quote = F,row.names = F)
+write.table(add_these_exess_gene_ids,"/work/ccs/pintoa1/fusion_report/metafusion/MetaFusion/excess_gene_ids_20230714.txt",sep ="\t",quote = F,row.names = F)
