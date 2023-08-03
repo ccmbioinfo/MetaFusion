@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/validation_pipeline/Pipeline-scripts/rename_cff_file_genes-GENAP.py
 import os
 import sys
 import pygeneann_MetaFusion as pygeneann
@@ -16,21 +15,18 @@ args = parser.parse_args()
 cff_file = args.cff_file
 gene_info_file=args.gene_info_file
 
-# tab-delimited file with a column contating all aliases for each gene
-#tax_id	GeneID	Symbol	LocusTag	Synonyms	dbXrefs	chromosome	map_location	description	type_of_gene	Symbol_from_nomenclature_authority	Full_name_from_nomenclature_authority	Nomenclature_status	Other_designations	Modification_date	Feature_type
-#9606	1	A1BG	-	A1B|ABG|GAB|HYST2477	MIM:138670|HGNC:HGNC:5|Ensembl:ENSG00000121410	19	19q13.43	alpha-1-B glycoprotein	protein-coding	A1BG	alpha-1-B glycoprotein	O	alpha-1B-glycoprotein|HEL-S-163pA|epididymis secretory sperm binding protein Li 163pA	20200313	-
+# tab-delimited file with a column Symbol == HGNC_Symbol and Synonyms== ENSG_id
 
-#Open NCBI file and create df
-#ncbi_gene_info_file = open("/hpf/largeprojects/ccmbio/mapostolides/gene_fusion/pipeline/config_reference_files/Homo_sapiens.gene_info") 
+#Open Gene info file and create df
 ncbi_gene_info_file = open(gene_info_file)
 df = pd.read_csv(ncbi_gene_info_file, sep='\t')
 
-#https://stackoverflow.com/questions/26336251/pandas-rename-single-dataframe-column-without-knowing-column-name
 #Create one row for each alias
 df = pd.concat([pd.Series(row['Symbol'], row['Synonyms'].split('|'))
 	for _, row in df.iterrows()]).reset_index()
 df.rename(columns = {list(df)[0]: 'Alias', list(df)[1]: 'HGNC_Symbol'}, inplace = True)
 
+# Remove bracketed gene information from arriba
 def clean_weird_input(gene_name): 
     #$ cat $cluster | sed 's/(.\+)//g' | sed 's/\//,/g' 
     # remove arriba brackets, e.g. RNU6-121P(14818),AQP10(8524)
@@ -49,6 +45,7 @@ def alias2hgnc(df, query):
         hgnc_lst = df.loc[df.Alias == query].HGNC_Symbol.values.tolist()
         return "NA" if len(hgnc_lst) == 0 else hgnc_lst[0]
 
+# In arriba, can have more than 1 gene on fusion. This will select the "more likely" Symbol
 def select_gene_name(gene_lst):
     """takes a list of gene names and selects a single name"""
     #handle list of genes from caller
@@ -59,7 +56,6 @@ def select_gene_name(gene_lst):
     try: return [gen for gen in gene_hgnc_lst if gen != "NA"][0]
     except: return ','.join([gen for gen in gene_hgnc_lst if gen != "NA"])
 
-#cff_file ="/hpf/largeprojects/ccmbio/mapostolides/mugqic_tools-my-version/python-tools/fusiontools/0.1.0/bin/reann_cff_fusion_testing/FOSB--AADACL2/FOSB--AADACL2.cff.MOD"
 for line in open(cff_file, "r"):
     fusion = pygeneann.CffFusion(line)
     #clean weird input
@@ -67,6 +63,8 @@ for line in open(cff_file, "r"):
     fusion.t_gene2 = clean_weird_input(fusion.t_gene2) 
     # t_gene1
     t_gene1 = select_gene_name(fusion.t_gene1.split(","))
+    ### If no gene name is selected, return the callers gene name
+    # This should not occur if you use the generate gene info file with all gtfs from input callers
     if len(t_gene1) != 0: fusion.t_gene1 = t_gene1 
     # t_gene2
     t_gene2 = select_gene_name(fusion.t_gene2.split(","))
@@ -77,3 +75,4 @@ for line in open(cff_file, "r"):
     #hgnc_gene1 = alias2hgnc(df, fusion.t_gene1) 
     #hgnc_gene2 = alias2hgnc(df, fusion.t_gene2) 
     #print( hgnc_gene1,hgnc_gene2)
+    

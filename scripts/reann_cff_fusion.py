@@ -19,7 +19,7 @@ ensbed = args.gene_bed
 # Assign reference fasta if provided by user
 if args.ref_fa is not None:
   ref_fa=args.ref_fa
-#Load bed format gene annotation, current support knowngene.bed's format, map given genomic loactions to genens, return matched gene list
+#Load bed format gene annotation
 gene_ann = pygeneann.GeneAnnotation(ensbed)
 
 n = 1    
@@ -28,6 +28,8 @@ for line in open(cff_file, "r"):
     fusion = pygeneann.CffFusion(line)
     orig_pos = fusion.pos1 # record the pos before shift
     # ann_gene_order is an instance method of CffFusion class.  
+    # Attempts to identify 5'->3' gene order
+    # If gene name or gene loc doesnt exist in gene bed, gene order is more likely to be switched
     fusion.ann_gene_order(gene_ann)
 
     #annotate fusion id and seq
@@ -42,4 +44,3 @@ for line in open(cff_file, "r"):
       pygeneann.get_fusion_seq(fusion, ref_fa, 100)
     print fusion.tostring()
     n += 1
-

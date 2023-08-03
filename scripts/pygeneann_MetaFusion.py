@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 debug=0
 import sys
 import pysam
@@ -755,6 +756,7 @@ class CffFusion():
         else:
             return "\t".join(map(lambda x:str(x), value)) 
     
+    #return T/F if bp on a boundary or within 5 bp of boundary designated in gene bed file
     def __check_boundary(self, bpann, order): # bpann is GeneBed object, order = head/tail
         # set on boundary info, used boundaries according to head/tail gene and their strand
         is_on_boundary = False
@@ -814,9 +816,14 @@ class CffFusion():
         score_in_utr = 1.5
         score_in_intron = 1
         score_intergenic = 0.5
+        # If gene_name not in gene_bed file, assign 0.5 as score
         if bpann.gene_name == "NA":
             score = score_intergenic
             return score
+        # If gene name is in gene bed file, check boundary
+        # Score according to key above
+        # Exon > UTR > intron
+        # On_boundary > close_to_boundary > inside_region
         is_on_boundary, close_to_boundary = self.__check_boundary(bpann, order)
         score = 0
         if bpann.type == "cds":
@@ -836,11 +843,15 @@ class CffFusion():
         elif bpann.type == "intron":
             score = score_in_intron
         else:
-            print >> sys.stderr, "Unkknown type:", bpann.type
+            print >> sys.stderr, "Unknown type:", bpann.type
             sys.exit(1)
         return score, is_on_boundary, close_to_boundary 
                         
-    # according to fusion strand (defuse style, strands are supporting pairs') return all possible gene fusions;depending on gene1 and gene2 (a,b,c,d), may have to switch pos order
+    # according to fusion strand (defuse style, strands are supporting pairs') return all possible gene fusions;
+    # depending on gene1 and gene2 (a,b,c,d), may have to switch pos order
+    # Switching should theoretically ONLY occur when a gene isnt in the gene bed file
+    # Metafusion wont know how to annotate the gene if the loc or name is not in the gene_bed file
+    # Arriba, starfusion and Fusioncatcher all output the genes in the correct order
     def __check_gene_pairs(self, genes1, genes2, gene_ann, switch_pos):
         # check to make sure both genes1 and genes2 have items in them
         gene_order = []
@@ -851,13 +862,6 @@ class CffFusion():
         category = ""
         t = 5
                 
-        if debug: 
-            print(set(genes1.keys()), set(genes2.keys()) )
-            #print(gene_ann.is_coding('PNMA6A')['PNMA6A'].tostring())
-            #print(.__gene_intervals['PNMA6A'])
-            #print(gene_ann.is_coding([gene_name for gene_name in set(genes2.keys())][0]))
-            #print([gene_name for gene_name in set(genes2.keys())])
-        # type of genes, coding gene ids
         for gene_name in set(genes1.keys()):
             if gene_ann.is_coding(gene_name):
                 type1.append("CodingGene")
@@ -875,6 +879,14 @@ class CffFusion():
         # get best score for current gene combination   
         max_t1 = 0, "NA", "NA", GeneBed("")
         max_t2 = 0, "NA", "NA", GeneBed("")
+        # This step will pick which gene name to assign to reann_gene
+        # All Metafusion annotations are based on reann_gene
+        # For each gene in the fusion, identify the highest scoring transcript/gene/region 
+        # Where highest scoring regions are coding on boundary bps
+        # Chance for reann gene to be different from renamed gene
+        # Identify region/transcript with highest score  
+        # If there is more than 1 transcript/gene/region with same score, will return the FIRST occurance of the score
+        # This therefore can be somewhat random if there are a lot of transcripts/genes/regions with the same score
         for gname1 in genes1:
             for bpann1 in genes1[gname1]:
                 score1, is_on_boundary1, close_to_boundary1 = self.__cal_score(bpann1, "head")  
@@ -890,13 +902,9 @@ class CffFusion():
                     max_t2 = score2, is_on_boundary2, close_to_boundary2, bpann2
                 elif score2 > max_t2[0]:
                     max_t2 = score2, is_on_boundary2, close_to_boundary2, bpann2
-        #if debug:
-        #    print >> sys.stderr, self.bpann1.gene_name
-        #    print >> sys.stderr, (max_t1[0], max_t2[0] )
-        #    print >> sys.stderr, self.t_gene1
-        #    print >> sys.stderr, self.bpann2.gene_name
-        #    print >> sys.stderr, (max_t1[0], max_t2[0] )
-        #    print >> sys.stderr, self.t_gene2 
+
+        # If max_t1 + max_t2 is greater than previous score (should be zero on initialization, but if checking strand order a/b or d/c will have a previous score)
+        # Assign max_t1 and max_t1 information to fusion
         if max_t1[0] + max_t2[0] > self.score1 + self.score2:
             self.score1, self.gene1_on_bndry, self.gene1_close_to_bndry, self.bpann1 = max_t1
             self.score2, self.gene2_on_bndry, self.gene2_close_to_bndry, self.bpann2 = max_t2
@@ -905,32 +913,31 @@ class CffFusion():
             self.reann_gene2 = self.bpann2.gene_name
             self.reann_type1 = self.bpann1.type
             self.reann_type2 = self.bpann2.type
-
+            ## Checking if both genes are coding genes
             if id1 and id2:
                 if len(set(id1)) != 1 or len(set(id2))!= 1:
                     print >> sys.stderr, "coding id err."
                     print >> sys.stderr, id1, id2
                     sys.exit(1)
+                # How many coding genes are "between" gene1 and gene2
+                # IDX based on the order of the gene_bed you put in. 
+                # First coding gene in gene_bed == idx_1
+                # Second coding gene in gene_bed == idx_2
+                # I believe v75_gene.bed is chr1->chr21->chrX->chrY
                 idx1 = int(id1[0].split("_")[0])
                 idx2 = int(id2[0].split("_")[0])
                 self.coding_id_distance = abs(idx1 - idx2)
             gene_interval1 = gene_ann.get_gene_interval(self.bpann1.gene_name)
             gene_interval2 = gene_ann.get_gene_interval(self.bpann2.gene_name)
 
+            # If genes are on same chromosome, how far apart are they
             if gene_interval1 and gene_interval2:
                 if gene_interval1.chr == gene_interval2.chr:
                     self.gene_interval_distance = max(gene_interval1.start, gene_interval2.start) - min(gene_interval1.end, gene_interval2.end)
 
-            #switch pos order if necessary #SWAP. Really only matters for defuse, other callers don't get gene order wrong
-            #if switch_pos:
-            #    self.chr1, self.chr2 = self.chr2, self.chr1
-            #    self.pos1, self.pos2 = self.pos2, self.pos1
-            #    self.strand1, self.strand2 = self.strand2, self.strand1
-            #    self.t_gene1, self.t_gene2 = self.t_gene2, self.t_gene1
-            #    self.t_area1, self.t_area2 = self.t_area2, self.t_area1
-
             ## assign fusion to a category according to best score gene pair
             # No driver gene
+            # If a gene/loc not in gene bed will occur ,as well as for biological reason 
             if not genes1:
                 category = "NoDriverGene"
             # map to same gene
@@ -938,6 +945,7 @@ class CffFusion():
                 category = "SameGene"
             else:
                 # category fusions into: read through, gene fusion, truncated coding, truncated noncoding, nonsense
+                # If a gene/loc not in gene bed can also get truncated coding/truncated noncoding
                 gene1_is_coding = gene_ann.is_coding(self.reann_gene1)
                 
                 if genes2:
@@ -971,6 +979,7 @@ class CffFusion():
                     print >> sys.stderr, "Warning: Unknown category."
                     print >> sys.stderr, type1, type2
             self.category = category
+            # Return transcript assigned
             self.transcript1 = self.bpann1.transcript_id
             self.transcript2 = self.bpann2.transcript_id
         return ""
@@ -987,44 +996,32 @@ class CffFusion():
             idx=[gene.gene_name for gene in matched_genes1].index(self.t_gene1)
             matched_genes1=[matched_genes1[idx]]
         except ValueError: pass 
-        #print([gene_bed.gene_name for gene_bed in matched_genes1])
+
         matched_genes2 = gene_ann.map_pos_to_genes(self.chr2, self.pos2)
         try: 
             idx=[gene.gene_name for gene in matched_genes2].index(self.t_gene2)
             matched_genes2=[matched_genes2[idx]]
         except ValueError: pass 
-        #if debug:
-        #    print([(gene_bed.gene_name, gene_bed.start_orig) for gene_bed in matched_genes1])
-        #    print([(gene_bed.gene_name, gene_bed.start_orig) for gene_bed in matched_genes2])
-        #if self.t_gene2 in [gene.gene_name for gene in matched_genes2]: matched_genes2=self.t_gene2
 
-        #TEST ...
-        #instance_vars = ['chr', 'start', 'end', 'transcript_id', 'type', 'idx', 'strand', 'gene_name', 'gene_id', 'is_from_contradictory_gene']
-        #instance_vars = ['self.' + var for var in instance_vars]
-        #print instance_vars
-        #print "breakpoint1_genes",  [gene.gene_name for gene in matched_genes1], "breakpoint2_genes", [gene.gene_name for gene in matched_genes2]
-        # ...TEST
 
         a = {} # forward strand gene at pos1
         c = {} # backward strand gene at pos1
         b = {} # forward strand gene at pos2
         d = {} # backward strand gene at pos2
 
-        #swap star_fusion RHS strand to correspond to defuse:
+        #Defuse has special stuff commented out for now as forte does not use defuse
         #if self.tool!="defuse":
-        if self.tool=="defuse":
-            if self.strand2 == "-":
-                self.strand2 = "+"
-            elif self.strand2 == "+":
-                self.strand2 = "-"
-        #print([(gene.gene_name, gene.strand) for gene in matched_genes1])
-        #print([gene.gene_name for gene in matched_genes1])
+        # if self.tool=="defuse":
+        #     if self.strand2 == "-":
+        #         self.strand2 = "+"
+        #     elif self.strand2 == "+":
+        #         self.strand2 = "-"
+       
         for gene in matched_genes1:
             if gene.strand == "f":
                 a.setdefault(gene.gene_name, []).append(gene)
             else:
                 c.setdefault(gene.gene_name, []).append(gene)
-        #print([gene.gene_name for gene in matched_genes2])
         for gene in matched_genes2:
             if gene.strand == "f":
                 b.setdefault(gene.gene_name, []).append(gene)
@@ -1032,6 +1029,8 @@ class CffFusion():
                 d.setdefault(gene.gene_name, []).append(gene)
 
         # for tools do not provide defuse-style strand, regenerate strands, this is assuming that gene1 = 5 prime gene and gene2 = 3 prime gene
+        # This seems to be doing something with DEfuse again
+        # I do not believe our callers will enter this if statment.
         if self.strand1 == "NA" or self.strand2 == "NA":
             gene_interval1 = ""
             gene_interval2 = ""
@@ -1070,31 +1069,21 @@ class CffFusion():
 
                 
         # gene_order includes: 5' gene >> 3' gene, 5' gene type >> 3' gene type, 5' coding gene idx >> 3' coding gene inx, category
-        # TRY REMOVING "SWAP ORDER" FEATURE, by changin "True" to "False"
-        # ALSO TRY MAKING '+/+' CORRESPOND TO (a, b)
-#        a = {} # forward strand gene at pos1
-#        c = {} # backward strand gene at pos1
-#        b = {} # forward strand gene at pos2
-#        d = {} # backward strand gene at pos2
-        #if self.strand1 == "+" and self.strand2 == "+":
+        # Attempts to ASSIGN SCORE, TRANSCRIPT, FUSION TYPE, and REANN GENE according to gene order 
+        # Coding genes are more likely to be seleceted with higher scores
         if self.strand1 == "+" and self.strand2 == "-":
             gene_order = self.__check_gene_pairs(a, d, gene_ann, False)
             gene_order += self.__check_gene_pairs(b, c, gene_ann, True)
-        #elif self.strand1 == "+" and self.strand2 == "-":
         elif self.strand1 == "+" and self.strand2 == "+":
             gene_order = self.__check_gene_pairs(a, b, gene_ann, False)
             gene_order += self.__check_gene_pairs(d, c, gene_ann, True)
-        #elif self.strand1 == "-" and self.strand2 == "+":
         elif self.strand1 == "-" and self.strand2 == "-":
             gene_order = self.__check_gene_pairs(c, d, gene_ann, False)
             gene_order += self.__check_gene_pairs(b, a, gene_ann, True)
-        #elif self.strand1 == "-" and self.strand2 == "-":
         elif self.strand1 == "-" and self.strand2 == "+":
             gene_order = self.__check_gene_pairs(c, b, gene_ann, False)
             gene_order += self.__check_gene_pairs(d, a, gene_ann, True)
-        #if debug:
-        #    print([gene_bed.gene_name for gene_bed in matched_genes1])
-        #    print([gene_bed.gene_name for gene_bed in matched_genes2])
+  
 
     # realign breakpoints of this fusion to the left most, not finished, how to define "left" when genes are on different chrs 
     def left_aln_fusion_bp(self, refs):
@@ -1831,16 +1820,6 @@ class GeneAnnotation():
                 break
 
             if bpann.start <= pos <= bpann.end:
-                '''
-                # check if pos is on/close to current annotation's boundary, these are not gene annotations' attributes, need to reset every time
-                bpann.is_on_boundary = False
-                bpann.close_to_boundary = False
-                if bpann.start == pos or bpann.end == pos:
-                    bpann.is_on_boundary = True
-                    bpann.close_to_boundary = True
-                elif min(abs(bpann.start-pos), abs(bpann.end-pos)) < t:
-                    bpann.close_to_boundary = True
-                '''
                 matched_genes.append(bpann)
             idx -= 1
     
