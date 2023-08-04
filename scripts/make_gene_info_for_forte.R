@@ -1,3 +1,12 @@
+
+# __author__      = "Alexandria Dymun"
+# __email__       = "pintoa1@mskcc.org"
+# __contributor__ = "Anne Marie Noronha (noronhaa@mskcc.org)"
+# __version__     = "0.0.1"
+# __status__      = "Dev"
+
+
+
 library(dplyr)
 library(stringr)
 library(argparse)
@@ -65,10 +74,7 @@ add_these_exess_gene_ids <- do.call(rbind,lapply(names(unique_id_to_names)[names
 gene_info <- rbind(gene_info,add_these_exess_gene_ids)
 
 gene_info <- merge(gene_info,do.call(rbind,unique_id_to_names[versioned_gtf])[,c("gene_id","gene_id_with_version")],by = "gene_id",all.x = T, all.y = F)
-table(is.na(gene_info$gene_id_with_version))
-# 
-# FALSE  TRUE 
-# 63232  8780 
+
 gene_info$Synonyms <- ifelse(is.na(gene_info$gene_id_with_version),gene_info$gene_id,paste0(gene_info$gene_id,"|",gene_info$gene_id_with_version))
 gene_info$Symbol <- gene_info$gene_name
 

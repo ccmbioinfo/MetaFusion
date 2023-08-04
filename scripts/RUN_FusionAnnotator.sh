@@ -2,14 +2,14 @@
 outdir=$1
 mkdir -p $outdir
 cluster=$2
-ref_dir=$3
+fusiontools=$3
 
-FUSION_ANNOTATOR=FusionAnnotator
-FUSION_BENCHMARK=FusionBenchmarking
+FUSION_ANNOTATOR=$fusiontools/FusionAnnotator
+FUSION_BENCHMARK=$fusiontools/FusionBenchmarking
 #normal_filter=$5
 
 #MODULE PATHS
-genome_lib_dir=$ref_dir
+genome_lib_dir=$(dirname $fusiontools)/reference_files/ctat_genome_lib_build_dir
 
 #PUT CLUSTER INTO PROPER FORMAT
 outfile=$outdir/cluster.preds.collected
